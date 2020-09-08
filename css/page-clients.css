@@ -1,0 +1,94 @@
+.page-main {
+    padding-left: 4rem;
+    padding-right: 4rem;
+}
+.page-main h2, h4 {
+    font-weight: 700;
+}
+
+
+.client-list-org {
+    display: -ms-flexbox;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    /* margin-left: 3.5rem;
+    margin-right: 3.5rem; */
+    padding-left: 0;
+    list-style: none;
+    height: 300px;
+}
+.client-list-org .client-list-item {
+    margin: .5rem;
+}
+.client-list-org .client-list-item a {
+    display: block;
+}
+.client-list-org .client-list-item a img {
+    display: block;
+    max-width: 100%;
+}
+
+.client-list {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-bottom: 1.875rem;
+    margin-left: .5rem;
+    margin-right: .5rem;
+}
+.client-list .client-list-item {
+    position: relative;
+    padding-left: .625rem;
+    padding-right: .625rem;
+    width: 100%;
+}
+.client-list .client-list-item-inner {
+    margin-bottom: 1.25rem;
+}
+.client-list .client-list-item-image {
+    margin-bottom: .5rem;
+}
+.client-list .client-list-item-image img {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+}
+.client-list .client-list-item-body dl {
+    font-size: .75rem;
+}
+.client-list .client-list-item-body dl dd {
+    margin-bottom: 0;
+}
+.client-list .btn-client-list {
+    background-color: #859094;
+    border-color: #859094;
+    font-weight: 700;
+    color: #fff;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.client-list .btn-client-list:hover,
+.client-list .btn-client-list:active,
+.client-list .btn-client-list:visited {
+    background-color: #b8da51;
+    border-color: #b8da51;
+    color: #fff;
+}
+
+@media (min-width: 768px) {
+    .client-list .client-list-item {
+        -ms-flex: 0 0 33.333333%;
+        flex: 0 0 33.333333%;
+        max-width: 33.333333%;
+    }
+}
+@media (min-width: 1200px) {
+    .client-list .client-list-item {
+        -ms-flex: 0 0 16.666667%;
+        flex: 0 0 16.666667%;
+        max-width: 16.666667%;
+    }
+}

@@ -1,0 +1,65 @@
+.icon {
+    display: inline-block;
+    vertical-align: middle;
+}
+.icon:not(img)::before {
+	content: "";
+	display: block;
+/* 	background-image: url('../images/sprites.png'); */
+	background-repeat: no-repeat;
+	width: 30px;
+	height: 30px;
+}
+
+.icon-sale::before {
+    background-position: 0 0;
+    width: 40px;
+    height: 40px;
+}
+.icon-info::before {
+    background-position: -50px 0;
+}
+.icon-arrow-left::before {
+    background-position: -81px 0;
+}
+.icon-arrow-right::before {
+    background-position: -111px 0;
+}
+.icon-auth::before {
+    background-position: 0 -41px ;
+}
+.icon-viber::before {
+	background-position: 0 -72px ;
+}
+.icon-whatsup::before {
+    background-position: -31px -72px ;
+}
+.icon-cart::before{
+    background-image: url('../images/cart.png');
+    width:25px;
+    height:25px;
+}
+.icon-vk {
+    background-image: url('../images/sprite.png');
+    background-position: -217px -217px;
+    width: 25px;
+    height: 15px;
+    display: flex;
+    align-self: center;
+}
+.icon-ig {
+    background-image: url('../images/sprite.png');
+    background-position: -239px -278px;
+    width: 17px;
+    height: 17px;
+    display: flex;
+    align-self: center;
+}
+.icon-yt {
+    background-image: url('../images/sprite.png');
+    background-position: -135px -217px;
+    width: 24px;
+    height: 17px;
+    display: flex;
+    align-self: center;
+}

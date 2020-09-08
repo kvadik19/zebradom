@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="17px" height="16px" viewBox="0 0 17 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.6 (67491) - http://www.bohemiancoding.com/sketch -->
+    <title>brush</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="baseline-brush-24px" transform="translate(-1.000000, -2.000000)">
+            <polygon id="Path" points="0 0 20 0 20 20 0 20"></polygon>
+            <path d="M5.83333333,11.6666667 C4.45,11.6666667 3.33333333,12.7833333 3.33333333,14.1666667 C3.33333333,15.2583333 2.36666667,15.8333333 1.66666667,15.8333333 C2.43333333,16.85 3.74166667,17.5 5,17.5 C6.84166667,17.5 8.33333333,16.0083333 8.33333333,14.1666667 C8.33333333,12.7833333 7.21666667,11.6666667 5.83333333,11.6666667 Z M17.2583333,3.85833333 L16.1416667,2.74166667 C15.8166667,2.41666667 15.2916667,2.41666667 14.9666667,2.74166667 L7.5,10.2083333 L9.79166667,12.5 L17.2583333,5.03333333 C17.5833333,4.70833333 17.5833333,4.18333333 17.2583333,3.85833333 Z" id="Shape" fill="#FFFFFF" fill-rule="nonzero"></path>
+        </g>
+    </g>
+</svg>

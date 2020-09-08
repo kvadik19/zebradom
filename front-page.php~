@@ -1,0 +1,968 @@
+<?php echo get_header() ?>
+<?php
+/*if (count($_POST) > 0) {
+	print_r($_POST);
+}*/
+//	$type = $_GET['type'] != 'zebra' || !isset($_GET['type']) ? 'classic' : 'zebra';
+	$type = 'classic';
+	if (isset($_GET['type']) ) $type = 'zebra';
+	?>
+	<h1>front-page</h1>
+	<form action="/" method="POST">
+		<div class="builder js-builder">
+			<!-- Preview col -->
+			<div class="builder-preview">
+				<div class="builder-preview-body">
+
+					<!-- PREVIEW constuct -->
+					<div class="builder-preview-main">
+						<div class="builder-preview-color js-builder-color">
+						</div>
+						<div class="builder-preview-back">
+							<?php  /*<button type="button"
+									class="btn btn-circle btn-full">
+								<img src="<?php  bloginfo('template_url') ?>/images/builder/magnifier.svg">
+							</button>
+							<button type="button"
+									class="btn btn-circle btn-window-color">
+								<img src="<?php  bloginfo('template_url') ?>/images/builder/brush.svg">
+							</button>*/ ?>
+							<canvas id="canvas" width="535" height="668"></canvas>
+						</div>
+						<div class="builder-preview-item">
+						</div>
+					</div>
+					<!-- INFO -->
+					<div class="builder-preview-info js-builder-info">
+				   
+						<section class="info builder-preview-info-sec" data-info="equip">
+							<div class="info-content" onmousedown="return false;" onclick="return true;">
+								<div class="info-header">
+									<h5 class="info-title">Комплектация</h5>
+									<button type="button" class="close" data-dismiss="info" aria-label="Close">
+										Закрыть <span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div class="info-body" onmousedown="return false;" onclick="return true;">
+									<!-- info 'equip' content -->
+									<?php echo get_theme_mod('true_desc_index_equip');?>
+									<!--/ -->
+									<div>Мы предлагаем два вида комплеткации рулонных штор:</div>
+									<div class="container">
+										<div class="row">
+											<div class="col-md-6"><i><strong>- В коробе /</strong></i>  закрытый</div>
+											<div class="col-md-6"><i><strong>- Без короба / </strong></i> открытый</div>
+										</div>
+										<div class="row">
+											<div class="col-xs-12">
+												<img src="<?php  echo get_template_directory_uri() . '/images/equip-info.png'?>" alt="" class="img-fluid">
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-xs-12">
+												<h4 class="text-center">Преимущества без короба /открытых рулонных штор:</h4>
+													<ul>
+														<li>Легкость установки и снятия; </li>
+														<li>Простота и надежность конструкции;</li>
+														<li>Доступность по цене;</li>
+														<li>Компактность;</li>
+														<li>Подходит для окон с нестандартной шириной;</li>
+													</ul>
+												
+												<h4 class="text-center">Преимущества в коробе /закрытых рулонных штор:</h4>
+													<ul>
+														<li>Увеличения срока службы;</li>
+														<li>Максимально полную защиту от солнечных лучей;</li>
+														<li>Штора не будет провисать или хлопать на ветру;</li>
+														<li>Позволяет полностью скрыть цвет рулонных штор;</li>
+														<li>Предохраняет изделие от механического повреждения;</li>
+													</ul>
+												   
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</section>
+						<section class="info builder-preview-info-sec" data-info="control">
+							<div class="info-content" onmousedown="return false;" onclick="return true;">
+								<div class="info-header">
+									<h5 class="info-title">Управление</h5>
+									<button type="button" class="close" data-dismiss="info" aria-label="Close">
+										Закрыть <span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div class="info-body">
+									<!-- info 'control' content -->
+									<!-- <div class="row">
+										<div class="col-md-6">
+											<h6 class="text-center">слева / справа</h6>
+											<p class="text-center">
+												<img class="img-fluid mx-3 img-with-type"
+													 src="<?php echo bloginfo('template_url') ?>/images/builder/<?php echo $type?>/control-left.jpg">
+												<img class="img-fluid mx-3 img-with-type"
+													 src="<?php echo bloginfo('template_url') ?>/images/builder/<?php echo $type?>/control-right.jpg">
+											</p>
+										</div>
+										<div class="col-md-6">
+											<h6 class="text-center">электро</h6>
+											<p class="text-center">
+												<img class="img-fluid mx-3 img-with-type"
+													 src="<?php echo bloginfo('template_url') ?>/images/builder/<?php echo $type?>/control-electro.jpg">
+											</p>
+										</div>
+									</div>-->
+									<?php /*=get_theme_mod('true_desc_index_control');*/?> 
+
+									<!--/ -->
+
+									<div class="container">
+										<h4 class="text-center">Управление Рулонными Шторами</h4>
+										<div class="row">
+											<div class="col-xs-12 col-md-12 col-lg-12">
+											<p>
+												Регулировка светового потока осуществляется подъемом/опусканием ткани с помощью цепочки управления.
+											</p>
+											<p>
+												Наша компания рекомендует: 
+											</p>
+											<p>
+												- Если монтаж происходит на раму окна, то устанавливать управление с противоположной стороны от ручки открытия окна.  
+											</p>
+											<p>
+												- Если монтаж происходит на раму окна, то устанавливать управление с противоположной стороны от ручки открытия окна.  
+											</p>
+											</div>
+											<div class="col-md-12 col-lg-12 text-center">
+												<img src="<?php echo get_template_directory_uri() . '/images/upr-info.png' ?>" alt="" class="img-fluid">
+											</div>  
+											<div class="col-md-12 col-lg-12">
+												<p>Или рулонные шторы могут быть оснащены электроприводом. </p>
+											</div> 
+											<div class="col-md-12 col-lg-12 text-center">
+												<img src="<?php echo get_template_directory_uri() . '/images/upr-info-2.png' ?>" alt="" class="img-fluid">
+											</div> 
+											<div>
+												<p>Основным плюсом является возможность управления рулонными шторами с пульта без физических усилий. Предварительной подготовки для монтажа (прокладки проводов) не требуется. Это особенно актуально в случаях с трудным доступом к окну (глубокое или высокое расположение). Также можно подключить управление несколькими шторами к одному пульту.</p>
+												<p>Автоматическое управление построено на основе приводов, отвечающих за плавное поднятие/отпускание полотна рулонной шторы, и радио-пульта, дальность действия которого до 35 метров.</p>
+												<p>Приводы имеют встроенный радиоприемник и встроенную литиевую аккумуляторную батарею, которая заряжается от зарядного устройства аналогично мобильному телефону. Ориентировочное время работы приводов со встроенной АКБ, после полной зарядки батареи, при одном цикле работы каждый день составляет несколько месяцев. Это время зависит от изделия и выбора ткани.</p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</section>
+						<section class="info builder-preview-info-sec" data-info="mount">
+							<div class="info-content" onmousedown="return false;" onclick="return true;">
+								<div class="info-header">
+									<h5 class="info-title">Крепление</h5>
+									<button type="button" class="close" data-dismiss="info" aria-label="Close">
+										Закрыть <span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div class="info-body">
+									<i><h4>Существуют два варианта крепления рулонных штор:</h4></i>
+									<div class="container">
+										<div class="row">
+											<div class="col-xs-4 col-md-4 text-center">
+												<p>рис.1а</p>
+											</div>
+											<div class="col-xs-4 col-md-4 text-center">
+												<p>рис.1б</p>
+											</div>
+											<div class="col-xs-4 col-md-4 text-center">
+												<p>рис.2</p>
+											</div>
+										</div>
+										<div class="row">
+											<img src="<?php  echo get_template_directory_uri() . '/images/krep-info.png'?>" alt="" class="img-fluid">
+										</div>
+										<div class="row">
+											<div class="col-xs-4 col-md-4 text-center">
+												<p><strong>В ПРОЕМ/</strong>  НА  ПОТОЛОК</p>
+											</div>
+											<div class="col-xs-4 col-md-4 text-center">
+												<p><strong>НА ПРОЕМ/ НА СТЕНУ</strong></p>
+											</div>
+											<div class="col-xs-4 col-md-4 text-center">
+												<p><strong>НА СТВОРКУ ОКНА</strong></p>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-xs-12">
+												<p><strong><span style="font-size:16px;text-decoration:underline"> Вариант №1 В или НА оконный проем </span></strong> (представлено две схемы рис.1а и рис.1б, для наглядности; механизм крепления универсальный и любое изделие можно закрепить как на потолок так и на стену без дополнительных комплектующих); </p>
+												<p>Преимущество крепления <strong>НА</strong> или <strong>В</strong> оконный проем – высокая надежность крепления. Такая технология рекомендована для тяжелых моделей из металла с плотным полотном. Закрывает полностью все окно одним изделием.</p> 
+												<p>Недостаток метода <strong>НА</strong> или <strong>В</strong> оконный проем – нужна ударная дрель и некоторые навыки работы с ней. Муж на час отличное решение вопроса. </p>
+												<p>При креплении рулонной шторы <strong>НА</strong> или <strong>В</strong> оконный проем необходимо учитывать тот факт, что при опускании она будут приходиться примерно на середину подоконника пластикового окна. Он должен быть свободен от комнатных растений и других предметов. Иначе, пользоваться рулонными шторами на полную длину будет затруднительно. </p> 
+												</br>
+												<p><strong><span style="font-size:16px;text-decoration:underline">Вариант №2 НА СТВОРКУ ОКНА </span></strong></p>
+												<p><strong><i>НА СТВОРКУ ОКНА</i></strong> самый удобным вариант – такой способ монтажа не мешает открывать створки для проветривания и придает окну современный вид. Однако он несколько более трудоемок, так как приходится крепить отдельную ролету на каждую створку. В любом случае крепежными элементами выступают либо саморезы, либо двусторонний скотч.</p>
+												<p>Крепление на двусторонний скотч – оптимальный вариант для тех, кто не хочет возиться с саморезами. Нужно отклеить защитную пленку от скотча и прочно приклеивают кронштейн к пластику рамы. Главный недостаток метода – не слишком высокая надежность крепления. Но для легких моделей из пластика такого крепежа будет вполне достаточно. Второй недостаток – после отклеивания кронштейнов на рамах останутся следы от клея. Но их несложно удалить с помощью специальной чистящей жидкости или растворителя </p>
+												<p>Возможен и вариант крепления саморезами к пластиковой раме. Такая технология гораздо надежнее, однако в пластике остаются отверстия, которые будут заметны после демонтажа шторы.</p>
+												<p>Все изделия оснащены монтажным комплектом скотч + саморезы на ваш выбор.</p>
+											</div>
+										</div>
+									</div>
+									<!-- info 'mount' content -->
+									<?php echo get_theme_mod('true_desc_index_mount');?>
+									<!--/ -->
+								</div>
+							</div>
+						</section>
+						<section class="info builder-preview-info-sec" data-info="type">
+							<div class="info-content" onmousedown="return false;" onclick="return true;">
+								<div class="info-header">
+									<h5 class="info-title">Тип штор</h5>
+									<button type="button" class="close" data-dismiss="info" aria-label="Close">
+										Закрыть <span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div class="info-body">
+									<!-- info 'type' content -->
+									<?php /*=get_theme_mod('true_desc_index_type');*/?>
+										<div class="container">
+											<div class="row">
+												<div class="col-xs-4 col-md-4">
+													<img src="<?php  echo get_template_directory_uri() . '/images/shtora-info.png'?>" alt="" class="img-fluid">
+												</div>
+												<div class="col-xs-8 col-md-8">
+													<p>
+														<strong><span style="font-size:16px;text-decoration:underline">1.	Рулонные шторы классические</span></strong>
+														Современный и популярный способ оформления окна и защиты от солнца. Представляет собой прямоугольное полотно из специального тканого материала. Внизу полотна закреплен горизонтальный отвес — утяжелитель. Полотно скручивается в рулон при помощи цепочки или электропривода. Классические, свободно висящие рулонные шторы не имеют боковых направляющих. За счет веса нижней планки полотно находится в натянутом состоянии и ровно наматывается на вал.
+														В зависимости от размера изделия изготавливаются на валах разного диаметра.
+														<i><strong>Материал и ткани</strong></i>
+														При изготовлении рулонных жалюзи применяется специальный материал. Как правило, 100% полиэстер. Реже используется ПВХ и полиэфир с добавлением хлопка или льна.
+													</p>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-xs-12 col-md-12">
+													<p>Помимо этого в состав ткани входит антистатик. Специальный компонент препятствует оседанию пыли на полотне. Материалы долговечны, не выгорают на солнце и не прихотливы в уходе. На все материалы мы имеем обязательную сертификацию, все ткани безвредны, не выделяют фенолы и соответствию качеству и всем нормам СанПиН. </p>
+													<p>Простота в уходе — как правило достаточно сухой чистки. В случае сильного загрязнения протирается влажной губкой или салфеткой</p>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-xs-12 col-md-12">
+													<p><strong><span style="font-size:16px;text-decoration:underline">2.	Рулонные шторы Зебра «день—ночь»</span></strong></p>
+													<p>Сравнительно недавно появились и значительно отличаются от «классических» рулонных штор и других видов солнцезащиты. Основная </p>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-xs-5 col-md-5">
+													<p>особенность штор «Зебра» или штор «День ночь» — это возможность регулировать световые потоки.</p>
+													<p>Конструктивно рулонные шторы Зебра представляют собой двойное полотно тканого материала. На ткани чередуются прозрачные и полупрозрачные горизонтальные полосы. При подъеме шторы, потянув за цепь, внешнее полотно смещается относительно внутреннего. Пропускающие свет сетчатые полосы перехлестываются с плотными полосами на полотне. Тем самым изменяется интенсивность освещения и пропускание света.</p>
+													<p>Так же как и классические рулонные шторы «Зебра/ день—ночь» можно опускать, поднимать и фиксировать на любой высоте. При желании вовсе скрутить в рулон при помощи цепочки </p>
+												</div>
+												<div class="col-xs-7 col-md-7">
+													<img src="<?php  echo get_template_directory_uri() . '/images/shtora-info-2.png'?>" alt="" class="img-fluid">
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-xs-12 col-md-12">
+													<p>
+													или электропривода. За счет веса нижней планки — утяжелителя полотно висит натянуто и ровно наматывается на вал.</p>
+													<p><strong><span style="font-size:16px;text-decoration:underline">Материал и ткани</span></strong></p>
+													<p>В рулонных шторах «Зебра» используется специальный материал из полиэфира и полиэстера, который обладает антистатическими свойствами. Ткань долговечна, не тускнеет на солнце и не отталкивает пыль. Простота в уходе — как правило достаточно сухой чистки. В случае сильного загрязнения протирается влажной губкой или салфеткой. На все материалы мы имеем обязательную сертификацию, все ткани безвредны, не выделяют фенолы и соответствию качеству и всем нормам СанПиН.</p>
+
+													</p>
+												</div>
+											</div>
+										</div>
+									<!--/ -->
+								</div>
+							</div>
+						</section>
+						<section class="info builder-preview-info-sec" data-info="opacity">
+							<div class="info-content" onmousedown="return false;" onclick="return true;">
+								<div class="info-header">
+									<h5 class="info-title">Прозрачность</h5>
+									<button type="button" class="close" data-dismiss="info" aria-label="Close">
+										Закрыть <span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div class="info-body">
+									<!-- info 'opacity' content -->
+									<?php  /*=get_theme_mod('true_desc_index_opacity');*/?>
+									<div class="container">
+										<div class="row">
+											<div class="col-xs-12 col-md-12">
+												<p>
+												<strong><span style="font-size:16px;text-decoration:underline">1.	Светопроницаемые до 45% </span></strong>
+												Работают в интерьере как портьеры. Они защищают от палящего солнца днем  и от взглядов с улицы в любое время суток, хорошо рассеивают свет. В зависимости от оттенка ткани: черный поглощает больше света, белый, значительно меньше, при одинаковой плотности.
+
+												</p>
+												<p>
+												<strong><span style="font-size:16px;text-decoration:underline"> 2.	Светонепроницаемые до 0% или Black-Out.</span> </strong>
+													Плотные шторы не пропускающие свет. Обеспечивают хорошую защиту от солнечного тепла и света, исключают видимость снаружи дома. Рекомендуем закрывать ими южные окна, которые освещаются целый день. Идеальны для помещений для сна: спален, детских и гостиных комнат.
+
+												</p>
+											</div>
+										</div>
+									</div>
+									<!--/ -->
+								</div>
+							</div>
+						</section>
+						<section class="info builder-preview-info-sec" data-info="size">
+							<div class="info-content" onmousedown="return false;" onclick="return true;">
+								<div class="info-header">
+									<h5 class="info-title">Размеры</h5>
+									<button type="button" class="close" data-dismiss="info" aria-label="Close">
+										Закрыть <span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div class="info-body">
+									<!-- info 'size' content -->
+									<?php  /*=get_theme_mod('true_desc_index_size');*/ ?>
+									<div class="container">
+										<div class="row">
+											<div class="col-xs-12 col-md-12 ">
+												<p class="text-center">
+													Осуществите замер в соответствии с предполагаемым местом установки изделия.
+												</p>
+												<p class="text-center"> 
+													<i><strong>Рис.1. Замер при установке на проем и в проем</strong></i>
+												</p>
+											</div>
+											<div class="col-xs-12 col-md-12 text-center">
+												<img src="<?php  echo get_template_directory_uri() . '/images/razmer-info.png'?>" alt="" class="img-fluid">
+											</div>
+											<div class="col-xs-12 col-md-12 text-center">
+												<p class="text-center">Рис.1</p>
+											</div>
+											<div class="col-xs-12 col-md-12 text-center">
+												<p>
+													1.1.	Если установка на проем (рис.1), то рекомендуемый расчет следующий для всех типов штор:
+												</p>
+												<ul>
+													<li>[Ширина] = [Ширина проема] + 15 см</li>
+													<li>[Высота] = [Высота проема] + 15 см</li>	
+												</ul>
+												<p>Здесь размеры указываются габаритные по готовому изделию. </p>
+											</div>
+											<div class="col-xs-12 col-md-12">
+												<p class="text-center">
+													1.2.	Если установка в проем (рис.1), то замеры рекомендуется снимать не менее чем в трех местах по ширине и высоте. В этом случае шириной проема будет минимальная ширина. Если откосы проема расположены под углом, то замер осуществляется в месте, где подразумевается повесить штору.  Рекомендуемый расчет следующий для всех типов штор:
+												</p>
+												<ul>
+													<li>[Ширина] = [Ширина проема] - 0,5 см</li>
+													<li>[Высота] = [Высота проема] -1 см</li>
+												</ul>
+												<p>Здесь размеры указываются габаритные по готовому изделию</p>
+											</div>
+											<div class="col-xs-12 col-md-12 text-center">
+												<img src="<?php  echo get_template_directory_uri() . '/images/razmer-info-2.png'?>" alt="" class="img-fluid">
+											</div>
+											<div class="col-xs-12 col-md-12">
+												<p class="text-center">
+													<i><strong>Рис.2. Замер для установки на раму окна</strong></i>
+												</p>
+											</div>
+											<div class="col-xs-12 col-md-12 text-center">
+												<img src="<?php  echo get_template_directory_uri() . '/images/razmer-info-3.png'?>" alt="" class="img-fluid">
+											</div>
+											<div class="col-xs-12 col-md-12">
+											   <p> 
+													1.2.	 Если установка происходит <strong>на раму окна</strong>, то стандартный замер осуществляется по высоте рамы окна и по ширине штапика («от штапика до штапика») (рис.2). Рекомендуемое минимальное расстояние от основания ручки до ткани 1 см. 
+											   </p>  
+											   <p>
+													<strong>Здесь размеры указываются по ткани. </strong> 
+											   </p> 
+											</div>
+											<div class="col-xs-12 col-md-12 text-center">
+												<img src="<?php  echo get_template_directory_uri() . '/images/razmer-info-4.png'?>" alt="" class="img-fluid">
+											</div>
+										</div>
+									</div>
+									<!--/ -->
+								</div>
+							</div>
+						</section>
+						<section class="info builder-preview-info-sec" data-info="sale">
+							<div class="info-content" onmousedown="return false;" onclick="return true;">
+								<div class="info-header">
+									<h5 class="info-title">Скидка</h5>
+									<button type="button" class="close" data-dismiss="info" aria-label="Close">
+										Закрыть <span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div class="info-body">
+									<!-- info 'sale' content -->
+									<?php echo get_theme_mod('true_desc_index_sale');?>
+									<!--/ -->
+								</div>
+							</div>
+						</section>
+
+					</div>
+				</div>
+				
+				<div class="row">
+					<div class="col">
+						<!-- Color picker frame  -->
+						<div class="builder-preview-picker">
+							Цвет рамы
+							<div class="window-colors my-3 d-flex justify-content-center">
+								<div class="window-color"
+									 data-toggle="tooltip"
+									 data-color-name="white"
+									 data-placement="top"
+									 title=""
+									 style="background: #FFFFFF; color: #afafaf; border-color: #afafaf"
+									 data-original-title="Белый">
+								</div>
+								<div class="window-color active"
+									 data-toggle="tooltip"
+									 data-color-name="oaklight"
+									 data-placement="top"
+									 title=""
+									 style="background: #BE8E58; color: #6e3e08; border-color: #6e3e08"
+									 data-original-title="Дуб светлый">
+								</div>
+								<div class="window-color"
+									 data-toggle="tooltip"
+									 data-color-name="oakgold"
+									 data-placement="top"
+									 title=""
+									 style="background: #7C491C; color: #e0ad80; border-color: #e0ad80"
+									 data-original-title="Золотой дуб">
+								</div>
+								<div class="window-color"
+									 data-toggle="tooltip"
+									 data-color-name="mahagon"
+									 data-placement="top"
+									 title=""
+									 style="background: #380805; color: #9c6c69; border-color: #9c6c69"
+									 data-original-title="Махагон">
+								</div>
+								<div class="window-color"
+									 data-toggle="tooltip"
+									 data-color-name="brown"
+									 data-placement="top"
+									 title=""
+									 style="background: #371305; color: #9b7769; border-color: #9b7769"
+									 data-original-title="Коричневый">
+								</div>
+								<div class="window-color"
+									 data-toggle="tooltip"
+									 data-color-name="black"
+									 data-placement="top"
+									 title=""
+									 style="background: #060A06; color: #6a6e6a; border-color: #6a6e6a"
+									 data-original-title="Черный">
+								</div>
+								<div class="window-color"
+									 data-toggle="tooltip"
+									 data-color-name="antracit"
+									 data-placement="top"
+									 title="Антрацит"
+									 style="background: #3D4344; color: #a1a7a8; border-color: #a1a7a8">
+								</div>
+								<div class="window-color"
+									 data-toggle="tooltip"
+									 data-color-name="gray"
+									 data-placement="top"
+									 title=""
+									 style="background: #97A3A5; color: #475355; border-color: #475355"
+									 data-original-title="Серый">
+								</div>
+								<div class="clearfix"></div>
+							</div>
+						</div>
+					</div>
+					<div class="col">
+						<!-- photos -->
+						<div class="builder-preview-photos">
+							<div class="photos-items js-builder-photos"
+								 itemscope
+								 itemtype="http://schema.org/ImageGallery">
+							</div>
+							<div class="clearfix"></div>
+						</div>
+					</div>
+				</div>				
+
+				<!-- Color picker -->
+				<div class="builder-preview-picker">
+				   
+					<input class="wall-color"/>
+				</div>
+			</div>
+			<!--/ Preview col -->
+
+			<!-- Filter col -->
+			<div class="builder-filter builder-filter-1">
+				<div class="builder-filter-sec">
+					<h4 class="builder-filter-sec-title">
+						Крепление
+						<i class="icon icon-info" data-info-target="mount"></i>
+					</h4>
+					<div class="form-check">
+						<input class="form-check-input" type="radio" name="mount" id="mount-open" value="open" checked>
+						<label class="form-check-label mount-open" for="mount-open">
+							<img class="mb-2 img-fluid img-with-type"
+								 src="<?php echo bloginfo('template_url') ?>/images/builder/<?php echo $type?>/mount-open.jpg">
+							На проем<br> / В проем
+						</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="radio" name="mount" id="mount-flap" value="flap">
+						<label class="form-check-label" for="mount-flap" style="display: flex;">
+							<img class="mb-2 img-fluid img-with-type"
+								 src="<?php echo bloginfo('template_url') ?>/images/builder/<?php echo $type?>/mount-flap.jpg">
+								<span>На<br>створку<br>окна</span>
+						</label>
+					</div>
+				</div>
+				<div class="builder-filter-sec">
+					<h4 class="builder-filter-sec-title">
+						Управление
+						<i class="icon icon-info" data-info-target="control"></i>
+					</h4>
+					<div class="form-check">
+						<input class="form-check-input"
+							   type="radio"
+							   name="control"
+							   id="control-left"
+							   value="left"
+							   checked>
+						<label class="form-check-label" for="control-left">
+							<img class="mb-2 img-fluid img-with-type"
+								 src="<?php echo bloginfo('template_url') ?>/images/builder/<?php echo $type?>/control-left.jpg">
+							Слева
+						</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="radio" name="control" id="control-right" value="right">
+						<label class="form-check-label" for="control-right">
+							<img class="mb-2 img-fluid img-with-type"
+								 src="<?php echo bloginfo('template_url') ?>/images/builder/<?php echo $type?>/control-right.jpg">
+							Справа
+						</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input"
+							   type="radio"
+							   name="control"
+							   id="control-electro"
+							   value="electro">
+						<label class="form-check-label" for="control-electro">
+							<img class="mb-2 img-fluid img-with-type"
+								 src="<?php echo bloginfo('template_url') ?>/images/builder/<?php echo $type?>/control-electro.jpg">
+							Электро
+						</label>
+					</div>
+				</div>
+				<div class="builder-filter-sec">
+					<h4 class="builder-filter-sec-title">
+						Комплектация
+						<i class="icon icon-info" data-info-target="equip"></i>
+					</h4>
+					<div class="form-check">
+						<input class="form-check-input"
+							   type="radio"
+							   name="equip"
+							   id="equip-inbox"
+							   value="inbox"
+							   checked>
+						<label class="form-check-label" for="equip-inbox">
+							В коробе
+						</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="radio" name="equip" id="equip-default" value="default">
+						<label class="form-check-label" for="equip-default">
+							Без короба
+						</label>
+					</div>
+					<img class="my-3 img-fluid img-with-type" src="<?php echo bloginfo('template_url') ?>/images/builder/<?php echo $type?>/equip-box.jpg">
+				</div>
+			</div>
+			<!--/ Filter col -->
+			<!-- Filter col -->
+			<div class="builder-filter builder-filter-2">
+				<div class="builder-filter-sec flex-column d-flex">
+					<h4 class="builder-filter-sec-title">
+						<div class="text-center">Найдено
+							<span class="js-builder-cloth-count">...</span> тканей
+						</div>
+						<div class="text-center"><a class="js-cloth-list-open" href="#" data-infom-target="clothes">открыть
+								все ткани</a></div>
+					</h4>
+					<div class="builder-filter-sec-body">
+						<div class="d-none builder-loading js-builder-loading">
+							<img src="<?php bloginfo('template_url') ?>/images/builder/loading.gif" alt="">
+						</div>
+						<ul class="cloth-list js-builder-cloth-list">
+						</ul>
+					</div>
+				</div>
+			</div>
+			<!--/ Filter col -->
+			<!-- Filter col -->
+			<div class="builder-filter builder-filter-3">
+				<div class="builder-filter-sec">
+					<h4 class="builder-filter-sec-title">
+						Тип штор
+						<i class="icon icon-info" data-info-target="type"></i>
+					</h4>
+					<div class="form-check">
+						<input class="form-check-input"
+							   type="radio"
+							   name="type"
+							   id="type-classic"
+							   value="classic" <?php echo $type != 'zebra' ? 'checked' : '' ?>>
+						<label class="form-check-label" for="type-classic">
+							Классические
+						</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input"
+							   type="radio"
+							   name="type"
+							   id="type-zebra"
+							   value="zebra" <?php echo $type == 'zebra' ? 'checked' : '' ?>>
+						<label class="form-check-label" for="type-zebra">
+							Зебра
+						</label>
+					</div>
+					<img class="my-3 img-fluid img-with-type" src="<?php echo bloginfo('template_url') ?>/images/builder/<?php echo $type?>/type.jpg">
+				</div>
+				<div class="builder-filter-sec">
+					<h4 class="builder-filter-sec-title">
+						Прозрачность
+						<i class="icon icon-info" data-info-target="opacity"></i>
+					</h4>
+					<div class="form-check">
+						<input class="form-check-input" type="radio" name="opacity" id="opacity-all" value="-1">
+						<label class="form-check-label" for="opacity-all">
+							Все ткани
+						</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input"
+							   type="radio"
+							   name="opacity"
+							   id="opacity-yes"
+							   value="1"
+							   checked>
+						<label class="form-check-label" for="opacity-yes">
+							Светопроницаемые до 45%
+						</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="radio" name="opacity" id="opacity-no" value="0">
+						<label class="form-check-label" for="opacity-no">
+							Светонепроницаемые до 0%  или Black-Out
+						</label>
+					</div>
+				</div>
+				<div class="builder-filter-sec">
+					<h4 class="builder-filter-sec-title">
+						Цвет ткани
+					</h4>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" name="color" id="color-red" value="red">
+						<label class="form-check-label" for="color-red">
+							<i class="color-box color-box-red"></i>
+							Красный
+						</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" name="color" id="color-orange" value="orange">
+						<label class="form-check-label" for="color-orange">
+							<i class="color-box color-box-orange"></i>
+							Оранжевый
+						</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" name="color" id="color-yellow" value="yellow">
+						<label class="form-check-label" for="color-yellow">
+							<i class="color-box color-box-yellow"></i>
+							Желтый
+						</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" name="color" id="color-green" value="green">
+						<label class="form-check-label" for="color-green">
+							<i class="color-box color-box-green"></i>
+							Зеленый
+						</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" name="color" id="color-blue" value="blue">
+						<label class="form-check-label" for="color-blue">
+							<i class="color-box color-box-blue"></i>
+							Синий
+						</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" name="color" id="color-purple" value="purple">
+						<label class="form-check-label" for="color-purple">
+							<i class="color-box color-box-purple"></i>
+							Фиолетовый
+						</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" name="color" id="color-black" value="black">
+						<label class="form-check-label" for="color-black">
+							<i class="color-box color-box-black"></i>
+							Черный
+						</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" name="color" id="color-white" value="white">
+						<label class="form-check-label" for="color-white">
+							<i class="color-box color-box-white"></i>
+							Белый
+						</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" name="color" id="color-beige" value="beige">
+						<label class="form-check-label" for="color-beige">
+							<i class="color-box color-box-beige"></i>
+							Бежевый
+						</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" name="color" id="color-grey" value="gray">
+						<label class="form-check-label" for="color-grey">
+							<i class="color-box color-box-grey"></i>
+							Серый
+						</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" name="color" id="color-brown" value="brown">
+						<label class="form-check-label" for="color-brown">
+							<i class="color-box color-box-brown"></i>
+							Коричневый
+						</label>
+					</div>
+				</div>
+			</div>
+			<!--/ Filter col -->
+		</div>
+		<div class="shop flex-wrap flex-xl-nowrap">
+			<div class="shop-col shop-info">
+				<h3 class="text-nowrap">Скидка 5%</h3>
+				<p>Поделись своей покупкой в соцсетях и получите скидку</p>
+				<ul class="list-inline">
+					<li class="list-inline-item"></li>
+				</ul>
+			</div>
+			<div class="shop-col shop-params">
+				<h4 class="shop-params-title">
+					Введите размеры
+					<i class="icon icon-info" data-info-target="size"></i>
+					<strong style="font-size: 18px;">
+						Как сделать замер:
+						<a href="https://www.youtube.com/channel/UCvAh7mOsCbu-RtlsxIVreoA" target="_blank">Видео</a>
+					</strong>
+				</h4>
+				<div class="shop-params-body d-flex flex-column flex-md-row">
+					<div class="shop-params-col">
+						<div class="form-group">
+							<label>Ширина:</label>
+							<div class="input-group">
+								<div class="input-group-prepend">
+									<span class="input-group-text js-width-range">Min ... см<br>Max ... см</span>
+								</div>
+								<input type="text" class="form-control" name="size_width" value="115">
+								<div class="input-group-append">
+									<span class="input-group-text">см</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="shop-params-col">
+						<div class="form-group">
+							<label>Высота:</label>
+							<div class="input-group">
+								<div class="input-group-prepend">
+									<span class="input-group-text js-height-range">Min ... см<br>Max ... см</span>
+								</div>
+								<input type="text" class="form-control" name="size_height" value="115">
+								<div class="input-group-append">
+									<span class="input-group-text">см</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="shop-params-col">
+						<div class="form-group text-md-center">
+							<label>Количество:</label>
+							<div class="input-group">
+								<div class="input-group-prepend">
+									<button class="btn btn-link js-shop-count-down"
+											data-target="shop-count-value"
+											type="button"><i class="icon icon-arrow-left"></i></button>
+								</div>
+								<input type="text" class="form-control" value="1" name="count" id="shop-count-value">
+								<div class="input-group-append">
+									<button class="btn btn-link js-shop-count-up"
+											data-target="shop-count-value"
+											type="button"><i class="icon icon-arrow-right"></i></button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="shop-params-footer">
+					<p class="sizes-error js-sizes-error"></p>
+					<p>
+						
+					</p>
+					<p>
+						<!-- <strong><a href="#">Схема системы</a></strong>, -->
+						<strong><a class="btn  btn-lg btn-success mt-2 btn-zamershik" href="#" data-toggle="modal" data-target="#master">Вызвать замерщика</a></strong>
+					</p>
+				</div>
+			</div>
+			<div class="shop-col shop-order">
+				<div class="row">
+					<div class="col-sm-6 shop-order-item d-flex flex-column justify-content-between">
+						<ul class="list-unstyled">
+							<li><strong>Ткань:</strong>
+								<span class="js-order-item-name">...</span></li>
+							<li><strong>Цена:</strong>
+								<span class="js-order-item-price">...</span> руб.
+							</li>
+						</ul>
+						<button type="button"
+								class="btn btn-lg btn-shop-order btn-korzina mt-2 text-nowrap"
+								data-infom-target="order">Добавить в корзину
+						</button>
+					</div>
+					<div class="col-sm-6 shop-order-cart d-flex flex-column justify-content-between">
+						<div class="shop-order-cart-count text-nowrap">Корзина:
+							<span class="js-order-cart-count"><?php echo WC()->instance()->cart->cart_contents_count?></span> товаров
+						</div>
+						<div class="shop-order-cart-price text-nowrap">Сумма
+							<span class="js-order-cart-price" data-sum="<?php echo WC()->cart->cart_contents_total?>"><?php echo ceil(WC()->cart->cart_contents_total)?></span> руб.
+						</div>
+						<div class="shop-order-cart-sale text-nowrap">Скидка
+							<span class="js-order-cart-sale">0</span> руб. <i class="icon icon-info"
+																			  data-info-target="sale"></i></div>
+						<a href="/cart">
+							<button type="button" class="btn btn-lg btn-shop-cart btn-success mt-2 text-nowrap">Корзина
+							</button>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modals">
+			<div class="info" data-info="clothes">
+				<div class="info-content">
+					<div class="info-header">
+						<button type="button" class="close" data-dismiss="info" aria-label="Close">
+							Закрыть <span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="info-body">
+						<ul class="cloth-list cloth-list-full js-cloth-list">
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="info info-order" data-info="order">
+				<div class="info-content">
+					<div class="info-header">
+						<button type="button" class="close" data-dismiss="info" aria-label="Close">
+							Закрыть <span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="info-body">
+						<div class="row">
+							<div class="col-sm-5 info-order-js-img">
+								<div class="text-center">
+									<img class="img-fluid"
+										 src="<?php echo bloginfo('template_url') ?>/images/example/order-pt.jpg">
+									<img class="img-fluid"
+										 src="<?php echo bloginfo('template_url') ?>/images/example/order-pb.jpg">
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<h4 class="text-uppercase">Подтвердите параметры выбранного вами изделия</h4>
+
+								<ul class="list-unstyled">
+									<li>Изделие: <span class="js-order-confirm-model"></span></li>
+									<li>Материал: <span class="js-order-confirm-cloth"></span></li>
+									<li>Артикул: <span class="js-order-confirm-cloth-sku"></span></li>
+									<li>Цвет: <span class="js-order-confirm-cloth-color"></span></li>
+									<li>Ширина по замеру: <span class="js-order-confirm-width"></span> см.</li>
+									<li>Ширина по габариту: <span class="js-order-confirm-width"></span> см.</li>
+									<li>Ширина по ткани: <span class="js-order-confirm-width-gb"></span> см.</li>
+									<li>Высота по замеру: <span class="js-order-confirm-height"></span> см.</li>
+									<li>Высота по габариту: <span class="js-order-confirm-height-gb"></span> см.</li>
+									<li>Высота по габариту: <span class="js-order-confirm-height"></span> см.</li>
+									<li>Высота управления: <span class="js-order-confirm-height-upr"></span> см.</li>
+									<li>Цвет комплектации: <span>белый</span></li>
+									<li>Управление: <span class="js-order-confirm-electro"></span></li>
+									<!-- <li>Разворот ткани: <span>Расчет ткани по ширине</span></li>
+									<li>Намотка ткани: <span>Прямая</span></li> -->
+								</ul>
+								<p class="help-block">*точный отеннок ткани может быть искажен экраном каждого компьютера и настроек браузера. 
+									Обращаем ваше внимание, что данные вашего предварительного заказа не являются публичной офертой.</p>
+								<br>
+								<ul class="list-unstyled">
+									<li><strong class="text-muted">Цена</strong>: <span class="js-order-confirm-price">...</span>
+										руб.
+									</li>
+									<li><span>без доп.услуг (замер, доставка, монтаж)</span></li>
+									<li>Кол-во: <span class="js-order-confirm-count">...</span> шт.</li>
+								</ul>
+								<div class="form-check mb-2">
+									<input class="form-check-input" type="checkbox" value="" id="all-right" required>
+									<label class="form-check-label" for="all-right">
+										Я проверил(а), всё верно
+									</label>
+								</div>
+								<div class="row">
+									<div class="col-sm-6">
+										<button type="button"
+												class="btn btn-lg btn-block btn-success"
+												data-dismiss="info">Вернуться
+										</button>
+									</div>
+									<div class="col-sm-6">
+										<button type="submit" class="btn btn-lg btn-block btn-korzina btn-order">Добавить
+											в корзину
+										</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<script>
+		let activeCloth = <?php echo isset($_GET['cloth']) ? $_GET['cloth'] : 1765;?>
+	</script>
+<?php
+/*$dir = get_template_directory().'/images/builder/models/furniture/classic';
+if (is_dir($dir)) {
+	$files = scandir($dir);
+	foreach($files as $key => $value){
+		$path = realpath($dir.DIRECTORY_SEPARATOR.$value);
+		if(!is_dir($path)) {
+			$new_name = explode('-', $value);
+			if(count($new_name) > 3) {
+				unset($new_name[0]);
+				unset($new_name[count($new_name)]);
+				$new_arr = [ $new_name[count($new_name)] ];
+				unset($new_name[count($new_name)]);
+				foreach ($new_name as $item) {
+					$new_arr[] = $item;
+				}
+				echo $dir.DIRECTORY_SEPARATOR.$value.'<br>';
+				echo $dir.DIRECTORY_SEPARATOR.implode('-', $new_arr).".png<br>";
+				rename($dir.DIRECTORY_SEPARATOR.$value, $dir.DIRECTORY_SEPARATOR.implode('-', $new_arr).".png");
+			}
+		}
+	}
+}*/
+?>
+<?php  get_footer() ?>

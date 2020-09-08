@@ -1,0 +1,81 @@
+.layout-cart {}
+
+.product-list {
+    margin-bottom: 2rem;
+}
+.product-list-item {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border: 1px solid #b1b1b1;
+}
+.product-list-item .close {
+    display: block;
+    width: 22px;
+    height: 22px;
+    border: 1px solid #333;
+    border-radius: 50%;
+    font-size: 1.25rem;
+}
+.product-list-item-remove {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+}
+.product-list-item-image {
+    padding-right: 1.5rem;
+}
+.product-list-item-image img {
+    display: block;
+    margin-bottom: 1rem;
+    max-width: 110px;
+}
+.product-list-item-info {
+    flex: 1 1 auto;
+    font-size: 0.875rem;
+}
+.product-list-item-count {
+    flex: 1 1 230px;
+    padding-left: 30px;
+    padding-right: 30px;
+    max-width: 230px;
+}
+.product-list-item-price {
+    flex: 1 1 20%;
+    max-width: 20%;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+
+.form-order {
+    display: -ms-flexbox;
+    display: flex;
+}
+.form-order-col {
+    flex: 1 1 45%;
+    max-width: 45%;
+}
+.form-order-row {
+    padding: 1rem;
+    padding-right: 5rem;
+}
+.form-order-row:not(:first-child) {
+    border-top: 1px solid #b1b1b1;
+}
+.form-order-col:not(:first-child) .form-order-row {
+    border-left: 1px solid #b1b1b1;
+}
+
+.form-order .form-control {
+    border-radius: 50rem;
+}
+
+body.category .page-main, body.single .page-main, body.page .page-main {
+    padding: 1rem;
+}
