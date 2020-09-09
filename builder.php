@@ -50,7 +50,7 @@
 						</div>
 						<div>
 							<span data-filter="origin" class="pulld">Страна-производитель</span>
-							<span data-filter="opacity" class="pulld">Светонепроницаемость</span>
+							<span data-filter="opacity" class="pulld">Светопроницаемость (%)</span>
 							<span data-filter="colorCode" data-ref="colorName" class="pulld">Цвет</span>
 							<span data-filter="texture" class="pulld">Текстура</span>
 						</div>

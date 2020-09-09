@@ -204,18 +204,6 @@ jQuery(function ($) {
 					}
 				});
 
-	document.getElementById('expandAll').addEventListener('click', function() {
-					this.dataset.pretext = this.innerText;
-					this.innerText = document.getElementById('collapseAll').innerText;
-					document.getElementById('collapseAll').hidden = false;
-					document.querySelector('div.cloth-list').style.height = 'initial';
-				});
-	document.getElementById('collapseAll').addEventListener('click', function() {
-					document.getElementById('expandAll').innerText = document.getElementById('expandAll').dataset.pretext;
-					document.getElementById('collapseAll').hidden = true;
-					document.querySelector('div.cloth-list').style.height = '';
-				});
-
 	var markUpFilter = function(host) {
 			let panel = host.previousElementSibling;
 // 			if (panel.hidden) return;
@@ -231,46 +219,50 @@ jQuery(function ($) {
 			applyFilter();
 		};
 
-	// Collect appropriate PullDown menus for filter based on existing fields
-	document.querySelectorAll('.pulld').forEach( function(ctrl) {			// Sample list filtering
-			let pull = createObj('ul',{'id':ctrl.dataset.filter+'_pd', 'className':'poplist', 'hidden':true,
-									'style.minWidth':ctrl.offsetWidth+'px', 'style.top':(ctrl.offsetTop+ctrl.offsetHeight)+'px',
-									});
-			let allof = createObj('li',{'innerText':'Показать все','className':'on','data-value':'*',
-									'onclick':function(evt) { let host=evt.target;
-																if ( host.className.match(/\bon\b/) ) return;
-																host.parentNode.querySelectorAll('li.on').forEach( function(li) { li.className = li.className.replace(/\s*on\b/g,'') } );
-																host.className += ' on';
-															}, 
-									});
-			let opt = fieldsOpt.find( function(o) { return o.name == ctrl.dataset.filter } );
-			if ( opt ) {
-				if ( opt.title.length > 0 ) ctrl.innerText = opt.title;
-				let ref = null;
-				if ( ctrl.dataset.ref ) {
-					ref = fieldsOpt.find( function(o) { return o.name == ctrl.dataset.ref } );
-				}
-				let vals = {};
-				let cnt = 0;
-				cloths[activeModelType].forEach( function(cl) {
-							if ( cl.fields[opt.field] ) {
-								vals[cl.fields[opt.field]] = cl.fields[opt.field];
-								if ( ref && cl.fields[ref.field] ) {
-									vals[cl.fields[opt.field]] = cl.fields[ref.field];
+	function filterPulldInit() {		// Collect appropriate PullDown menus for filter based on existing fields
+		document.querySelectorAll('.pulld').forEach( function(ctrl) {			// Sample list filtering
+
+				let old = document.getElementById(ctrl.dataset.filter+'_pd');
+				if ( old ) old.parentNode.removeChild(old);				// Garbage cleanup
+
+				let pull = createObj('ul',{'id':ctrl.dataset.filter+'_pd', 'className':'poplist', 'hidden':true,
+										'style.minWidth':ctrl.offsetWidth+'px', 'style.top':(ctrl.offsetTop+ctrl.offsetHeight)+'px',
+										});
+				let allof = createObj('li',{'innerText':'Показать все','className':'on','data-value':'*',
+										'onclick':function(evt) { let host=evt.target;
+																	if ( host.className.match(/\bon\b/) ) return;
+																	host.parentNode.querySelectorAll('li.on').forEach( function(li) { li.className = li.className.replace(/\s*on\b/g,'') } );
+																	host.className += ' on';
+																}, 
+										});
+				let opt = fieldsOpt.find( function(o) { return o.name == ctrl.dataset.filter } );
+				if ( opt ) {
+					if ( opt.title.length > 0 ) ctrl.innerText = opt.title;
+					let ref = null;
+					if ( ctrl.dataset.ref ) {
+						ref = fieldsOpt.find( function(o) { return o.name == ctrl.dataset.ref } );
+					}
+					let vals = {};
+					let cnt = 0;
+					cloths[activeModelType].forEach( function(cl) {
+								if ( cl.fields[opt.field] ) {
+									vals[cl.fields[opt.field]] = cl.fields[opt.field];
+									if ( ref && cl.fields[ref.field] ) {
+										vals[cl.fields[opt.field]] = cl.fields[ref.field];
+									}
 								}
-							}
-						});
-				Object.keys(vals).sort( function(a, b) { 
-												if (a.match(/^\d+$/) && a.match(/^\d+$/)) { 
-														return a-b 
-												} else { 
-													return a.charCodeAt(0) - b.charCodeAt(0)
-												} 
-										} ).forEach( function(k) {
-												let [t, v] = [k, vals[k]];
-												if ( ref ) [t, v] = [ vals[k], k ];
-												pull.appendChild( createObj('li', {'innerText':t,'data-value':v,
-															'onclick':function(evt) { let host=evt.target;
+							});
+					Object.keys(vals).sort( function(a, b) { 
+													if (a.match(/^\d+$/) && a.match(/^\d+$/)) { 
+															return a-b 
+													} else { 
+														return a.charCodeAt(0) - b.charCodeAt(0)
+													} 
+											} ).forEach( function(k) {
+													let [t, v] = [k, vals[k]];
+													if ( ref ) [t, v] = [ vals[k], k ];
+													pull.appendChild( createObj('li', {'innerText':t,'data-value':v,
+																'onclick':function(evt) { let host=evt.target;
 																						if ( host.className.match(/\bon\b/) ) {
 																							host.className = host.className.replace(/\s*on\b/g,'');
 																							if ( host.parentNode.querySelectorAll('li.on').length == 0 ) {
@@ -283,33 +275,40 @@ jQuery(function ($) {
 																						}
 																					}, 
 																			}) );
-											});
-			}
-			if ( pull.firstElementChild ) {
-				pull.insertBefore(allof, pull.firstElementChild);
-			} else {
-				pull.appendChild(allof);
-			}
-			ctrl.parentNode.insertBefore(pull, ctrl);
-			ctrl.onclick = function(evt) {
-					evt.stopImmediatePropagation();
-					let host = evt.target;
-					let panel = host.previousElementSibling;
-					if ( host.className.match(/\bon\b/) ) {
-						markUpFilter(host);
-					} else {
-						document.querySelectorAll('.pulld').forEach( markUpFilter );
-						host.innerText = host.innerText.replace(/(:\s*\d+)?/g,'');
-						panel.hidden=false;
-						host.className += ' on';
-						panel.style.left = host.offsetLeft+'px'; 
-						let diff = window.innerWidth - 20 - (getPosition(panel)[0] + panel.offsetWidth);
-						if (diff < 0) {
-							panel.style.left = (panel.offsetLeft+diff)+'px';
+												});
+				}
+				if ( pull.firstElementChild ) {
+					pull.insertBefore(allof, pull.firstElementChild);
+				} else {
+					pull.appendChild(allof);
+				}
+				ctrl.parentNode.insertBefore(pull, ctrl);
+				ctrl.onclick = function(evt) {
+						evt.stopImmediatePropagation();
+						let host = evt.target;
+						let panel = host.previousElementSibling;
+						let offPanel = function(evt) {
+											if ( evt.path.find( function(t) { return t.id == host.dataset.filter+'_pd' }) ) return;
+											markUpFilter(host);
+											document.removeEventListener('click', offPanel);
+										};
+						if ( host.className.match(/\bon\b/) ) {
+							markUpFilter(host);
+						} else {
+							document.querySelectorAll('.pulld').forEach( markUpFilter );
+							host.innerText = host.innerText.replace(/(:\s*\d+)?/g,'');
+							panel.hidden = false;
+							document.addEventListener('click', offPanel);
+							host.className += ' on';
+							panel.style.left = host.offsetLeft+'px'; 
+							let diff = window.innerWidth - 20 - (getPosition(panel)[0] + panel.offsetWidth);
+							if (diff < 0) {
+								panel.style.left = (panel.offsetLeft+diff)+'px';
+							}
 						}
-					}
-				};
-		});			// end Collect sample filter popups
+					};
+			});			// end Collect sample filter popups
+	}			//  Init pulldowns for filter
 
 	document.querySelectorAll('.order-opt').forEach( function(div) {
 			div.querySelectorAll('figure').forEach( function(opt) {
@@ -320,14 +319,6 @@ jQuery(function ($) {
 							opt.className += ' sel';
 							let varName = 'activeModel'+div.dataset.name.substr(0,1).toUpperCase()+div.dataset.name.substr(1).toLowerCase();
 							eval( varName+'="'+opt.dataset.value+'"');
-
-// console.log( varName+'="'+opt.dataset.value+'"');
-// console.log( [activeModelColor,
-// 		activeClothOpacity,
-// 		activeModelType,
-//     activeModelMount,
-//     activeModelEquip,
-// 	activeClothColors ]);
 							if ( !cloths[activeModelType] ) {
 								getAjaxCloth();
 							} else {
@@ -337,47 +328,50 @@ jQuery(function ($) {
 				});
 		});
 
-//     $("[name=type]").change(function () {
-//         let newType = this.value;
-//         $(".img-with-type").each(function () {
-//             let src = $(this).attr("src");
-//             $(this).attr("src", src.replace("builder/" + activeModelType, "builder/" + newType));
-//         });
-//         activeModelType = newType;
-//         
-//         getAjaxCloth();  
-//        
-//         
-//     });
-//     $("[name=mount]").change(function () {
-//         activeModelMount = this.value;
-// 
-//         if(activeModelMount === "flap"){
-//             $(".js-order-confirm-width-gb").closest('li').css("display","none");
-//             $(".js-order-confirm-height-gb").closest('li').css("display","none");
-//         }
-//         else{
-//             $(".js-order-confirm-width-gb").closest('li').css("display","block");
-//             $(".js-order-confirm-height-gb").closest('li').css("display","block");
-//         }
-//         
-//        
-//         updateClothList();
-//        
-//         getPrice();
-//     });
-// 	$("[name=equip]").change(function () {
-// 		activeModelEquip = this.value;
-// 		let img = $(this).closest(".builder-filter-sec").find(".img-with-type");
-// 		let src = img.attr("src");
-// 		if(activeModelEquip == "inbox") {
-// 			img.attr("src", src.replace("equip-no-box", "equip-box"));
-// 		} else {
-// 			img.attr("src", src.replace("equip-box", "equip-no-box"));
-// 		}
-// 		updateClothList();
-// 		getPrice();
-// 	});
+	var checkListComplete = function() {
+			let shown = document.querySelectorAll('div.cloth-list ul.cloth-list li.cloth-list-item:not([hidden])');
+			let last = shown[shown.length-1];
+			let swTop = document.getElementById('expandAll');
+			let swBot = document.getElementById('collapseAll');
+			let div = document.querySelector('div.cloth-list');
+			if (div.style.height !== 'initial') div.dataset.h = div.offsetHeight;
+			let expand = function() {
+					if ( !swBot.hidden ) return;
+					swTop.removeEventListener('click', expand);
+					swTop.addEventListener('click', collapse);
+					swBot.addEventListener('click', collapse);
+					div.style.height = 'initial';
+					swTop.dataset.pretext = swTop.innerText;
+					swTop.innerText = swBot.innerText;
+					swBot.hidden = false;
+				};
+			let collapse = function() {
+					if ( swBot.hidden ) return;
+					swTop.removeEventListener('click', collapse);
+					swBot.removeEventListener('click', collapse);
+					swTop.addEventListener('click', expand);
+					div.style.height = '';
+					swTop.innerText = swTop.dataset.pretext;
+					swBot.hidden = true;
+					setCloth();
+				};
+
+			swTop.className = swTop.className.replace(/\s*dis/g,'');
+console.log('LastPosition : '+(div.offsetHeight - last.offsetTop));
+			if ( !last ) {
+				collapse();
+				swTop.className += ' dis';
+			} else if ( div.style.height == 'initial' && div.dataset.h >= last.offsetTop ) {
+				collapse();
+				swTop.className += ' dis';
+			} else if ( div.offsetHeight < last.offsetTop ) {
+				swTop.removeEventListener('click', collapse);
+				swBot.removeEventListener('click', collapse);
+				swTop.addEventListener('click', expand);
+			} else {
+// 				collapse();
+			}
+		};
 
 	document.querySelectorAll('.tosort').forEach( function(ctrl) {			// Sample list soring
 			ctrl.addEventListener('click', function(evt) {
@@ -465,6 +459,7 @@ var ulSort = function() {
 	function setCloth(id) {
 		if ( !id ) id = activeCloth;
 		let active = document.getElementById('clo_'+id);
+		let div = document.querySelector('div.cloth-list');
 		let spare = document.querySelector('li.cloth-list-item:not([hidden])');
 		if (active && active.hidden) {			// Active become hidden
 			if ( spare )  {
@@ -478,14 +473,26 @@ var ulSort = function() {
 		if ( active ) {
 			document.querySelectorAll('li.cloth-list-item.active').forEach( function(l) { l.className = l.className.replace(/\s*active/g,'') });
 			active.className += ' active';
-			active.scrollIntoView(false);
 			activeCloth = active.dataset.clothId;
 			setLocation('?type='+activeModelType+'&cloth=' + activeCloth);
 			getClothData();
+
+			let dvBox = div.getBoundingClientRect();		// Place active tile into viewport
+			let liBox = active.getBoundingClientRect();
+			let [wx,wy] = [document.documentElement.scrollLeft, document.documentElement.scrollTop];		// Prevent window jerking
+			if ( dvBox.top > liBox.top ) {					// Sticks out from above?
+				active.scrollIntoView(true);
+				window.scrollTo(wx,wy);
+			} else if ( dvBox.top + div.offsetHeight < liBox.top + active.offsetHeight ) {		// Sticks out from below?
+				active.scrollIntoView(false);
+				window.scrollTo(wx,wy);
+			}
+
 			getPrice();
 		} else {
 			setLocation(document.location.origin);
 		}
+		checkListComplete();
 	}
 
 	function getClothData() {
@@ -584,6 +591,7 @@ var ulSort = function() {
     $(window).resize(buildClothGrid);
 
 	if (canvas){
+		filterPulldInit();
 		setCloth();
 	}
         
@@ -655,30 +663,15 @@ var ulSort = function() {
 					countCloth++;
 				});
 
+		document.getElementById('filterRst').click();
 		document.getElementById('countCloth').innerText = countCloth;
 		$(".builder-loading").addClass("d-none");
 		clothList.className = clothList.className.replace(/\s*d\-none/g,'');
-		
+		filterPulldInit();
 		setCloth();
 	}
 
 	function getAjaxCloth( postfix ) {
-
-// 		$.ajax({
-// 			url: "/wp-admin/admin-ajax.php",
-// 			type: "POST",
-// 			data: {
-// 				action: "getClothCurrent",
-// 				id: activeCloth,
-// 			},
-// 			beforeSend: function () {
-// 			},
-// 			success: function (data) {
-// 				cloths = data;
-// 				$activeClothUrl = cloths[activeModelType].filter(x=>x.ID == activeCloth);
-// 			}
-// 		});
-
 		$.ajax({
 			url: "/wp-admin/admin-ajax.php",
 			type: "POST",

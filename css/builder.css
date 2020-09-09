@@ -137,10 +137,15 @@
 	color:var(--z-purple, '#6d2eff');
 	cursor:pointer;
 }
-.opt-head span.filter-switch:hover {
+.opt-head span.filter-switch.dis {
+	color:var(--z-gray, '#999999');
+	cursor:default;
+}
+
+.opt-head span.filter-switch:hover:not(.dis) {
 	text-decoration:underline;
 }
-.opt-head span.filter-switch:nth-of-type(odd)::after {
+.opt-head span.filter-switch:nth-of-type(odd):not(#collapseAll)::after {
 	content:'|';
 	margin: 0px 0.5em 0px 1em;
 	color: var(--z-gray, '#999999');
@@ -404,11 +409,12 @@ ul.cloth-list {
 }
 
 li.cloth-list-item {
-    display: block;
-    padding: .3rem;
+	display: block;
+	padding: .3rem;
 	width:65px;
 	height:65px;
 	background-size:100%;
+	border: 1px solid var(--z-gray-l, '#f8f8f8');
 }
 
 .cloth-list-item.active {

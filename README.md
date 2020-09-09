@@ -1,3 +1,3 @@
 # zebradom
-## Тема zebradom_2020.ru для Wordpress
-#### Рестайлинг сайта на базе темы zebradom_soft70.ru
+## п╒п╣п╪п╟ zebradom_2020.ru п╢п╩я▐ Wordpress
+#### п═п╣я│я┌п╟п╧п╩п╦п╫пЁ я│п╟п╧я┌п╟ п╫п╟ п╠п╟п╥п╣ я┌п╣п╪я▀ zebradom_soft70.ru
