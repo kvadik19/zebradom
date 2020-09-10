@@ -2,7 +2,7 @@
 	$clothes = get_cloth($type);
 ?>
 	<script>
-		var activeCloth = <?php echo isset($_GET['cloth']) ? $_GET['cloth'] : $clothes[0]['ID'];?>;
+		var activeCloth = <?php echo isset($_GET['cloth']) ? $_GET['cloth'] : $clothes[0]['ID'];?>;		// 
 		var cloths = {'<?php echo $type ?>':<?php echo json_encode($clothes) ?>};
 		var activeModelType = '<?php echo $type ?>';
 	</script>
@@ -46,7 +46,7 @@
 						<div>
 							<span>Сортировка:</span>
 							<span data-sort="popularity" class="tosort">по популярности</span>
-							<span data-sort="class" class="tosort on fw">по цене</span>
+							<span data-sort="cat" class="tosort on fw">по цене</span>
 						</div>
 						<div>
 							<span data-filter="origin" class="pulld">Страна-производитель</span>
@@ -60,10 +60,10 @@
 						<ul class="cloth-list">
 <?php
 foreach ($clothes as $item) {
-	
-	echo '<li class="cloth-list-item" id="clo_',$item['ID'],'" style="background-image:url(\'',$item['gallery'][0],'\')" ';
-	echo 'title="',$item['post_title'],'" data-cloth-id="',$item['ID'],'" data-texture-lvt="',$item['texture_lvt'],'" data-texture-mini="',$item['texture_mini'],'" ';
-	echo 'data-texture-uni="',$item['texture_uni'],'" data-cat="',$item['fields']['категория'],'" data-short-title="',$item['post_title'],'" data-title="',$item['post_title'],'" ';
+	$short_title = preg_replace('/\s*зебра\s*/i', '', $item['post_title']);
+	echo '<li class="cloth-list-item" id="clo_',$item['ID'],'" style="background-image:url(\'',$item['gallery'][0],'\')"';		//  data-toggle="tooltip"
+	echo 'title="',$short_title,'" data-cloth-id="',$item['ID'],'" data-texture-lvt="',$item['texture_lvt'],'" data-texture-mini="',$item['texture_mini'],'" ';
+	echo 'data-texture-uni="',$item['texture_uni'],'" data-cat="',$item['fields']['категория'],'" data-short-title="',$short_title,'" data-title="',$item['post_title'],'" ';
 	echo 'data-vendor-code="',$item['vendor_code'][0],'" data-color-cloth="',$item['fields']['цвет'],'">';
 	echo '<i aria-hidden="true" class="clo-info"><img src="',bloginfo('template_url'),'/images/icons/findglass.svg" /></i>';
 	echo '<input hidden type="radio" class="form-check-input" name="cloth" value="',$item['ID'],'" />';

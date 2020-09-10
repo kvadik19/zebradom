@@ -4,9 +4,9 @@
  */
 
 jQuery(document).ready(function ($) {
-    $('body').tooltip({
-        selector: '[data-toggle=tooltip]'
-    });
+	$('body').tooltip({
+			selector: '[data-toggle=tooltip]'
+		});
 
     $.ajaxSetup({dataType: 'json'});
 
@@ -34,37 +34,6 @@ jQuery(document).ready(function ($) {
     jQuery("#lightgallery").lightGallery(); 
     
 });
-
-function elementInViewport(el,parent) {
-	let top = el.offsetTop;
-	let left = el.offsetLeft;
-	let width = el.offsetWidth;
-	let height = el.offsetHeight;
-
-	let offY = window.pageYOffset;
-	let offX = window.pageXOffset;
-	let offH = window.innerHeight;
-	let offW = window.innerWidth;
-
-	while(el.offsetParent) {
-		el = el.offsetParent;
-		top += el.offsetTop;
-		left += el.offsetLeft;
-	}
-
-	if (parent) {
-		offY = parent.offsetTop
-		offX = parent.offsetLeft;
-		offH = parent.offsetHeight;
-		offW = parent.offsetWidth;
-	}
-	return (
-		top >= offY
-			&& left >= offX
-			&& (top + height) <= (offY + offH) 
-			&& (left + width) <= (offX + offW)
-	);
-}
 
 function getPosition ( element ) {
 	let offsetLeft = 0, offsetTop = 0;

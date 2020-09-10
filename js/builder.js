@@ -130,7 +130,7 @@ jQuery(function ($) {
 			{'name':'pictLVT', 'field':'изображение_lvt', 'title':''},
 			{'name':'pictMINI', 'field':'изображение_mini', 'title':''},
 			{'name':'pictUNI', 'field':'изображение_uni', 'title':''},
-			{'name':'class', 'field':'категория', 'title':'Категория'},
+			{'name':'cat', 'field':'категория', 'title':'Категория'},
 			{'name':'waterproof', 'field':'пригодность_для_влажных_помещений', 'title':''},
 			{'name':'opacity', 'field':'прозрачность', 'title':''},
 			{'name':'certified', 'field':'сертификация', 'title':''},
@@ -357,26 +357,21 @@ jQuery(function ($) {
 				};
 
 			swTop.className = swTop.className.replace(/\s*dis/g,'');
-console.log('LastPosition : '+(div.offsetHeight - last.offsetTop));
-			if ( !last ) {
-				collapse();
-				swTop.className += ' dis';
-			} else if ( div.style.height == 'initial' && div.dataset.h >= last.offsetTop ) {
+
+			if ( !last || div.dataset.h >= last.offsetTop ) {		// div.style.height == 'initial' && 
 				collapse();
 				swTop.className += ' dis';
 			} else if ( div.offsetHeight < last.offsetTop ) {
 				swTop.removeEventListener('click', collapse);
 				swBot.removeEventListener('click', collapse);
 				swTop.addEventListener('click', expand);
-			} else {
-// 				collapse();
 			}
 		};
 
 	document.querySelectorAll('.tosort').forEach( function(ctrl) {			// Sample list soring
 			ctrl.addEventListener('click', function(evt) {
+				let dir;		// Sort direction
 				if ( ctrl.className.match(/\bon\b/) ) {
-					let dir;
 					if ( ctrl.className.match(/\bfw\b/) ) {
 						ctrl.className = ctrl.className.replace(/(\s*fw\s*)/g,' bw');
 						dir = 'bw';
@@ -387,37 +382,36 @@ console.log('LastPosition : '+(div.offsetHeight - last.offsetTop));
 					ctrl.dataset.presort = dir;
 				} else {
 					ctrl.parentNode.querySelectorAll('.tosort').forEach(function(div) { div.className = div.className.replace(/\s*(on|[bf]w)/g,'')});
-					let dir = 'fw';
+					dir = 'fw';
 					if ( ctrl.dataset.presort ) dir = ctrl.dataset.presort;
 					ctrl.className += ' on '+dir;
 					ctrl.dataset.presort = dir;
 				}
 				// Call sorting procedure HERE!
-				// reference to controls dataset.sort and classname fw/bw, e.q. forward/backward 
+				// referenced to controls dataset.sort and classname fw/bw, e.q. forward/backward 
+				fireSort(ctrl.dataset.sort, dir);
+				setCloth();
 				//
 			});
 		});
 
-var ulSort = function() {
-  var nodeList = document.querySelectorAll('li');
-  var itemsArray = [];
-  var parent = nodeList[0].parentNode;
-  for (var i = 0; i < nodeList.length; i++) {    
-    itemsArray.push(parent.removeChild(nodeList[i]));
-  }
-  itemsArray.sort(function(nodeA, nodeB) {
-      var textA = nodeA.querySelector('div:nth-child(2)').textContent;
-      var textB = nodeB.querySelector('div:nth-child(2)').textContent;
-      var numberA = parseInt(textA);
-      var numberB = parseInt(textB);
-      if (numberA < numberB) return -1;
-      if (numberA > numberB) return 1;
-      return 0;
-    })
-    .forEach(function(node) {
-      parent.appendChild(node)
-    });
-}
+	var fireSort = function(fld, ord) {
+			let list = document.querySelectorAll('li.cloth-list-item');
+			let liBox = [];
+			let ul = list[0].parentNode;
+			for (let i = 0; i < list.length; i++) {    
+				liBox.push(ul.removeChild(list[i]));
+			}
+			liBox.sort(function(a, b) {
+					let aVal = Number.isNaN(a.dataset[fld]*1) ? 0 : a.dataset[fld]*1;			// Must be a Numeric!
+					let bVal = Number.isNaN(b.dataset[fld]*1) ? 0 : b.dataset[fld]*1;			// Must be a Numeric!
+					let diff = ord.match(/^f/i) ? aVal - bVal : bVal - aVal;
+					return diff;
+				})
+				.forEach(function(li) {
+						ul.appendChild(li)
+					});
+		};
 
 
 	$(document).on('click', 'li.cloth-list-item', function (e) {
@@ -584,36 +578,39 @@ var ulSort = function() {
 // 
 //     });
 
-    $(".js-cloth-list-open").on("click", function () {
-        buildClothGrid();
-        return false;
-    });
-    $(window).resize(buildClothGrid);
-
+//     $(".js-cloth-list-open").on("click", function () {
+//         buildClothGrid();
+//         return false;
+//     });
+//     $(window).resize(buildClothGrid);
+// 
 	if (canvas){
 		filterPulldInit();
+		// Initial list sorting call
+// 		let ord = document.querySelector('.tosort.on');
+// 		if (ord) fireSort(ord.dataset.sort, ord.className.match(/\b([fb]w)\b/)[1]);
 		setCloth();
 	}
         
 
-	function buildClothGrid() {
-		let cl = $(".js-cloth-list");
-		if (cl.find("li").length > 0) {
-			let li = $("li", cl).removeClass("right").removeClass("bottom");
-
-			let per_line_x = Math.floor(cl.width() / li.outerWidth()),
-				per_line_y = Math.floor(cl.height() / li.outerHeight());
-
-			$("li:nth-child(" + per_line_x + "n)", cl).addClass("right");
-			$("li:nth-child(" + per_line_x + "n-1)", cl).addClass("right");
-
-			let botStart = (per_line_y - 2) * per_line_x;
-			let botEnd = (per_line_y * per_line_x);
-			for (let n = botStart; n < botEnd; n++) {
-				$("li:nth-child(" + (n + 1) + ")", cl).addClass("bottom");
-			}
-		}
-	}
+// 	function buildClothGrid() {
+// 		let cl = $(".js-cloth-list");
+// 		if (cl.find("li").length > 0) {
+// 			let li = $("li", cl).removeClass("right").removeClass("bottom");
+// 
+// 			let per_line_x = Math.floor(cl.width() / li.outerWidth()),
+// 				per_line_y = Math.floor(cl.height() / li.outerHeight());
+// 
+// 			$("li:nth-child(" + per_line_x + "n)", cl).addClass("right");
+// 			$("li:nth-child(" + per_line_x + "n-1)", cl).addClass("right");
+// 
+// 			let botStart = (per_line_y - 2) * per_line_x;
+// 			let botEnd = (per_line_y * per_line_x);
+// 			for (let n = botStart; n < botEnd; n++) {
+// 				$("li:nth-child(" + (n + 1) + ")", cl).addClass("bottom");
+// 			}
+// 		}
+// 	}
 
 	function updateClothList() {
 		let countCloth = 0;
@@ -642,17 +639,18 @@ var ulSort = function() {
 // 			if (cloth.fields["изображение_" + model] === undefined || cloth.fields["изображение_" + model] === false) {
 // 				return;
 // 			}
-// 			cloth.title = (cloth.post_title).replace("зебра", "");//(cloth.post_title).replace(/[^0-9]/gim, "");
+					let short_title = cloth.post_title.replace(/\s*зебра\s*/gi, '');//(cloth.post_title).replace(/[^0-9]/gim, "");
 			
 					let li = createObj('li', {'className':'cloth-list-item', 'id':'clo_'+cloth.ID,
 										'style.backgroundImage':'url(\''+cloth.gallery[0]+'\')',
-										'title':cloth.title,
+										'title':short_title,
+// 										'data-toggle':'tooltip',
 										'data-cloth-id':cloth.ID,
 										'data-texture-lvt':cloth.texture_lvt,
 										'data-texture-mini':cloth.texture_mini,
 										'data-texture-uni':cloth.texture_uni,
 										'data-cat':cloth.fields['категория'],
-										'data-short-title':cloth.title,
+										'data-short-title':short_title,
 										'data-title':cloth.post_title,
 										'data-vendor-code':cloth.vendor_code,
 										'data-color-cloth':cloth.fields['цвет']
