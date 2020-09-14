@@ -142,7 +142,7 @@ jQuery(function ($) {
 			{'name':'colorCode', 'field':'цвет_для_фильтра', 'title':''},
 			{'name':'width', 'field':'ширина_рулона', 'title':''},	
 			{'name':'motive', 'field':'тема_рисунка', 'title':''},			// Not implemented yet!
-			{'name':'popularity', 'field':'популярность', 'title':''},			// Not implemented yet!
+			{'name':'popularity', 'field':'popularity', 'title':'Популярность'},			// Since Sept, 14, 2020
 		];
 
 	var applyFilter = function() {
@@ -317,18 +317,23 @@ jQuery(function ($) {
 							let sel = div.querySelector('.sel');
 							sel.className = sel.className.replace(/\s*sel/g,'');
 							opt.className += ' sel';
+// 							'type' => 'activeModelType', etc.
 							let varName = 'activeModel'+div.dataset.name.substr(0,1).toUpperCase()+div.dataset.name.substr(1).toLowerCase();
 							eval( varName+'="'+opt.dataset.value+'"');
-							if ( !cloths[activeModelType] ) {
-								getAjaxCloth();
+							if ( div.dataset.name.match(/type$/i) ) {		// Cloth Type changed?
+								if ( !cloths[activeModelType] ) {
+									getAjaxCloth();
+								} else {
+									updateClothList();
+								}
 							} else {
-								updateClothList();
+								setCloth();
 							}
 						});
 				});
 		});
 
-	var checkListComplete = function() {
+	var checkListComplete = function() {			// Switch of size of sample list
 			let shown = document.querySelectorAll('div.cloth-list ul.cloth-list li.cloth-list-item:not([hidden])');
 			let last = shown[shown.length-1];
 			let swTop = document.getElementById('expandAll');
@@ -351,6 +356,7 @@ jQuery(function ($) {
 					swBot.removeEventListener('click', collapse);
 					swTop.addEventListener('click', expand);
 					div.style.height = '';
+					div.scrollIntoView(false);
 					swTop.innerText = swTop.dataset.pretext;
 					swBot.hidden = true;
 					setCloth();
@@ -368,7 +374,7 @@ jQuery(function ($) {
 			}
 		};
 
-	document.querySelectorAll('.tosort').forEach( function(ctrl) {			// Sample list soring
+	document.querySelectorAll('.tosort').forEach( function(ctrl) {			// Sample list sorting
 			ctrl.addEventListener('click', function(evt) {
 				let dir;		// Sort direction
 				if ( ctrl.className.match(/\bon\b/) ) {
@@ -388,7 +394,7 @@ jQuery(function ($) {
 					ctrl.dataset.presort = dir;
 				}
 				// Call sorting procedure HERE!
-				// referenced to controls dataset.sort and classname fw/bw, e.q. forward/backward 
+				// referenced to controls dataset.sort and className fw/bw, e.q. forward/backward 
 				fireSort(ctrl.dataset.sort, dir);
 				setCloth();
 				//
@@ -550,40 +556,6 @@ jQuery(function ($) {
     /**
      * Clothes
      */
-// // // //	//	Obsoleted call
-//     let activeClothOpacity = $("[name=opacity]:checked").val();
-//     let activeClothColors = [];
-//     $("[name=color]:checked").each(function () {
-//         activeClothColors.push($(this).val());
-//     });
-//     $("[name=opacity]").change(function () {
-//         activeClothOpacity = this.value;
-//         updateClothList();
-//     });
-//     $("[name=color]").change(function () {
-//         activeClothColors = [];
-//         $("[name=color]:checked").each(function () {
-//             activeClothColors.push($(this).val());
-//         });
-//         updateClothList();
-//     });
-//     $(document).on("click", ".cloth-info-thumb", function () {
-//         let src = $(this).find("img").attr("src");
-//         let full = $(".cloth-info-full-image .zoom");
-//         full.attr("src", src);
-//         //full.parent().attr('href', src);
-//         $(this).parent().find(".cloth-info-thumb").removeClass("active");
-//         $(this).addClass("active");
-//         imageZoom("clothImg", "clothImgResult");
-// 
-//     });
-
-//     $(".js-cloth-list-open").on("click", function () {
-//         buildClothGrid();
-//         return false;
-//     });
-//     $(window).resize(buildClothGrid);
-// 
 	if (canvas){
 		filterPulldInit();
 		// Initial list sorting call
@@ -592,25 +564,6 @@ jQuery(function ($) {
 		setCloth();
 	}
         
-
-// 	function buildClothGrid() {
-// 		let cl = $(".js-cloth-list");
-// 		if (cl.find("li").length > 0) {
-// 			let li = $("li", cl).removeClass("right").removeClass("bottom");
-// 
-// 			let per_line_x = Math.floor(cl.width() / li.outerWidth()),
-// 				per_line_y = Math.floor(cl.height() / li.outerHeight());
-// 
-// 			$("li:nth-child(" + per_line_x + "n)", cl).addClass("right");
-// 			$("li:nth-child(" + per_line_x + "n-1)", cl).addClass("right");
-// 
-// 			let botStart = (per_line_y - 2) * per_line_x;
-// 			let botEnd = (per_line_y * per_line_x);
-// 			for (let n = botStart; n < botEnd; n++) {
-// 				$("li:nth-child(" + (n + 1) + ")", cl).addClass("bottom");
-// 			}
-// 		}
-// 	}
 
 	function updateClothList() {
 		let countCloth = 0;
@@ -650,6 +603,7 @@ jQuery(function ($) {
 										'data-texture-mini':cloth.texture_mini,
 										'data-texture-uni':cloth.texture_uni,
 										'data-cat':cloth.fields['категория'],
+										'data-popularity':cloth.fields['popularity'] || '0',
 										'data-short-title':short_title,
 										'data-title':cloth.post_title,
 										'data-vendor-code':cloth.vendor_code,
@@ -665,6 +619,10 @@ jQuery(function ($) {
 		document.getElementById('countCloth').innerText = countCloth;
 		$(".builder-loading").addClass("d-none");
 		clothList.className = clothList.className.replace(/\s*d\-none/g,'');
+
+		let ord = document.querySelector('.tosort.on');
+		if (ord) fireSort(ord.dataset.sort, ord.className.match(/\b([fb]w)\b/)[1]);
+
 		filterPulldInit();
 		setCloth();
 	}

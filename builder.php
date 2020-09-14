@@ -33,7 +33,7 @@
 		<div class="builder-part builder-right">
 			<div class="opt-list">
 				<div class="opt-row">
-					<div class="opt-head" id="listInfo">
+					<div class="opt-head">
 						<strong>Подбери ткань</strong>&nbsp;<span id="countCloth"><?php echo count($clothes) ?></span> в ассортименте:
 						<span id="expandAll" class="filter-switch expand-list">Показать все ткани</span>
 						<span id="filterRst" class="filter-switch" hidden>Очистить фильтры</span><!-- &#10005; -->
@@ -49,10 +49,10 @@
 							<span data-sort="cat" class="tosort on fw">по цене</span>
 						</div>
 						<div>
-							<span data-filter="origin" class="pulld">Страна-производитель</span>
-							<span data-filter="opacity" class="pulld">Светопроницаемость (%)</span>
-							<span data-filter="colorCode" data-ref="colorName" class="pulld">Цвет</span>
-							<span data-filter="texture" class="pulld">Текстура</span>
+							<span data-filter="origin" class="pulld multi">Страна-производитель</span>
+							<span data-filter="opacity" class="pulld multi">Светопроницаемость (%)</span>
+							<span data-filter="colorCode" data-ref="colorName" class="pulld multi">Цвет</span>
+							<span data-filter="texture" class="pulld multi">Текстура</span>
 						</div>
 					</div>
 					<div class="cloth-list">
@@ -64,9 +64,10 @@ foreach ($clothes as $item) {
 	echo '<li class="cloth-list-item" id="clo_',$item['ID'],'" style="background-image:url(\'',$item['gallery'][0],'\')"';		//  data-toggle="tooltip"
 	echo 'title="',$short_title,'" data-cloth-id="',$item['ID'],'" data-texture-lvt="',$item['texture_lvt'],'" data-texture-mini="',$item['texture_mini'],'" ';
 	echo 'data-texture-uni="',$item['texture_uni'],'" data-cat="',$item['fields']['категория'],'" data-short-title="',$short_title,'" data-title="',$item['post_title'],'" ';
-	echo 'data-vendor-code="',$item['vendor_code'][0],'" data-color-cloth="',$item['fields']['цвет'],'">';
-	echo '<i aria-hidden="true" class="clo-info"><img src="',bloginfo('template_url'),'/images/icons/findglass.svg" /></i>';
-	echo '<input hidden type="radio" class="form-check-input" name="cloth" value="',$item['ID'],'" />';
+	echo 'data-vendor-code="',$item['vendor_code'][0],'" data-color-cloth="',$item['fields']['цвет'],'" ';
+	echo 'data-popularity="',isset($item['fields']['popularity']) ? $item['fields']['popularity'] : '0','"',">\n";
+	echo '<i aria-hidden="true" class="clo-info"><img src="',bloginfo('template_url'),'/images/icons/findglass.svg" /></i>',"\n";
+	echo '<input hidden type="radio" class="form-check-input" name="cloth" value="',$item['ID'],'" />',"\n";
 	echo "</li>\n";
 }
 ?>
@@ -76,7 +77,7 @@ foreach ($clothes as $item) {
 						<span id="collapseAll" class="filter-switch expand-list" hidden>Свернуть список</span>
 					</div>
 				</div>		<!--opt-row -->
-				<div class="opt-row">
+				<div class="opt-row"><?php // Options switcher ?>
 					<p>Подружись с солнцем, управляй светом, преврати день в ночь. <b>Закажи шторы на сайте прямо сейчас!</b>
 					</p>
 					<div id="options" class="opt-head">
@@ -120,61 +121,53 @@ foreach ($clothes as $item) {
 							</figure>
 						</div>
 					</div>
+					<div class="opt-head ruler">
+						&nbsp;
+					</div>
+				</div>
+				<div class="opt-row"><?php // Dimensions inputs ?>
+					<p>
+					<b>Размеры, количество, управление</b><br/>
+					Перед простановкой размеров внимательно ознакомьтесь с инструкцией по замеру</p>
+					<div class="opt-head">
+						<div class="order-input" data-name="size_width">
+							<label for="size_width">Ширина, см</label>
+							<input id="size_width" type="text" value="115"/>
+						</div>
+						<div class="order-input" data-name="size_height">
+							<label for="size_height">Высота, см</label>
+							<input id="size_height" type="text" value="120"/>
+						</div>
+						<div class="order-input" data-name="count">
+							<label for="count">Количество</label>
+							<div class="spin">
+								<span class="spin">&ndash;</span>
+								<input id="count" type="text" class="spin" value="1"/>
+								<span class="spin">+</span>
+							</div>
+						</div>
+						<div class="order-input" data-name="control">
+							<label for="control">Управление</label>
+							<span id="control" class="pulld" data-value="electro">дистанционное</span>
+							<span hidden data-owner="control" data-value="manual">ручное</span>
+						</div>
+						<div class="order-input">
+							<p>Как правильно <br>
+								сделать замеры?
+								<img src="<?php echo get_template_directory_uri() ?>/images/icons/icon-doc.svg" class="icon" />
+								<img src="<?php echo get_template_directory_uri() ?>/images/icons/icon-play.svg" class="icon" />
+							</p>
+						</div>
+					</div>
 				</div>
 			</div>		<!--opt-list-->
 		</div>		<!--builder-right-->
-		<div class="builder-wide">
-		<?php // echo '<code>'.var_export($clothes).'</code>' ?>
-		
-<div class="shop-params-body d-flex flex-column flex-md-row">
-	<div class="shop-params-col">
-		<div class="form-group">
-			<label>Ширина:</label>
-			<div class="input-group">
-				<div class="input-group-prepend">
-					<span class="input-group-text js-width-range">Min ... см<br>Max ... см</span>
-				</div>
-				<input type="text" class="form-control" name="size_width" value="115">
-				<div class="input-group-append">
-					<span class="input-group-text">см</span>
-				</div>
-			</div>
-		</div>
 	</div>
-	<div class="shop-params-col">
-		<div class="form-group">
-			<label>Высота:</label>
-			<div class="input-group">
-				<div class="input-group-prepend">
-					<span class="input-group-text js-height-range">Min ... см<br>Max ... см</span>
-				</div>
-				<input type="text" class="form-control" name="size_height" value="115">
-				<div class="input-group-append">
-					<span class="input-group-text">см</span>
-				</div>
-			</div>
-		</div>
+	<div id="shop-order" class="bar-wide">
+	<div class="builder-wide">
+	<?php // echo '<code>'.var_export($clothes).'</code>' ?>
+	
 	</div>
-	<div class="shop-params-col">
-		<div class="form-group text-md-center">
-			<label>Количество:</label>
-			<div class="input-group">
-				<div class="input-group-prepend">
-					<button class="btn btn-link js-shop-count-down"
-							data-target="shop-count-value"
-							type="button"><i class="icon icon-arrow-left"></i></button>
-				</div>
-				<input type="text" class="form-control" value="1" name="count" id="shop-count-value">
-				<div class="input-group-append">
-					<button class="btn btn-link js-shop-count-up"
-							data-target="shop-count-value"
-							type="button"><i class="icon icon-arrow-right"></i></button>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-		</div>
 	</div>
 	<?php // include('buildermod.php') ?>
 

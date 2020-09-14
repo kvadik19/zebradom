@@ -37,7 +37,7 @@
 }
 
 .builder-left {
-	max-width: 360px;
+	max-width: 350px;
 /*	justify-content: flex-end;
 	flex-grow:1;*/
 }
@@ -45,6 +45,7 @@
 	margin-left:2em;
 	justify-content: flex-start;
 	flex-grow:2;
+	max-width:calc(100% - 350px - 2em);
 }
 
 .opt-list {
@@ -151,7 +152,7 @@
 	color: var(--z-gray, '#999999');
 }
 
-.opt-head#filterCloth span.pulld {
+/*.opt-head#filterCloth*/ span.pulld {
 	height:2.2em;
 	border:1px solid var(--z-gray-m, '#dddddd');
 	border-radius:0.5em;
@@ -159,30 +160,30 @@
 	margin:0px 0.5em;
 	cursor:pointer;
 }
-.opt-head#filterCloth span.pulld::after {
+/*.opt-head#filterCloth*/ span.pulld::after {
 	content:'\2335';
 	margin-left:0.5em;
 	vertical-align:0.2em;
 	display:inline-block;
 }
-.opt-head#filterCloth span.pulld.on {
+/*.opt-head#filterCloth*/ span.pulld.on {
 	border:1px solid var(--z-purple, '#6d2eff');
 	line-height:1.9;
 }
-.opt-head#filterCloth span.pulld.on::after {
+/*.opt-head#filterCloth*/ span.pulld.on::after {
 	transform:rotate(180deg);
 	vertical-align:-0.3em;
 }
-.opt-head#filterCloth span.pulld.apply {
+/*.opt-head#filterCloth*/ span.pulld.apply {
 /* 	color:var(--z-gray-d, '#333333'); */
 	background-color:var(--z-yellow, '#ffd52e');
 }
-.opt-head#filterCloth span.pulld.apply:not(.on)::after {
+/*.opt-head#filterCloth*/ span.pulld.apply:not(.on)::after {
 	content:'' !important;
 	display:inline !important;
 }
 
-.opt-head#filterCloth ul.poplist {
+/*.opt-head#filterCloth*/ ul.poplist {
 	position:absolute;
 	margin-top:0.2em;
 	max-height:20em;
@@ -204,13 +205,13 @@
 	display:inline-block;
 }*/
 
-.opt-head#filterCloth ul.poplist li {
+/*.opt-head#filterCloth*/ ul.poplist li {
 	white-space:nowrap;
 	cursor:pointer;
 	margin:0.2em 0px;
 	padding:0px 0.5em;
 }
-.opt-head#filterCloth ul.poplist li::before {
+/*.opt-head#filterCloth*/ ul.poplist li::before {
 	content:' ';
 	display:inline-block;
 	border:1px solid var(--z-gray-m, '#dddddd');
@@ -220,7 +221,7 @@
 	width:1em;
 	height:1em;
 }
-.opt-head#filterCloth ul.poplist li.on::before {
+/*.opt-head#filterCloth*/ ul.poplist li.on::before {
 	content:'\2714'	;
 	display:inline-block;
 	color:var(--body-back, '#ffffff');
@@ -233,7 +234,7 @@
 	width:1em;
 	height:1em;
 }
-.opt-head#filterCloth ul.poplist li:hover {
+/*.opt-head#filterCloth*/ ul.poplist li:hover {
 	background-color:var(--z-purple, '#6d2eff');
 	color:var(--body-back, '#ffffff');
 }
@@ -253,8 +254,52 @@
 .opt-row p {
 	width:100%;
 }
+.order-input {
+	display:inline-flex;
+	flex-direction:column;
+	margin-right:1.5em;
+}
+.order-input:last-of-type {
+	margin-right:0px;
+	float:right;
+}
+.order-input label {
+	font-size:80%;
+	text-indent:0.5em;
+}
+.order-input input[type="text"] {
+	width:5em;
+	height:2.2em;
+	padding:0px 0.5em;
+	border-radius:0.5em;
+	border:1px solid var(--z-gray-m, '#dddddd');
+}
+.order-input input[type="text"]:focus {
+	border-radius:0.5em;
+	border-color:var(--z-gray-m, '#dddddd');
+    outline-color: var(--z-gray-m, '#dddddd');
+	outline: 0px;
+    outline-style: solid;
+    outline-width: 0px;
+}
+span.spin {
+	color: var(--z-purple, '#6d2eff');
+	background-color: var(--z-purple-l,'#f6f3ff');
+	width:1em;
+	height:1em;
+	border-radius:0.5em;
+	text-align:center;
+	display: inline-block;
+	line-height: 0.8;
+	font-size: 120%;
+	vertical-align: -15%;
+	cursor:pointer;
+}
+.order-input input[type="text"].spin {
+	width:3em;
+	text-align:center;
+}
 .order-opt {
-/* 	flex-direction:row; */
 	min-width:30%
 }
 .order-opt:nth-of-type(even) {
@@ -327,58 +372,10 @@ div#builder-preview {
 	height:100%;
 }
 
-/*.builder-filter {
-    display: -ms-flexbox;
-    display: flex;
-    flex-wrap: wrap;
-    flex-grow: 1;
-    padding-left: 0.3125rem;
-    padding-right: 0.3125rem;
+div#shop-order {
+	background-color: var(--z-purple-l,'#f6f3ff');
+	height:4em;
 }
-
-.builder-filter-sec {
-    flex-grow: 1;
-    margin-bottom: 1rem;
-}
-
-.builder-filter-sec-title {
-    margin-bottom: 0.325rem;
-    font-weight: 700;
-    font-size: 1.25rem;
-}
-
-.builder-filter-sec-title span {
-    color: #b90b0b;
-}
-
-.builder-filter-sec-body {
-    display: -ms-flexbox;
-    display: flex;
-    flex: 1;
-    margin-bottom: 1rem;
-}
-
-.builder .form-check .form-check-label {
-    font-weight: 700;
-}
-
-
-.builder .form-check .form-check-label.mount-open {
-    display: flex;
-    align-items: center;
-    justify-content: start;
-}
-
-.builder .form-check .form-check-label.mount-open img {
-	float: left;
-	margin-right: 5px;
-}
-
-.builder .form-check .form-check-input:checked + .form-check-label {
-    color: #01bf21;
-}
-
-*/
 
 /* CLOTH */
 @media (min-width: 1400px) {
