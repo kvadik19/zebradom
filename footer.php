@@ -1,4 +1,3 @@
-	</div>
 </section>
 <?php
 	$post_id = 6869;
@@ -15,72 +14,72 @@
 	include( 'bar-bot.php' );
 ?>
 
-		<div class="modal fade" id="callback" tabindex="-1" role="dialog" aria-hidden="true">
-			<div class="modal-dialog modal-dialog-centered" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h4 class="modal-title">Обратный звонок</h4>
-						<button type="button" id="close-callback" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">×</span>
-						</button>
-					</div>
-					<div class="modal-body d-none-call">
-						<?phpdo_shortcode('[contact-form-7 id="4108" title="Форма обратной связи"]')?>
+	<div class="modal fade" id="callback" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">Обратный звонок</h4>
+					<button type="button" id="close-callback" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">×</span>
+					</button>
+				</div>
+				<div class="modal-body d-none-call">
+					<?phpdo_shortcode('[contact-form-7 id="4108" title="Форма обратной связи"]')?>
 
-					</div>
 				</div>
 			</div>
 		</div>
-		<div class="modal fade" id="master" tabindex="-1" role="dialog" aria-hidden="true">
-			<div class="modal-dialog modal-dialog-centered" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h4 class="modal-title">Заказать мастера</h4>
-						<button type="button" id="close-master" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">×</span>
-						</button>
-					</div>
-					<div class="modal-body d-none-call">
-						<?phpdo_shortcode('[contact-form-7 id="5165" title="Форма заказа мастера"]')?>
-					</div>
+	</div>
+	<div class="modal fade" id="master" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">Заказать мастера</h4>
+					<button type="button" id="close-master" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">×</span>
+					</button>
+				</div>
+				<div class="modal-body d-none-call">
+					<?phpdo_shortcode('[contact-form-7 id="5165" title="Форма заказа мастера"]')?>
 				</div>
 			</div>
 		</div>
-		<!-- Photoswipe -->
-		<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
-			<div class="pswp__bg"></div>
-			<div class="pswp__scroll-wrap">
-				<div class="pswp__container">
-					<div class="pswp__item"></div>
-					<div class="pswp__item"></div>
-					<div class="pswp__item"></div>
-				</div>
-				<div class="pswp__ui pswp__ui--hidden">
-					<div class="pswp__top-bar">
-						<div class="pswp__counter"></div>
-						<button class="pswp__button pswp__button--close" title="Закрыть (Esc)"></button>
-						<button class="pswp__button pswp__button--share" title="Поделиться"></button>
-						<button class="pswp__button pswp__button--fs" title="Полноэкранный режим"></button>
-						<button class="pswp__button pswp__button--zoom" title="Масштаб увеличить/уменьшить"></button>
-						<div class="pswp__preloader">
-							<div class="pswp__preloader__icn">
-								<div class="pswp__preloader__cut">
-									<div class="pswp__preloader__donut"></div>
-								</div>
+	</div>
+	<!-- Photoswipe -->
+	<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="pswp__bg"></div>
+		<div class="pswp__scroll-wrap">
+			<div class="pswp__container">
+				<div class="pswp__item"></div>
+				<div class="pswp__item"></div>
+				<div class="pswp__item"></div>
+			</div>
+			<div class="pswp__ui pswp__ui--hidden">
+				<div class="pswp__top-bar">
+					<div class="pswp__counter"></div>
+					<button class="pswp__button pswp__button--close" title="Закрыть (Esc)"></button>
+					<button class="pswp__button pswp__button--share" title="Поделиться"></button>
+					<button class="pswp__button pswp__button--fs" title="Полноэкранный режим"></button>
+					<button class="pswp__button pswp__button--zoom" title="Масштаб увеличить/уменьшить"></button>
+					<div class="pswp__preloader">
+						<div class="pswp__preloader__icn">
+							<div class="pswp__preloader__cut">
+								<div class="pswp__preloader__donut"></div>
 							</div>
 						</div>
 					</div>
-					<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
-						<div class="pswp__share-tooltip"></div>
-					</div>
-					<button class="pswp__button pswp__button--arrow--left" title="Назад (стрелка влево)"></button>
-					<button class="pswp__button pswp__button--arrow--right" title="Далее (стрелка вправо)"></button>
-					<div class="pswp__caption">
-						<div class="pswp__caption__center"></div>
-					</div>
+				</div>
+				<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+					<div class="pswp__share-tooltip"></div>
+				</div>
+				<button class="pswp__button pswp__button--arrow--left" title="Назад (стрелка влево)"></button>
+				<button class="pswp__button pswp__button--arrow--right" title="Далее (стрелка вправо)"></button>
+				<div class="pswp__caption">
+					<div class="pswp__caption__center"></div>
 				</div>
 			</div>
 		</div>
+	</div>
 <?php
 		if(is_home() || is_page_template('page-index') || is_front_page()) {
 ?>

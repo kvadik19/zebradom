@@ -1,4 +1,4 @@
-<div class="bar-wide">
+<div id="bar-top" class="bar-wide">
 	<div class="menubar">
 		<div class="header">
 			<div class="menu-spacer"><?php echo $expand_button ?>

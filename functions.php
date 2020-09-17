@@ -130,7 +130,7 @@ function log_write( $logstr ) {
 	$name = get_template_directory();
 	$name = substr($name, strrpos($name, '/')+1);
 	$log = fopen("$path/log/$name.log", 'a');
-	fwrite( $log, date('Y-m-d H:i:s', time())."\t$logstr\n");
+	fwrite( $log, date('Y-m-d H:i:s', time())."\t$logstr\n" );
 	fclose($log);
 }
 
@@ -292,29 +292,28 @@ $def_links = [
 		],
 	];
 
-function enqueue_styles() {
+function enqueue_scripts() {
 	global $def_links;
 
 	$page_template = get_page_template();
 	$page_template = substr($page_template, strrpos($page_template, '/')+1);
 
-	$version = filemtime( get_stylesheet_directory() );
+	$version = filemtime( get_stylesheet_directory().'/css' );
 	foreach ( $def_links['global']['style'] as $key => $def ) {
 		wp_enqueue_style($key, $def, [], $version);
 	}
-// 	echo get_page_template();
-// 	echo "<br>$page_template";
+// log_write("LOAD RESOURCES FOR: $page_template IN ".get_stylesheet_directory() );
+
+	// Stylesheets
+
 	if ( $def_links[$page_template] ) {
 		foreach ( $def_links[$page_template]['style'] as $key => $def ) {
 			wp_enqueue_style($key, $def, [], $version);
 		}
 	}
 
-}
-
-add_action('wp_enqueue_scripts', 'enqueue_styles');
-function enqueue_scripts()
-{
+	$version = filemtime( get_stylesheet_directory().'/js' );
+	// JScripts
 	wp_deregister_script('jquery');
 	wp_enqueue_script('jquery', '//code.jquery.com/jquery-3.4.1.min.js', [], false, true);
 	wp_enqueue_script('popper', '//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js', array('jquery'),
@@ -332,7 +331,8 @@ function enqueue_scripts()
 	), false, true);
 	wp_enqueue_script('app', get_stylesheet_directory_uri().'/js/app.js', ['jquery'], false, true);
 
-	if (is_page_template('page-index.php')) {
+
+	if ( preg_match('/^page[\-\w]*\.php/', $page_template) ) {
 		wp_enqueue_script('tinycolor', 'https://cdnjs.cloudflare.com/ajax/libs/tinycolor/0.11.1/tinycolor.min.js',
 			['jquery'], false, true);
 		wp_enqueue_script('farbtastic-picker', get_stylesheet_directory_uri().'/js/farbtastic/farbtastic.js', 
@@ -341,20 +341,19 @@ function enqueue_scripts()
 		wp_enqueue_script('jq-zoom', get_stylesheet_directory_uri().'/js/zoom.js', ['jquery'], false, true);
 		wp_enqueue_script('threejs', get_stylesheet_directory_uri().'/js/three.min.js', [], false, true);
 
-		wp_enqueue_script('builder', get_stylesheet_directory_uri().'/js/builder.js?'.time(), 
+		wp_enqueue_script('builder', get_stylesheet_directory_uri()."/js/builder.js?$version", 
 						[ 'jquery',
 						'jq-zoom',
 						'threejs',
 						'app' ], false, true);
-
 	}
 
 	if (is_page_template('page-clients.php')) {
-		wp_enqueue_script('clients', get_stylesheet_directory_uri().'/js/clients.js', ['jquery'], false, true);
+		wp_enqueue_script('clients', get_stylesheet_directory_uri()."/js/clients.js?$version", ['jquery'], false, true);
 	}
 
 	if (is_page_template('page-solutions.php')) {
-		wp_enqueue_script('solutions', get_stylesheet_directory_uri().'/js/solutions.js', ['jquery'], false, true);
+		wp_enqueue_script('solutions', get_stylesheet_directory_uri()."/js/solutions.js?$version", ['jquery'], false, true);
 	}
 }
 
@@ -560,15 +559,9 @@ function add_new_user_sol($name, $type, $equip, $control, $mount, $cloth_id, $wi
 add_action('wp_ajax_getPrice', 'get_price_json');
 add_action('wp_ajax_nopriv_getPrice', 'get_price_json');
 function get_price_json() {
-	$param = [
-				'model' => $_POST['model'],
-				'category' => isset($_POST['category']) ? $_POST['category'] : '',
-				'equip' => $_POST['equip'],
-				'width' => $_POST['width'],
-				'height' => $_POST['height'],
-				'count' => $_POST['count'],
-				'electro' => isset($_POST['electro']) && $_POST['electro'] == "true",
-			];
+	$param = $_POST;
+	$param['category'] = isset($param['category']) ? $param['category'] : '';
+	$param['electro'] = (isset($param['electro']) && $param['electro'] == 'true');
 	echo json_encode( get_price($param) );
 	die;
 }
@@ -599,6 +592,7 @@ function get_price( $set ) {
 	foreach ($price['sizes_range'] as $key => $val) {
 		$price['sizes_range'][$key] = ceil(($val + 0) * 100);
 	}
+	$price['request'] = $set;
 	return $price;
 }
 

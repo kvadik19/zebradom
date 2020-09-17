@@ -35,6 +35,19 @@ jQuery(document).ready(function ($) {
     
 });
 
+function setHandler(el, hdlr, callbk, prior) {			// To set queue of event handlers
+	let proc = el[hdlr];
+	if ( proc ) {
+		if (prior) {
+			el[hdlr] = function() { proc( callbk() ); };
+		} else {
+			el[hdlr] = function() { callbk( proc() ) };
+		}
+	} else {
+		el[hdlr] = callbk;
+	}
+}
+
 function getPosition ( element ) {
 	let offsetLeft = 0, offsetTop = 0;
 	do {

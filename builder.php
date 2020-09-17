@@ -6,26 +6,29 @@
 		var cloths = {'<?php echo $type ?>':<?php echo json_encode($clothes) ?>};
 		var activeModelType = '<?php echo $type ?>';
 	</script>
+<div class="page-set">
 	<div class="builder">
 		<div class="builder-wide">
 			<h4>Рулонные шторы. Практично, удобно, стильно!</h4>
 			<span>Конструктор поможет выбрать индивидуальное интерьерное решение</span>
 		</div>
 		<div class="builder-part builder-left">
-			<div id="builder-preview">
-				<canvas id="canvas"></canvas>
-			</div>
-			<div class="opt-list">
-				<div class="opt-row">
-					<div class="opt-name">Цвет рамы</div>
-					<div id="color-frame" class="opt-value"></div>
+			<div id="builder-display">
+				<div id="builder-preview">
+					<canvas id="canvas"></canvas>
 				</div>
-				<div class="opt-row">
-					<div class="opt-name">Цвет стен</div>
-					<div class="opt-value">
-						<div id="color-wall" class="btn btn-callback gray" style="background-color:#ffffff" ></div>
-						<div class="btn btn-callback">
-							<img src="<?php echo get_template_directory_uri() ?>/images/icons/edit.svg" class="icon" />Выбрать</div>
+				<div class="opt-list">
+					<div class="opt-row">
+						<div class="opt-name">Цвет рамы</div>
+						<div id="color-frame" class="opt-value"></div>
+					</div>
+					<div class="opt-row">
+						<div class="opt-name">Цвет стен</div>
+						<div class="opt-value">
+							<div id="color-wall" class="btn btn-callback gray" style="background-color:#ffffff" ></div>
+							<div class="btn btn-callback">
+								<img src="<?php echo get_template_directory_uri() ?>/images/icons/edit.svg" class="icon" />Выбрать</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -56,7 +59,7 @@
 						</div>
 					</div>
 					<div class="cloth-list">
-						<div class="builder-loading d-none"><img src="<?php bloginfo('template_url') ?>/images/builder/loading.gif" alt=""/></div>
+						<div class="builder-loading d-none"><img src="<?php bloginfo('template_url') ?>/images/icons/load-rainbow.svg" alt=""/></div>
 						<ul class="cloth-list">
 <?php
 foreach ($clothes as $item) {
@@ -77,7 +80,7 @@ foreach ($clothes as $item) {
 						<span id="collapseAll" class="filter-switch expand-list" hidden>Свернуть список</span>
 					</div>
 				</div>		<!--opt-row -->
-				<div class="opt-row"><?php // Options switcher ?>
+				<div class="opt-row"><?php // Options switcher. Sets `activeModelXXXX` variables immediately ?>
 					<p>Подружись с солнцем, управляй светом, преврати день в ночь. <b>Закажи шторы на сайте прямо сейчас!</b>
 					</p>
 					<div id="options" class="opt-head">
@@ -130,44 +133,76 @@ foreach ($clothes as $item) {
 					<b>Размеры, количество, управление</b><br/>
 					Перед простановкой размеров внимательно ознакомьтесь с инструкцией по замеру</p>
 					<div class="opt-head">
-						<div class="order-input" data-name="size_width">
+						<div class="order-input">
 							<label for="size_width">Ширина, см</label>
-							<input id="size_width" type="text" value="115"/>
+							<input class="udata" id="size_width" type="text" value="115"/>
 						</div>
-						<div class="order-input" data-name="size_height">
+						<div class="order-input">
 							<label for="size_height">Высота, см</label>
-							<input id="size_height" type="text" value="120"/>
+							<input class="udata" id="size_height" type="text" value="120"/>
 						</div>
-						<div class="order-input" data-name="count">
+						<div class="order-input">
 							<label for="count">Количество</label>
 							<div class="spin">
 								<span class="spin">&ndash;</span>
-								<input id="count" type="text" class="spin" value="1"/>
+								<input class="udata spin" id="count" type="text" value="1" min="1" max="100"/>
 								<span class="spin">+</span>
 							</div>
 						</div>
-						<div class="order-input" data-name="control">
+						<div class="order-input">
 							<label for="control">Управление</label>
-							<span id="control" class="pulld" data-value="electro">дистанционное</span>
-							<span hidden data-owner="control" data-value="manual">ручное</span>
+							<span id="control" class="udata pulld" data-value="man-right">ручное справа</span>
+							<span hidden data-owner="control" data-value="man-left">ручное cлева</span>
+							<span hidden data-owner="control" data-value="electro">дистанционное</span>
 						</div>
 						<div class="order-input">
-							<p>Как правильно <br>
+							<div>Как правильно <br>
 								сделать замеры?
-								<img src="<?php echo get_template_directory_uri() ?>/images/icons/icon-doc.svg" class="icon" />
-								<img src="<?php echo get_template_directory_uri() ?>/images/icons/icon-play.svg" class="icon" />
-							</p>
+							</div>
+							<div>
+								<a href="/instrukcii" target="_blank" disabled><img src="<?php echo get_template_directory_uri() ?>/images/icons/icon-doc.svg" /></a>
+								<a href="#" target="_blank" disabled><img src="<?php echo get_template_directory_uri() ?>/images/icons/icon-play.svg" /></a>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>		<!--opt-list-->
 		</div>		<!--builder-right-->
 	</div>
-	<div id="shop-order" class="bar-wide">
-	<div class="builder-wide">
-	<?php // echo '<code>'.var_export($clothes).'</code>' ?>
-	
+</div>	<!-- page-set -->
+<div id="shop-order" class="bar-wide">
+	<div class="header">
+		<div>
+			<div id="o-info" class="order-detail builder-left">
+				<label></label>
+				<p></p>
+			</div>
+			<div id="o-total" class="order-detail">
+				<label>Стоимость:</label>
+				<p></p>
+			</div>
+			<div id="o-discnt" class="order-detail">
+				<label>Скидка:</label>
+				<p></p>
+			</div>
+			<div id="o-msg" class="order-detail">
+				<label>
+					Поделись ссылкой в соцсетях<br> и получи скидку 5%
+				</label>
+			</div>
+			<div id="o-shop" class="order-detail">
+				<div>
+					<span id="o-add" class="btn btn-app">Добавить</span>
+					<span id="o-cart" class="btn btn-app alt">Корзина</span>
+				</div>
+			</div>
+		</div>
 	</div>
-	</div>
-	<?php // include('buildermod.php') ?>
-
+</div>		<!-- shop-order -->
+<div class="page-set">
+	<?php 
+		// Sample content
+		$post = get_post(8032);
+		echo $post->post_content;
+	?>
+</div>

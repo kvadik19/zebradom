@@ -4,7 +4,6 @@
  */
 
 jQuery(function ($) {
-    let $activeClothUrl = null;
     /**
      * Info blocks
      */
@@ -34,9 +33,11 @@ jQuery(function ($) {
             return false;
         }
     });
+	document.getElementById('builder-display').style.top = (document.getElementById('bar-top').offsetHeight+10)+'px';
+
 	let canvas = document.querySelector('canvas#canvas');
-// 	let renderer;
-	renderer = new THREE.WebGLRenderer({
+
+	let renderer = new THREE.WebGLRenderer({
 						canvas: canvas,
 						preserveDrawingBuffer: true
 					});
@@ -76,22 +77,149 @@ jQuery(function ($) {
 		}
 	};
 	
+	let $activeClothUrl = null;
 	let activeBGColor = "rgb(221,221,221)";
 	let activeWindowColor = "white";
 	let activeState = "CLOSE";
 	let activeModelColor = "white";
 
+	let ajaxDelay = 0;			// Delay timeout handler before send getPrice() AJAX to server
 
 	// Initial values
 	// var activeModelType always declared in .php
 	var activeClothOpacity;
-    var activeModelMount = $('.order-opt[data-name="mount"] .sel').data('value');
-    var activeModelEquip = $('.order-opt[data-name="equip"] .sel').data('value');
+	var activeModelMount = $('.order-opt[data-name="mount"] .sel').data('value');
+	var activeModelEquip = $('.order-opt[data-name="equip"] .sel').data('value');
 	var activeClothColors = [];
-    var activeWidth = 120;
-    var activeHeight = 120;
-    var activeControl = true;
-    var activeCount = 1;
+
+	var activeWidth = document.getElementById('size_width').value;
+	var activeHeight = document.getElementById('size_height').value;
+	var activeControl = document.getElementById('control').dataset.value;
+	var activeCount = document.getElementById('count').value;
+
+// 	var activeWidth = 120;
+// 	var activeHeight = 120;
+// 	var activeControl = true;
+// 	var activeCount = 1;
+    /**
+     * Prices
+     */
+
+	var getPrice = function() {
+			let $activeCloth = $(".cloth-list .cloth-list-item[data-cloth-id=" + activeCloth + "]");
+
+			activeWidth = document.getElementById('size_width').value;
+			activeHeight = document.getElementById('size_height').value;
+			activeControl = document.getElementById('control').dataset.value;
+			activeCount = document.getElementById('count').value;
+
+			let model = 'UNI 2';
+			if ( activeModelMount === 'open' ) {
+				model = 'LVT';
+			} else if ( activeModelEquip === 'default' ) {
+				model = 'MINI';
+			}
+			if ( activeModelType === 'zebra' ) model += '-ЗЕБРА';
+
+			let doShow = function(map) {			// Place data onto suitable nodes
+					let panels = document.querySelectorAll('#shop-order .order-detail');
+					let display = function(d) {
+											if ( !d.querySelector('p') ) return;
+											d.querySelector('p').innerHTML = '<img src="'+template_url+'/images/icons/load-dots.svg" width="100"/>';
+										};
+					if ( typeof(map) === 'object' ) {		// See showMap below
+						display = function(d) {
+											let out = map[d.id];
+											if (out) {
+												Object.keys(out).forEach( function(p) {
+														if ( !document.querySelector('#shop-order #'+d.id+'>'+p) ) return;
+														document.querySelector('#shop-order #'+d.id+'>'+p).innerHTML = out[p];
+													});
+											}
+										};
+					}
+					panels.forEach( display );
+				};
+			doShow(0);		// Purge display panels
+
+			let doQuery = function() {
+					$.ajax({
+						url: "/wp-admin/admin-ajax.php",
+						type: "POST",
+						data: {
+							action: "getPrice",
+							model: model,
+							mount: activeModelMount,
+							type: activeModelType,
+							cloth: activeCloth,
+							control: activeControl,
+							electro: activeControl === "electro",
+							equip: activeModelEquip,
+							category: $activeCloth.data("cat"),
+							width: activeWidth,
+							height: activeHeight,
+							count: activeCount
+						},
+						beforeSend: function () {
+						},
+						success: function (data) {
+							let max_width = data.sizes_guarantee !== undefined ? data.sizes_guarantee.width : data.sizes_range.max_width;
+							let max_height = data.sizes_guarantee !== undefined ? data.sizes_guarantee.height : data.sizes_range.max_height;
+							let message = 'Ширина: от ' + data.sizes_range.min_width + ' до ' + max_width + ' см;<br>'
+										+'Высота: от ' + data.sizes_range.min_height + ' до ' + max_height + ' см';
+							let calcWidth = data.request.width*1;
+							let calcHeight = data.request.height*1;
+
+// 				if( data.request.mount === "flap") {
+// 					calcHeight = data.request.height*1;
+// 				} else {
+// 					message += '<br>Габаритный размер по ширине: '+ data.request.width +' см.';
+// 				}
+// 				calcWidth = data.request.width*1 + 3.5;
+// 				if( data.request.model == "UNI 2") calcWidth = data.request.width*1 + 1.8;
+// 				
+//                 if( data.request.model == "UNI 2" ) {
+//                     $(".js-order-confirm-width-gb").text(parseInt(activeWidth) - 1.8);
+//                 }
+//                 else{
+//                     $(".js-order-confirm-width-gb").text(parseInt(activeWidth) - 3.5);
+//                 }
+//                 $(".js-order-confirm-height-gb").text(activeHeight);
+//                 $(".js-order-confirm-height-upr").text(parseInt(activeHeight) * 3 / 4);
+
+
+							let cloth = cloths[data.request.type].find( function(c) { return c.ID == data.request.cloth } );
+							let showMap = {
+									'o-info':{
+												'label':'Штора '+document.querySelector('.order-opt[data-name="type"] .option[data-value="'
+																				+data.request.type+'"] *:first-child').innerText.toLowerCase(),
+												'p':'Ткань '+cloth.post_title+', '+calcWidth+'x'+calcHeight+' см - '+data.request.count+' шт.'
+													+' Крепление '+document.querySelector('.order-opt[data-name="mount"] .option[data-value="'
+																				+data.request.mount+'"] *:first-child').innerText.replace(/\s/g,'&nbsp;').toLowerCase()
+													+', управление '+document.querySelector('.order-input #control').innerText.replace(/\s/g,'&nbsp;').toLowerCase()
+													+', '+document.querySelector('.order-opt[data-name="equip"] .option[data-value="'
+																+data.request.equip+'"] *:first-child').innerText.replace(/\s/g,'&nbsp;').toLowerCase()
+											},
+									'o-total':{
+// 												'label':'Leave unchanged',
+												'p':data.price+' &#8381;'
+											},
+									'o-discnt':{
+												'p':(data.discount || 0)+' &#8381;'
+											},
+									'o-msg':{
+												'label':message,
+											},
+								};		// showMap declaration end
+							doShow(showMap);
+						}
+					});
+				};		// doQuery function
+
+			window.clearTimeout( ajaxDelay );
+			ajaxDelay = window.setTimeout( doQuery, 2000);			// Let User a bit of time to play!
+		};			// getPrice variable
+
 
 	let sample = document.getElementById('color-wall');
 	let callWallColor = function(evt) { 
@@ -219,13 +347,19 @@ jQuery(function ($) {
 			applyFilter();
 		};
 
-	function filterPulldInit() {		// Collect appropriate PullDown menus for filter based on existing fields
+	function filterPulldInit() {		// Collect appropriate PullDown menus for filter based on existing fields or bundled values
 		document.querySelectorAll('.pulld').forEach( function(ctrl) {			// Sample list filtering
 
-				let old = document.getElementById(ctrl.dataset.filter+'_pd');
-				if ( old ) old.parentNode.removeChild(old);				// Garbage cleanup
+				let sign = ctrl.id;
+				if ( ctrl.dataset.filter ) sign = ctrl.dataset.filter;
+				let old = document.getElementById(sign+'_pd');
+				if ( old && ctrl.dataset.filter ) {		// Only for cloth filter popups!
+					old.parentNode.removeChild(old);				// Garbage cleanup
+				} else if ( old ) {
+					return;
+				}
 
-				let pull = createObj('ul',{'id':ctrl.dataset.filter+'_pd', 'className':'poplist', 'hidden':true,
+				let pull = createObj('ul',{'id':sign+'_pd', 'className':'poplist', 'hidden':true,
 										'style.minWidth':ctrl.offsetWidth+'px', 'style.top':(ctrl.offsetTop+ctrl.offsetHeight)+'px',
 										});
 				let allof = createObj('li',{'innerText':'Показать все','className':'on','data-value':'*',
@@ -235,52 +369,71 @@ jQuery(function ($) {
 																	host.className += ' on';
 																}, 
 										});
-				let opt = fieldsOpt.find( function(o) { return o.name == ctrl.dataset.filter } );
-				if ( opt ) {
-					if ( opt.title.length > 0 ) ctrl.innerText = opt.title;
-					let ref = null;
-					if ( ctrl.dataset.ref ) {
-						ref = fieldsOpt.find( function(o) { return o.name == ctrl.dataset.ref } );
-					}
-					let vals = {};
-					let cnt = 0;
-					cloths[activeModelType].forEach( function(cl) {
-								if ( cl.fields[opt.field] ) {
-									vals[cl.fields[opt.field]] = cl.fields[opt.field];
-									if ( ref && cl.fields[ref.field] ) {
-										vals[cl.fields[opt.field]] = cl.fields[ref.field];
+				if ( ctrl.dataset.filter ) {
+					let opt = fieldsOpt.find( function(o) { return o.name == ctrl.dataset.filter } );
+					if ( opt ) {
+						if ( opt.title.length > 0 ) ctrl.innerText = opt.title;
+						let ref = null;
+						if ( ctrl.dataset.ref ) {
+							ref = fieldsOpt.find( function(o) { return o.name == ctrl.dataset.ref } );
+						}
+						let vals = {};
+						let cnt = 0;
+						cloths[activeModelType].forEach( function(cl) {
+									if ( cl.fields[opt.field] ) {
+										vals[cl.fields[opt.field]] = cl.fields[opt.field];
+										if ( ref && cl.fields[ref.field] ) {
+											vals[cl.fields[opt.field]] = cl.fields[ref.field];
+										}
 									}
-								}
-							});
-					Object.keys(vals).sort( function(a, b) { 
-													if (a.match(/^\d+$/) && a.match(/^\d+$/)) { 
-															return a-b 
-													} else { 
-														return a.charCodeAt(0) - b.charCodeAt(0)
-													} 
-											} ).forEach( function(k) {
-													let [t, v] = [k, vals[k]];
-													if ( ref ) [t, v] = [ vals[k], k ];
-													pull.appendChild( createObj('li', {'innerText':t,'data-value':v,
-																'onclick':function(evt) { let host=evt.target;
-																						if ( host.className.match(/\bon\b/) ) {
-																							host.className = host.className.replace(/\s*on\b/g,'');
-																							if ( host.parentNode.querySelectorAll('li.on').length == 0 ) {
-																								host.parentNode.firstElementChild.className += ' on';
+								});
+						Object.keys(vals).sort( function(a, b) { 
+														if (a.match(/^\d+$/) && a.match(/^\d+$/)) { 
+																return a-b 
+														} else { 
+															return a.charCodeAt(0) - b.charCodeAt(0)
+														} 
+												} ).forEach( function(k) {
+														let [t, v] = [k, vals[k]];
+														if ( ref ) [t, v] = [ vals[k], k ];
+														pull.appendChild( createObj('li', {'innerText':t,'data-value':v,
+																	'onclick':function(evt) { let host=evt.target;
+																							if ( host.className.match(/\bon\b/) ) {
+																								host.className = host.className.replace(/\s*on\b/g,'');
+																								if ( host.parentNode.querySelectorAll('li.on').length == 0 ) {
+																									host.parentNode.firstElementChild.className += ' on';
+																								}
+																							} else {
+																								host.className += ' on';
+																								host.parentNode.firstElementChild.className 
+																									= host.parentNode.firstElementChild.className.replace(/\s*on\b/g,'');
 																							}
-																						} else {
-																							host.className += ' on';
-																							host.parentNode.firstElementChild.className 
-																								= host.parentNode.firstElementChild.className.replace(/\s*on\b/g,'');
-																						}
-																					}, 
-																			}) );
-												});
-				}
-				if ( pull.firstElementChild ) {
-					pull.insertBefore(allof, pull.firstElementChild);
+																						}, 
+																				}) );
+													});
+					}
+					if ( pull.firstElementChild ) {
+						pull.insertBefore(allof, pull.firstElementChild);
+					} else {
+						pull.appendChild(allof);
+					}
 				} else {
-					pull.appendChild(allof);
+					let opts = ctrl.parentNode.querySelectorAll(ctrl.tagName+'[data-owner="'+ctrl.id+'"]');
+					let setOpt = function(o) {
+							pull.appendChild( createObj('li', {'innerText':o.innerText,'data-value':o.dataset.value,
+									'className':o.dataset.owner ? '' : 'on',
+									'onclick':function() {	ctrl.dataset.value = this.dataset.value;
+															ctrl.innerText = this.innerText;
+															this.parentNode.querySelectorAll('li.on').forEach( function(l){ l.className = l.className.replace(/\s*on/g,'')} );
+															this.parentNode.hidden = 'true';
+															ctrl.className = ctrl.className.replace(/\s*on/g,'');
+															this.className = 'on';
+															if ( ctrl.onchange ) ctrl.onchange();
+														}, 
+								}) );
+						};
+					setOpt(ctrl);
+					opts.forEach(setOpt);
 				}
 				ctrl.parentNode.insertBefore(pull, ctrl);
 				ctrl.onclick = function(evt) {
@@ -289,13 +442,15 @@ jQuery(function ($) {
 						let panel = host.previousElementSibling;
 						let offPanel = function(evt) {
 											if ( evt.path.find( function(t) { return t.id == host.dataset.filter+'_pd' }) ) return;
-											markUpFilter(host);
+											if ( host.dataset.filter ) markUpFilter(host);
+											panel.hidden = true;
+											host.className = host.className.replace(/\s*on/g,'');
 											document.removeEventListener('click', offPanel);
 										};
-						if ( host.className.match(/\bon\b/) ) {
+						if ( host.className.match(/\bon\b/) && host.dataset.filter ) {			
 							markUpFilter(host);
 						} else {
-							document.querySelectorAll('.pulld').forEach( markUpFilter );
+							if (host.dataset.filter) document.querySelectorAll('.pulld.multi').forEach( markUpFilter );
 							host.innerText = host.innerText.replace(/(:\s*\d+)?/g,'');
 							panel.hidden = false;
 							document.addEventListener('click', offPanel);
@@ -332,6 +487,37 @@ jQuery(function ($) {
 						});
 				});
 		});
+	document.querySelectorAll('.order-input .udata').forEach( function(i) {
+			setHandler( i, 'onchange', getPrice );
+		});
+
+	document.querySelectorAll('div.spin').forEach( function(d) {
+			let [min, max] = [-65535, 65535];
+			let i = d.querySelector('input[type="text"].spin');
+			if ( i.max ) max = i.max*1; 
+			if ( i.min ) min = i.min*1;
+			i.onfocus = function() { i.className = i.className.replace(/\s*rangeAlert/gi,'') };
+			setHandler(i, 'onchange', function() {
+									if ( i.value*1 > max ) {
+										i.value = max;
+										i.className += ' rangeAlert';
+									} else if ( i.value*1 < min ) {
+										i.value = min;
+										i.className += ' rangeAlert';
+									}
+							}, 1);
+			d.querySelectorAll('span.spin').forEach( function(s) {
+					s.onmousedown = function() {
+							i.className = i.className.replace(/\s*rangeAlert/gi,'');
+							if ( s.innerText.match(/\+/) ) {
+								i.value = (i.value*1) + 1;
+							} else {
+								i.value = (i.value*1) - 1;
+							}
+							i.onchange();
+						};
+				});
+		});
 
 	var checkListComplete = function() {			// Switch of size of sample list
 			let shown = document.querySelectorAll('div.cloth-list ul.cloth-list li.cloth-list-item:not([hidden])');
@@ -359,7 +545,7 @@ jQuery(function ($) {
 					div.scrollIntoView(false);
 					swTop.innerText = swTop.dataset.pretext;
 					swBot.hidden = true;
-					setCloth();
+					setCloth(true);
 				};
 
 			swTop.className = swTop.className.replace(/\s*dis/g,'');
@@ -396,7 +582,7 @@ jQuery(function ($) {
 				// Call sorting procedure HERE!
 				// referenced to controls dataset.sort and className fw/bw, e.q. forward/backward 
 				fireSort(ctrl.dataset.sort, dir);
-				setCloth();
+				setCloth(true);
 				//
 			});
 		});
@@ -457,7 +643,11 @@ jQuery(function ($) {
 	});
 
 	function setCloth(id) {
-		if ( !id ) id = activeCloth;
+		let reGet = true;
+		if ( typeof(id) !== 'number' ) {
+			if ( typeof(id) === 'boolean' ) reGet = false;
+			id = activeCloth;
+		}
 		let active = document.getElementById('clo_'+id);
 		let div = document.querySelector('div.cloth-list');
 		let spare = document.querySelector('li.cloth-list-item:not([hidden])');
@@ -488,7 +678,7 @@ jQuery(function ($) {
 				window.scrollTo(wx,wy);
 			}
 
-			getPrice();
+			if ( reGet ) getPrice();
 		} else {
 			setLocation(document.location.origin);
 		}
@@ -533,27 +723,6 @@ jQuery(function ($) {
 	createWindowColors();
 
     /**
-     * Modals
-     */
-    $("[data-infom-target]").on("click", function () {
-        let target = $(this).data("infom-target");
-        let container = $(".modals");
-        $("[data-info]", container).hide();
-        $("[data-info=" + target + "]", container).show();
-        container.addClass("show");
-        return false;
-    });
-    $("[data-dismiss]", ".modals").on("click", function () {
-        let container = $(".modals");
-        $(this).parents("[data-info]").hide();
-        container.removeClass("show");
-    });
-
-    if ("undefined" != typeof PhotoSwipe) {
-        initPhotoSwipe(".js-builder-photos");
-    }
-
-    /**
      * Clothes
      */
 	if (canvas){
@@ -567,14 +736,15 @@ jQuery(function ($) {
 
 	function updateClothList() {
 		let countCloth = 0;
-		let model = "lvt";
-		if (activeModelMount !== "open") {
-			if (activeModelEquip === "default") {
-				model = "mini";
-			} else {
-				model = "uni";
-			}
-		}
+
+// 		let model = "lvt";
+// 		if (activeModelMount !== "open") {
+// 			if (activeModelEquip === "default") {
+// 				model = "mini";
+// 			} else {
+// 				model = "uni";
+// 			}
+// 		}
 
 		let clothList = document.querySelector('ul.cloth-list');
 		clothList.innerHTML = '';
@@ -597,7 +767,6 @@ jQuery(function ($) {
 					let li = createObj('li', {'className':'cloth-list-item', 'id':'clo_'+cloth.ID,
 										'style.backgroundImage':'url(\''+cloth.gallery[0]+'\')',
 										'title':short_title,
-// 										'data-toggle':'tooltip',
 										'data-cloth-id':cloth.ID,
 										'data-texture-lvt':cloth.texture_lvt,
 										'data-texture-mini':cloth.texture_mini,
@@ -647,193 +816,26 @@ jQuery(function ($) {
 		});
 	}
 
+	
     /**
-     * Prices
+     * Modals
      */
-    activeWidth = $("[name=size_width]").val();
-    activeHeight = $("[name=size_height]").val();
-    activeControl = $("[name=control]:checked").val();
-    activeCount = $("[name=count]").val();
-    $("[name=control]").change(function () {
-        activeControl = this.value;
-        if (activeControl === "electro") {
-            $(".js-order-confirm-electro").text("электро");
-        } else {
-            if (activeControl === "left") {
-                $(".js-order-confirm-electro").text("слева");
-            } else {
-                
-                $(".js-order-confirm-electro").text("справа");
-            }
-        }
-        getPrice();
+    $("[data-infom-target]").on("click", function () {
+        let target = $(this).data("infom-target");
+        let container = $(".modals");
+        $("[data-info]", container).hide();
+        $("[data-info=" + target + "]", container).show();
+        container.addClass("show");
+        return false;
     });
-    $("[name=control]:checked").trigger("change");
-    $("[name=size_width]").change(function () {
-        activeWidth = parseInt(this.value);
-        this.value = activeWidth;
-        $(".js-order-confirm-width").text(activeWidth);
-        getPrice();
-    });
-    $("[name=size_height]").change(function () {
-        activeHeight = parseInt(this.value);
-        this.value = activeHeight;
-        $(".js-order-confirm-height").text(activeHeight);
-        getPrice();
-    });
-    $("[name=count]").change(function () {
-        activeCount = parseInt(this.value);
-        this.value = activeCount;
-        getPrice();
+    $("[data-dismiss]", ".modals").on("click", function () {
+        let container = $(".modals");
+        $(this).parents("[data-info]").hide();
+        container.removeClass("show");
     });
 
-    function getPrice() {
-        let $activeCloth = $(".cloth-list .cloth-list-item[data-cloth-id=" + activeCloth + "]");
-        let model = "";
-        if (activeModelType === "zebra") {
-            if (activeModelMount === "open") {
-                model = "LVT-ЗЕБРА";
-            } else {
-                if (activeModelEquip === "default") {
-                    model = "MINI-ЗЕБРА";
-                } else {
-                    model = "UNI2-ЗЕБРА";
-                }
-            }
-        } else {
-            if (activeModelMount === "open") {
-                model = "LVT";
-            } else {
-                if (activeModelEquip === "default") {
-                    model = "MINI";
-                } else {
-                    model = "UNI 2";
-                }
-            }
-        }
-        $(".js-order-confirm-model").text(model);
-        $.ajax({
-            url: "/wp-admin/admin-ajax.php",
-            type: "POST",
-            data: {
-                action: "getPrice",
-                model: model,
-                electro: activeControl === "electro",
-                equip: activeModelEquip,
-                category: $activeCloth.data("cat"),
-                width: activeWidth,
-                height: activeHeight,
-                count: activeCount
-            },
-            beforeSend: function () {
-                $(".js-min-width").text("...");
-                $(".js-max-width").text("...");
-                $(".js-min-height").text("...");
-                $(".js-max-height").text("...");
-                $(".js-order-item-price").text("...");
-                //$(".js-order-cart-price").text("...");
-                $(".js-order-confirm-price").text("...");
-                $(".js-order-confirm-count").text("...");
-            },
-            success: function (data) {
-                let max_width = data.sizes_guarantee !== undefined ? data.sizes_guarantee.width : data.sizes_range.max_width;
-                let max_height = data.sizes_guarantee !== undefined ? data.sizes_guarantee.height : data.sizes_range.max_height;
-              
-              
-                $(".js-width-range").html("Min " + data.sizes_range.min_width + " см<br>Max " + max_width/*data.sizes_range.max_width*/ + " см");
-                $(".js-height-range").html("Min " + data.sizes_range.min_height + " см<br>Max " + max_height/*data.sizes_range.max_height*/ + " см");
-                $(".js-order-item-price").text(data.price);
-                //let cartPrice = $(".js-order-cart-price");
-                //cartPrice.text(parseInt(cartPrice.data('sum')) + data.price * activeCount);
-                $(".js-order-confirm-price").text(data.price * activeCount);
-                $(".js-order-confirm-count").text(activeCount);
-                $(".js-sizes-error").text("");
-                
-                
-                if(activeModelMount === "flap"){
-                    $(".js-order-confirm-width-gb").closest('li').css("display","none");
-                    $(".js-order-confirm-height-gb").closest('li').css("display","none");
-                    $(".js-order-confirm-width:eq(1)").closest('li').css("display","block");
-                    $(".js-order-confirm-height:eq(1)").closest('li').css("display","block");
-                    $(".js-order-confirm-width").text(activeWidth);
-                   
-                    if(model == "UNI 2"){
-                        $(".js-order-confirm-width:eq(1)").text(parseInt(activeWidth)  + 1.8);
-                    }
-                    else{
-                        $(".js-order-confirm-width:eq(1)").text(parseInt(activeWidth)  + 3.5);
-                       
-                    }
-                    
-                    $(".js-order-confirm-height").text(activeHeight);
-
-                }
-                else{
-                    $(".js-order-confirm-width-gb").closest('li').css("display","block");
-                    $(".js-order-confirm-height-gb").closest('li').css("display","block");
-                    $(".js-order-confirm-width:eq(1)").closest('li').css("display","none");
-                    $(".js-order-confirm-height:eq(1)").closest('li').css("display","none");
-                    $(".js-order-confirm-width").text(activeWidth);
-                    $(".js-order-confirm-height").text(activeHeight);
-                   	$(".js-order-confirm-width:eq(0)").closest('li')
-                      .after('<li>Габаритный размер по ширине: <span class="js-order-confirm-width">'+ activeWidth +'</span>см.</li>')
-                  	$(".js-order-confirm-width:eq(0)").closest('li').remove();
-                  	
-                }
-                if(model == "UNI 2"){
-                    $(".js-order-confirm-width-gb").text(parseInt(activeWidth) - 1.8);
-                }
-                else{
-                    $(".js-order-confirm-width-gb").text(parseInt(activeWidth) - 3.5);
-                }
-                $(".js-order-confirm-height-gb").text(activeHeight);
-                $(".js-order-confirm-height-upr").text(parseInt(activeHeight) * 3 / 4);
-                
-                if(data.imgs != null && data.imgs !="indefined"){
-                    var textBlock = '<div class=\'text-center\'>';
-                        for(var i = 0;i<data.imgs.length;i++){
-                            textBlock+='<img class=\'img-fluid\' src=\'' + data.imgs[i] +' \'/>';
-                        }
-                    textBlock+='</div>';
-                        if(data.imgs.length > 0){
-                            $(".info-order-js-img").empty();
-                            $(".info-order-js-img").html(textBlock);
-                        }
-                }
-                if (data.is_guarantee === false) {
-                    let text = "Не гарантийный размер.";
-                    if (data.sizes_guarantee.height || data.sizes_guarantee.width) {
-                        text += " Гарантийный размер";
-                    }
-                    if (data.sizes_guarantee.height) {
-                        text += " до " + data.sizes_guarantee.height + " по высоте";
-                    }
-                    if (data.sizes_guarantee.width) {
-                        if (data.sizes_guarantee.height) {
-                            text += " и/или ";
-                        }
-                        text += " до " + data.sizes_guarantee.width + " по ширине";
-                    }
-                    $(".js-sizes-error").text(text);
-                }
-                if (data.is_real === false) {
-                    let text = "Нет возможности сделать такой размер.";
-                    if (data.sizes_real.height || data.sizes_real.width) {
-                        text += " Возможен размер";
-                    }
-                    if (data.sizes_real.height) {
-                        text += " до " + data.sizes_real.height + " по высоте";
-                    }
-                    if (data.sizes_real.width) {
-                        if (data.sizes_real.height) {
-                            text += " и/или";
-                        }
-                        text += " до " + data.sizes_real.width + " по ширине";
-                    }
-                    $(".js-sizes-error").text(text);
-                }
-            }
-        });
+    if ("undefined" != typeof PhotoSwipe) {
+        initPhotoSwipe(".js-builder-photos");
     }
 
 

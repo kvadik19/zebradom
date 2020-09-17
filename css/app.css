@@ -13,6 +13,9 @@ body {
 	font-family: 'PT Sans', sans-serif;
 }
 
+body.admin-bar {
+	margin-top:-35px !important;
+}
 
 a {
     color: #314f6c;
@@ -83,10 +86,6 @@ a:visited {
     .header-info {
         margin-right: 2.25rem;
     }
-    .header-contacts > usection {
-        -ms-flex-wrap: nowrap;
-        flex-wrap: nowrap;
-    }
 }
 
 .content {
@@ -101,6 +100,7 @@ div.bar-wide {
 	border-bottom:1px solid var(--z-gray-m, '#cccccc');
 	margin-bottom:0.2em;
 	position:sticky;
+	position:-webkit-sticky;
 	z-index:3;
 	top:0px;
 }
@@ -200,8 +200,8 @@ ul.menu-bot li {
 	flex-wrap: wrap;
 	-ms-flex-align: center;
 	-ms-flex-pack: justify;
-	justify-content: flex-end;
-	margin: 1px auto 1px auto;
+/* 	justify-content: flex-end; */
+	margin: 1px auto;
 	padding:0px 0.6em;
 }
 .header> *:first-child {
@@ -321,14 +321,6 @@ footer .header {
 .thumbnail{
     margin-bottom: 10px;
 }
-.btn-korzina{
-    background-color: #00bd19;
-    color: #fff;
-}
-.btn-korzina:hover{
-    background-color: #049514;
-    color: #fff;
-}
 
 
 @media (max-width: 479px) {
@@ -337,8 +329,6 @@ footer .header {
         margin-right: auto;
     }
 }
-
-
 
 
 /**
@@ -642,10 +632,28 @@ body.category .about-links li, body.single .about-links li, body.page .about-lin
 }
 
 .btn {
+	border: 1px solid var(--z-gray-m,'#dddddd');
 	border-radius: 0.5em;
 	padding:0px 1.75rem;
-	height:2.5em;
 	cursor: pointer;
+	font-size:100%;
+}
+.btn-app {
+	height:3em;
+	line-height:3;
+	font-weight:bold;
+	color:var(--body-back,'#ffffff');
+	background-color:var(--z-purple,'#6d2eff');
+	border-color:var(--z-purple,'#6d2eff');
+	margin-left:1em;
+}
+.btn-app:hover {
+	color:var(--body-back,'#ffffff');
+}
+.btn-app.alt {
+	color:var(--body-text,'#212529');
+	background-color:var(--z-yellow,'#ffd52e');
+	border-color:var(--z-yellow,'#ffd52e');
 }
 .btn.blank {
 	border-width:0px !important;
@@ -674,6 +682,7 @@ body.category .about-links li, body.single .about-links li, body.page .about-lin
 }
 .btn-callback,
 .btn-callback:visited {
+	height:2.5em;
 	padding:0px 1em;
 	margin-left: 1em;
 	border: 1px solid var(--z-purple,'#6d2eff');

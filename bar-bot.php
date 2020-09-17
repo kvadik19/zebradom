@@ -1,10 +1,6 @@
-<footer class="bar-wide">
+<footer id="bar-bot" class="bar-wide">
 
 	<div class="header">
-		<a class="header-brand" href="/">
-			<img src="<?php echo get_field('main_logo',$post_id); ?>" alt="">
-			<small><?php  echo get_field('logo_text'); ?></small>
-		</a>
 		<?php
 		echo wp_nav_menu([
 			'theme_location' => 'foot_menu',
@@ -34,16 +30,13 @@
 			</section>
 					
 			<section class="header-user">		<!-- class="footer-contact" -->
-				<a class="header-contact-item" href="<?php echo get_field('vk_group_link', $post_id) ?>"><img src="<?php echo get_template_directory_uri() ?>/images/icons/vk.svg" class="icon" /></a>            
-				<a class="header-contact-item" href="<?php echo get_field('inst_link', $post_id) ?>"><img src="<?php echo get_template_directory_uri() ?>/images/icons/twt.svg" class="icon" /></a>            
-				<a class="header-contact-item" href="<?php echo get_field('youtube_channel_link', $post_id) ?>"><img src="<?php echo get_template_directory_uri() ?>/images/icons/yut.svg" class="icon" /></a>            
+				<a class="header-contact-item" href="<?php echo get_field('vk_group_link', $post_id) ?>" target="_blank"><img src="<?php echo get_template_directory_uri() ?>/images/icons/vk.svg" class="icon" /></a>            
+				<a class="header-contact-item" href="<?php echo get_field('inst_link', $post_id) ?>" target="_blank"><img src="<?php echo get_template_directory_uri() ?>/images/icons/twt.svg" class="icon" /></a>            
+				<a class="header-contact-item" href="<?php echo get_field('youtube_channel_link', $post_id) ?>" target="_blank"><img src="<?php echo get_template_directory_uri() ?>/images/icons/yut.svg" class="icon" /></a>            
 			</section>
 			<br clear="all">
 		<div class="footer-copyright">
 			&copy; <?php echo date('Y') ?> Интернет магазин рулонных штор Zebradom.ru. Все права защищены.
-			Запрещено любое копирование материалов ресурса без письменного согласия Zebradom.ru.
-			Генеральный директор Филькин Валентин Геннадьевич.
-			Адрес для корреспонденции и пожеланий: Московская область, г. Мытищи, ул.Летная. 19. оф.310.1
 		</div>
 		</div>		<!-- footer-info -->
 

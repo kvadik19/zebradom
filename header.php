@@ -24,4 +24,3 @@
 	include( 'bar-top.php' );
 ?>
 	<section class="content">
-		<div class="page-set">
