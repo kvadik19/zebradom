@@ -333,8 +333,8 @@ function enqueue_scripts() {
 
 
 	if ( preg_match('/^page[\-\w]*\.php/', $page_template) ) {
-		wp_enqueue_script('tinycolor', 'https://cdnjs.cloudflare.com/ajax/libs/tinycolor/0.11.1/tinycolor.min.js',
-			['jquery'], false, true);
+// 		wp_enqueue_script('tinycolor', 'https://cdnjs.cloudflare.com/ajax/libs/tinycolor/0.11.1/tinycolor.min.js',
+// 			['jquery'], false, true);
 		wp_enqueue_script('farbtastic-picker', get_stylesheet_directory_uri().'/js/farbtastic/farbtastic.js', 
 						['jquery'], false, true);
 		
@@ -575,6 +575,8 @@ function get_price( $set ) {
 	$count = $set['count'];
 
 	$price = calc_price($model, $category, $equip, $width, $height, $set['electro']);
+log_write( "Calc_price res: ".var_export($price, true) );
+
 	//Всегда брать для показа гарантийные высоту и ширину
 	//if (!$price['is_guarantee']) {
 		$price['sizes_guarantee'] = get_model_max_guarantee($model, $category, $price['width'], $price['height']);
@@ -603,17 +605,19 @@ function calc_price($model, $category, $equip, $width, $height, $electro) {
 	$height_calc = $height / 100;
 	$width = round(($width + 4 ) / 100, 1);
 	$height = round(($height + 4) / 100, 1);
-	$model_price = get_model_price($model, $category, $width_calc, $height_calc);
-	$exchange = $all_options['wc_up_setting_course_dollar'] + 0 || 1;		 /*get_option('wc_up_setting_course')*/
+	$model_price = get_model_price($model, $category, $width_calc, $height_calc);			// See at ../plugins/soft70
+
+// log_write( var_export($model_price, true) );
+	$exchange = $all_options['wc_up_setting_course_dollar'];		 /*get_option('wc_up_setting_course')*/
 	
 	$price = $model_price->price;
 
 	if ($electro) {
-		$price += 230 /*get_option('wc_up_setting_electro')*/ + 0;
+		$price += 230 /*get_option('wc_up_setting_electro')*/;
 	}
 	$is_guarantee = $model_price->is_guarantee;
-	/*(get_option('wc_up_setting_percent') + 0)*/ 
-	$percents = 1 + (($all_options['wc_up_setting_percent'] + 0)  / 100);			// ?
+	/*get_option('wc_up_setting_percent')*/ 
+	$percents = 1 + ($all_options['wc_up_setting_percent']  / 100);			// ?
 	$additional = 0;
 	$images_scheme = array();
 	
@@ -650,6 +654,8 @@ function calc_price($model, $category, $equip, $width, $height, $electro) {
 				$additional = 30.20 /*get_option('wc_up_setting_add4') + 0*/;
 			}
 		}
+// log_write(var_export($all_options, true));
+
 	} elseif ($model === 'LVT-ЗЕБРА') {
 		if ($equip === 'default') {
 			if (in_range($width, 0.5, 2) && in_range($height, 0.5, 3)) {
@@ -751,7 +757,7 @@ function calc_price($model, $category, $equip, $width, $height, $electro) {
 	}
 
 
-// log_write("ceil(($price + ($width * $additional)) * $percents * $exchange)");
+log_write("ceil(($price + ($width * $additional)) * $percents * $exchange)");
 
 	return [
 		'price'		=> ceil(($price + ($width * $additional)) * $percents * $exchange),
@@ -1016,16 +1022,14 @@ add_action('admin_menu', 'true_options');
 /**
  * Возвратная функция (Callback)
  */ 
-function true_option_page(){
+function true_option_page() {
 	global $true_page;
 	echo '<div class="wrap">';
 		echo '<form method="post" enctype="multipart/form-data" action="options.php">';
-			echo settings_fields('true_options'); // меняем под себя только здесь (название настроек)
-			echo do_settings_sections($true_page);
-			echo '<p class="submit">  
-				<input type="submit" class="button-primary" value="'._e('Save Changes').'" />  
-			</p>
-		</form>
+		echo settings_fields('true_options'); // меняем под себя только здесь (название настроек)
+		echo do_settings_sections($true_page);
+		echo submit_button();
+		echo '</form>
 	</div>';
 }
  

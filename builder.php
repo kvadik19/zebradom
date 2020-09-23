@@ -145,7 +145,7 @@ foreach ($clothes as $item) {
 							<label for="count">Количество</label>
 							<div class="spin">
 								<span class="spin">&ndash;</span>
-								<input class="udata spin" id="count" type="text" value="1" min="1" max="100"/>
+								<input class="spin" id="count" type="text" value="1" min="1" max="100"/>
 								<span class="spin">+</span>
 							</div>
 						</div>

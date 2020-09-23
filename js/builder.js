@@ -97,13 +97,35 @@ jQuery(function ($) {
 	var activeControl = document.getElementById('control').dataset.value;
 	var activeCount = document.getElementById('count').value;
 
-// 	var activeWidth = 120;
-// 	var activeHeight = 120;
-// 	var activeControl = true;
-// 	var activeCount = 1;
     /**
      * Prices
      */
+
+	var showMoney = new function() {
+			let self = this;
+			let qty = document.getElementById('count');
+			self.price = 0;
+	
+			self.format = function( num ) {
+					if (!num) num = 0;
+					return (num*1).toLocaleString('ru-RU') + ' &#8381;';
+				};
+			self.setPrice = function(num) {
+					self.price = num;
+					return self;
+				};
+			self.calc = function(num) {
+					if (!num) num = qty.value * 1;
+					activeCount = num;
+					return self.format(self.price * activeCount);
+				};
+			self.displayP = function(num) {
+					if (!num) num = qty.value * 1;
+					document.querySelector('#o-total>p').innerHTML = self.calc(num);
+					document.querySelector('#o-info>p').innerHTML = document.querySelector('#o-info>p').innerHTML.replace(/(\-)\s*\d+\s*(шт)/i, '$1 '+num+' $2');
+					return self;
+				};
+		};
 
 	var getPrice = function() {
 			let $activeCloth = $(".cloth-list .cloth-list-item[data-cloth-id=" + activeCloth + "]");
@@ -163,31 +185,36 @@ jQuery(function ($) {
 						beforeSend: function () {
 						},
 						success: function (data) {
-							let max_width = data.sizes_guarantee !== undefined ? data.sizes_guarantee.width : data.sizes_range.max_width;
-							let max_height = data.sizes_guarantee !== undefined ? data.sizes_guarantee.height : data.sizes_range.max_height;
+							let max_width = data.sizes_range.max_width;
+							let max_height = data.sizes_range.max_height;
+							if (data.sizes_guarantee) {
+								max_width =  data.sizes_guarantee.width || data.sizes_range.max_width;
+								max_height = data.sizes_guarantee.height || data.sizes_range.max_height;
+							}
 							let message = 'Ширина: от ' + data.sizes_range.min_width + ' до ' + max_width + ' см;<br>'
 										+'Высота: от ' + data.sizes_range.min_height + ' до ' + max_height + ' см';
 							let calcWidth = data.request.width*1;
 							let calcHeight = data.request.height*1;
 
-// 				if( data.request.mount === "flap") {
-// 					calcHeight = data.request.height*1;
-// 				} else {
-// 					message += '<br>Габаритный размер по ширине: '+ data.request.width +' см.';
-// 				}
-// 				calcWidth = data.request.width*1 + 3.5;
-// 				if( data.request.model == "UNI 2") calcWidth = data.request.width*1 + 1.8;
-// 				
-//                 if( data.request.model == "UNI 2" ) {
-//                     $(".js-order-confirm-width-gb").text(parseInt(activeWidth) - 1.8);
-//                 }
-//                 else{
-//                     $(".js-order-confirm-width-gb").text(parseInt(activeWidth) - 3.5);
-//                 }
-//                 $(".js-order-confirm-height-gb").text(activeHeight);
-//                 $(".js-order-confirm-height-upr").text(parseInt(activeHeight) * 3 / 4);
+				if( data.request.mount === "flap") {
+					calcHeight = data.request.height*1;
+				} else {
+					message += '<br>Габаритный размер по ширине: '+ data.request.width +' см.';
+				}
+				calcWidth = data.request.width*1 + 3.5;
+				if( data.request.model == "UNI 2") calcWidth = data.request.width*1 + 1.8;
+				
+				if( data.request.model == "UNI 2" ) {
+					$(".js-order-confirm-width-gb").text(parseInt(activeWidth) - 1.8);
+				}
+				else{
+					$(".js-order-confirm-width-gb").text(parseInt(activeWidth) - 3.5);
+				}
+				$(".js-order-confirm-height-gb").text(activeHeight);
+				$(".js-order-confirm-height-upr").text(parseInt(activeHeight) * 3 / 4);
 
 
+							
 							let cloth = cloths[data.request.type].find( function(c) { return c.ID == data.request.cloth } );
 							let showMap = {
 									'o-info':{
@@ -202,10 +229,10 @@ jQuery(function ($) {
 											},
 									'o-total':{
 // 												'label':'Leave unchanged',
-												'p':data.price+' &#8381;'
+												'p':showMoney.setPrice(data.price).calc()
 											},
 									'o-discnt':{
-												'p':(data.discount || 0)+' &#8381;'
+												'p':showMoney.format(data.discount)
 											},
 									'o-msg':{
 												'label':message,
@@ -217,9 +244,8 @@ jQuery(function ($) {
 				};		// doQuery function
 
 			window.clearTimeout( ajaxDelay );
-			ajaxDelay = window.setTimeout( doQuery, 2000);			// Let User a bit of time to play!
+			ajaxDelay = window.setTimeout( doQuery, 1500);			// Let User a bit of time to play!
 		};			// getPrice variable
-
 
 	let sample = document.getElementById('color-wall');
 	let callWallColor = function(evt) { 
@@ -490,6 +516,7 @@ jQuery(function ($) {
 	document.querySelectorAll('.order-input .udata').forEach( function(i) {
 			setHandler( i, 'onchange', getPrice );
 		});
+	setHandler(document.getElementById('count'), 'onchange', function() { showMoney.displayP()  });
 
 	document.querySelectorAll('div.spin').forEach( function(d) {
 			let [min, max] = [-65535, 65535];
@@ -642,7 +669,7 @@ jQuery(function ($) {
 		return false;
 	});
 
-	function setCloth(id) {
+	function setCloth(id) {			// Pass any bool to disable AJAX recalc
 		let reGet = true;
 		if ( typeof(id) !== 'number' ) {
 			if ( typeof(id) === 'boolean' ) reGet = false;
@@ -650,7 +677,7 @@ jQuery(function ($) {
 		}
 		let active = document.getElementById('clo_'+id);
 		let div = document.querySelector('div.cloth-list');
-		let spare = document.querySelector('li.cloth-list-item:not([hidden])');
+		let spare = document.querySelector('li.cloth-list-item:not([hidden])');		// Any first visible sample
 		if (active && active.hidden) {			// Active become hidden
 			if ( spare )  {
 				active = spare;
