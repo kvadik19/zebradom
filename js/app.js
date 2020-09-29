@@ -8,31 +8,37 @@ jQuery(document).ready(function ($) {
 			selector: '[data-toggle=tooltip]'
 		});
 
-    $.ajaxSetup({dataType: 'json'});
+	$.ajaxSetup({dataType: 'json'});
 
-    $('.woocommerce-input-wrapper > *').unwrap();
-    $('.address-field').hide();
+	$('.woocommerce-input-wrapper > *').unwrap();
+	$('.address-field').hide();
 
-    $(document).on('click', '.js-shop-count-down', function () {
-        let target = $('#' + $(this).data('target'));
-        if (target.length) {
-            let newVal = parseInt(target.val()) - 1;
-            target.val((newVal < 0) ? 0 : newVal);
-            target.trigger('change');
-        }
-        return false;
-    });
-    $(document).on('click', '.js-shop-count-up', function () {
-        let target = $('#' + $(this).data('target'));
-        if (target.length) {
-            let newVal = parseInt(target.val()) + 1;
-            target.val(newVal);
-            target.trigger('change');
-        }
-        return false;
-    });
-    jQuery("#lightgallery").lightGallery(); 
-    
+	$(document).on('click', '.js-shop-count-down', function () {
+		let target = $('#' + $(this).data('target'));
+		if (target.length) {
+			let newVal = parseInt(target.val()) - 1;
+			target.val((newVal < 0) ? 0 : newVal);
+			target.trigger('change');
+		}
+		return false;
+	});
+	$(document).on('click', '.js-shop-count-up', function () {
+		let target = $('#' + $(this).data('target'));
+		if (target.length) {
+			let newVal = parseInt(target.val()) + 1;
+			target.val(newVal);
+			target.trigger('change');
+		}
+		return false;
+	});
+	jQuery("#lightgallery").lightGallery();
+
+	document.querySelectorAll('.popanel .closebox').forEach( function(s) { 
+					s.addEventListener('mouseup', function(e) { 
+										let panel = findParentBy(e.target, function(o) { return o.className.match('popanel') } );
+										panel.hidden = true }) 
+			} );
+
 });
 
 function setHandler(el, hdlr, callbk, prior) {			// To set queue of event handlers

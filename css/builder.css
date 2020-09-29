@@ -453,6 +453,7 @@ div#shop-order {
 }
 #o-msg {
 	color:var(--z-purple,'#f6f3ff');
+	max-width:20%;
 }
 /* CLOTH */
 div.cloth-list {

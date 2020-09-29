@@ -64,11 +64,13 @@
 <?php
 foreach ($clothes as $item) {
 	$short_title = preg_replace('/\s*зебра\s*/i', '', $item['post_title']);
-	echo '<li class="cloth-list-item" id="clo_',$item['ID'],'" style="background-image:url(\'',$item['gallery'][0],'\')"';		//  data-toggle="tooltip"
-	echo 'title="',$short_title,'" data-cloth-id="',$item['ID'],'" data-texture-lvt="',$item['texture_lvt'],'" data-texture-mini="',$item['texture_mini'],'" ';
-	echo 'data-texture-uni="',$item['texture_uni'],'" data-cat="',$item['fields']['категория'],'" data-short-title="',$short_title,'" data-title="',$item['post_title'],'" ';
-	echo 'data-vendor-code="',$item['vendor_code'][0],'" data-color-cloth="',$item['fields']['цвет'],'" ';
+	echo '<li class="cloth-list-item" id="clo_',$item['ID'],'" style="background-image:url(\'',$item['gallery'][0],'\')" ';		//  data-toggle="tooltip"
+	echo 'title="',$short_title,'" data-cat="',$item['fields']['категория'],'" data-title="',$item['post_title'],'" ';
 	echo 'data-popularity="',isset($item['fields']['popularity']) ? $item['fields']['popularity'] : '0','"',">\n";
+// Obsoleted dataset:
+// 	echo 'data-texture-uni="',$item['texture_uni'];
+//  data-cloth-id="',$item['ID'],'" data-texture-lvt="',$item['texture_lvt'],'" data-texture-mini="',$item['texture_mini'],'" 
+//	echo 'data-short-title="',$short_title,'" data-vendor-code="',$item['vendor_code'][0],'" data-color-cloth="',$item['fields']['цвет'],'" ';
 	echo '<i aria-hidden="true" class="clo-info"><img src="',bloginfo('template_url'),'/images/icons/findglass.svg" /></i>',"\n";
 	echo '<input hidden type="radio" class="form-check-input" name="cloth" value="',$item['ID'],'" />',"\n";
 	echo "</li>\n";
@@ -164,8 +166,8 @@ foreach ($clothes as $item) {
 								<a href="#" target="_blank" disabled><img src="<?php echo get_template_directory_uri() ?>/images/icons/icon-play.svg" /></a>
 							</div>
 						</div>
-					</div>
-				</div>
+					</div>		<!-- Dimensions inputs -->
+				</div>		<!-- Dimensions input row -->
 			</div>		<!--opt-list-->
 		</div>		<!--builder-right-->
 	</div>
@@ -192,7 +194,7 @@ foreach ($clothes as $item) {
 			</div>
 			<div id="o-shop" class="order-detail">
 				<div>
-					<span id="o-add" class="btn btn-app">Добавить</span>
+					<span id="o-check" class="btn btn-app">Добавить</span>
 					<span id="o-cart" class="btn btn-app alt">Корзина</span>
 				</div>
 			</div>
@@ -201,6 +203,7 @@ foreach ($clothes as $item) {
 </div>		<!-- shop-order -->
 <div class="page-set">
 	<?php 
+		include('buildermod.php');
 		// Sample content
 		$post = get_post(8032);
 		echo $post->post_content;

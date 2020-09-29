@@ -472,21 +472,30 @@ footer .header {
 /**
  * Inbox modals
  */
-.modals {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    display: none;
-    padding: 1rem;
-    z-index: 10;
+.popanel {
+	position: fixed;
+	top: 2em;
+	bottom: 2em;
+	padding: 1rem;
+	z-index: 5;
+	background-color: var(--body-back, '#ffffff');
+	box-shadow: 0px 0px 1em var(--z-gray, '#999999');
+	-moz-box-shadow: 0px 0px 1em var(--z-gray, '#999999');
+	-o-box-shadow: 0px 0px 1em var(--z-gray, '#999999');
+	-webkit-box-shadow: 0px 0px 1em var(--z-gray, '#999999');
+	width: 50%;
+	left: 25%;
+	overflow-y: auto;
 }
-.modals.show {
-    display: block;
-}
-#goToCart {
-    background-color: rgba(0,0,0,.3);
+.popanel .closebox {
+	float: right;
+	margin-top: -1rem;
+	margin-right: -1rem;
+	cursor: pointer;
+	color: rgba(153,0,0,1);
+	font-weight:bold;
+	font-size: 150%;
+	line-height:1;
 }
 
 /**

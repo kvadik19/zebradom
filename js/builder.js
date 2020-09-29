@@ -43,45 +43,46 @@ jQuery(function ($) {
 					});
 
 	let windows = {
-		white: {
-			"color": "FFFFFF",
-			"name": "Белый"
-		},
-		oaklight: {
-			"color": "BE8E58",
-			"name": "Дуб светлый"
-		},
-		oakgold: {
-			"color": "7C491C",
-			"name": "Золотой дуб"
-		},
-		mahagon: {
-			"color": "380805",
-			"name": "Махагон"
-		},
-		brown: {
-			"color": "371305",
-			"name": "Коричневый"
-		},
-		black: {
-			"color": "060A06",
-			"name": "Черный",
-		},
-		antracit: {
-			"color": "3D4344",
-			"name": "Антрацит"
-		},
-		gray: {
-			"color": "97A3A5",
-			"name": "Серый"
-		}
-	};
-	
+			white: {
+				"color": "FFFFFF",
+				"name": "Белый"
+			},
+			oaklight: {
+				"color": "BE8E58",
+				"name": "Дуб светлый"
+			},
+			oakgold: {
+				"color": "7C491C",
+				"name": "Золотой дуб"
+			},
+			mahagon: {
+				"color": "380805",
+				"name": "Махагон"
+			},
+			brown: {
+				"color": "371305",
+				"name": "Коричневый"
+			},
+			black: {
+				"color": "060A06",
+				"name": "Черный",
+			},
+			antracit: {
+				"color": "3D4344",
+				"name": "Антрацит"
+			},
+			gray: {
+				"color": "97A3A5",
+				"name": "Серый"
+			}
+		};
+
 	let $activeClothUrl = null;
 	let activeBGColor = "rgb(221,221,221)";
 	let activeWindowColor = "white";
 	let activeState = "CLOSE";
 	let activeModelColor = "white";
+	let activeModel = 'LTE';
 
 	let ajaxDelay = 0;			// Delay timeout handler before send getPrice() AJAX to server
 
@@ -121,6 +122,7 @@ jQuery(function ($) {
 				};
 			self.displayP = function(num) {
 					if (!num) num = qty.value * 1;
+					activeCount = num;
 					document.querySelector('#o-total>p').innerHTML = self.calc(num);
 					document.querySelector('#o-info>p').innerHTML = document.querySelector('#o-info>p').innerHTML.replace(/(\-)\s*\d+\s*(шт)/i, '$1 '+num+' $2');
 					return self;
@@ -128,20 +130,20 @@ jQuery(function ($) {
 		};
 
 	var getPrice = function() {
-			let $activeCloth = $(".cloth-list .cloth-list-item[data-cloth-id=" + activeCloth + "]");
+			let $activeCloth = cloths[activeModelType].find( x=>x.ID == activeCloth);
 
 			activeWidth = document.getElementById('size_width').value;
 			activeHeight = document.getElementById('size_height').value;
 			activeControl = document.getElementById('control').dataset.value;
 			activeCount = document.getElementById('count').value;
 
-			let model = 'UNI 2';
+			activeModel = 'UNI 2';
 			if ( activeModelMount === 'open' ) {
-				model = 'LVT';
+				activeModel = 'LVT';
 			} else if ( activeModelEquip === 'default' ) {
-				model = 'MINI';
+				activeModel = 'MINI';
 			}
-			if ( activeModelType === 'zebra' ) model += '-ЗЕБРА';
+			if ( activeModelType === 'zebra' ) activeModel += '-ЗЕБРА';
 
 			let doShow = function(map) {			// Place data onto suitable nodes
 					let panels = document.querySelectorAll('#shop-order .order-detail');
@@ -170,14 +172,14 @@ jQuery(function ($) {
 						type: "POST",
 						data: {
 							action: "getPrice",
-							model: model,
+							model: activeModel,
 							mount: activeModelMount,
 							type: activeModelType,
 							cloth: activeCloth,
 							control: activeControl,
 							electro: activeControl === "electro",
 							equip: activeModelEquip,
-							category: $activeCloth.data("cat"),
+							category: $activeCloth.fields[ fieldsOpt.find(o => o.name==='cat').field ],
 							width: activeWidth,
 							height: activeHeight,
 							count: activeCount
@@ -185,42 +187,89 @@ jQuery(function ($) {
 						beforeSend: function () {
 						},
 						success: function (data) {
+							// Restore variables to values which was been passed to server 
+							activeCloth = data.request.cloth;
+							activeModel = data.request.model;
+							activeModelType = data.request.type;
+							activeModelMount = data.request.mount;
+							activeControl = data.request.control;
+							activeModelEquip = data.request.equip;
+							activeWidth = data.request.width*1;
+							activeHeight = data.request.height*1;
+							activeCount = data.request.count*1;
+							$activeCloth = cloths[activeModelType].find( x=>x.ID == activeCloth);
+
 							let max_width = data.sizes_range.max_width;
 							let max_height = data.sizes_range.max_height;
+							let calcWidth = activeWidth;
+							let calcHeight = activeHeight;
+
 							if (data.sizes_guarantee) {
 								max_width =  data.sizes_guarantee.width || data.sizes_range.max_width;
 								max_height = data.sizes_guarantee.height || data.sizes_range.max_height;
+								calcWidth = data.sizes_guarantee.width || activeWidth;
+								calcHeight = data.sizes_guarantee.height || activeHeight;
 							}
 							let message = 'Ширина: от ' + data.sizes_range.min_width + ' до ' + max_width + ' см;<br>'
 										+'Высота: от ' + data.sizes_range.min_height + ' до ' + max_height + ' см';
-							let calcWidth = data.request.width*1;
-							let calcHeight = data.request.height*1;
 
-				if( data.request.mount === "flap") {
-					calcHeight = data.request.height*1;
-				} else {
-					message += '<br>Габаритный размер по ширине: '+ data.request.width +' см.';
-				}
-				calcWidth = data.request.width*1 + 3.5;
-				if( data.request.model == "UNI 2") calcWidth = data.request.width*1 + 1.8;
-				
-				if( data.request.model == "UNI 2" ) {
-					$(".js-order-confirm-width-gb").text(parseInt(activeWidth) - 1.8);
-				}
-				else{
-					$(".js-order-confirm-width-gb").text(parseInt(activeWidth) - 3.5);
-				}
-				$(".js-order-confirm-height-gb").text(activeHeight);
-				$(".js-order-confirm-height-upr").text(parseInt(activeHeight) * 3 / 4);
+							let orderData = {
+										'imgs': [],
+										'check':[
+												{'show':true,'name':'model', 'title':'Изделие', 'value': activeModel},
+												{'show':true,'name':'cloth', 'title':'Ткань', 'value': $activeCloth.post_title},
+												{'show':true,'name':'sku', 'title':'Артикул', 'value': $activeCloth.vendor_code.join(', ')},
+												{'show':true,'name':'colorName', 'title':'Цвет', 'value': $activeCloth.fields[ fieldsOpt.find(o => o.name==='colorName').field]},
+												{'show':true,'name':'uwidth', 'title':'Ширина по замеру', 'value': activeWidth},
+												{'show':true,'name':'gwidth', 'title':'Ширина по габариту', 'value': activeWidth},
+												{'show':true,'name':'cwidth', 'title':'Ширина по ткани', 'value': activeWidth},
+												{'show':true,'name':'uheight', 'title':'Высота по замеру', 'value': activeHeight},
+												{'show':true,'name':'gheight', 'title':'Высота по габариту', 'value': activeHeight},
+												{'show':true,'name':'cheight', 'title':'Высота по ткани', 'value': activeHeight},
+												{'show':true,'name':'ctrlen', 'title':'Длина управления', 'value': activeHeight/4*3},
+												{'show':true,'name':'eqcolor', 'title':'Цвет фурнитуры', 'value': windows[activeWindowColor].name.toLowerCase()},
+												{'show':true,'name':'control', 'title':'Управление', 
+																	'value':document.getElementById('control_pd').querySelector('[data-value="'+activeControl+'"]').innerText },
+											], 
+									};
+							if (data.imgs && data.imgs.length ) orderData.imgs = data.imgs;
 
+							if( data.request.mount === "flap") {
+								orderData.check.find(i => i.name==='gwidth').show = false;
+								orderData.check.find(i => i.name==='gheight').show = false;
+								orderData.check.find(i => i.name==='gwidth').value = activeWidth + 3.5;
+								if (activeModel == 'UNI2') {
+									orderData.check.find(i => i.name==='gwidth').value = activeWidth + 1.8;
+								}
+							} else {
+								orderData.check.find(i => i.name==='gwidth').show = false;
+								orderData.check.find(i => i.name==='gheight').show = false;
+								orderData.check.find(i => i.name==='gwidth').value = activeWidth - 3.5;
+								if (activeModel == 'UNI2') {
+									orderData.check.find(i => i.name==='gwidth').value = activeWidth - 1.8;
+								}
+							}
 
-							
-							let cloth = cloths[data.request.type].find( function(c) { return c.ID == data.request.cloth } );
-							let showMap = {
+							if ( !data.is_guarantee ) {
+								orderData.alert = 'Мы не гарантируем изготовление по этим размерам.';
+								if (data.sizes_guarantee.height || data.sizes_guarantee.width) {
+									orderData.alert += ' Гарантируемый размер &ndash;';
+									if (data.sizes_guarantee.height) {
+										orderData.alert += ' до ' + data.sizes_guarantee.height + '&nbsp;по высоте';
+									}
+									if (data.sizes_guarantee.width) {
+										if (data.sizes_guarantee.height) orderData.alert += ' и/или ';
+										orderData.alert += ' до ' + data.sizes_guarantee.width + '&nbsp;по ширине';
+									}
+								}
+								message = orderData.alert.bold().fontcolor('#990000');
+							}
+ 
+							orderData.showMap = {
 									'o-info':{
 												'label':'Штора '+document.querySelector('.order-opt[data-name="type"] .option[data-value="'
 																				+data.request.type+'"] *:first-child').innerText.toLowerCase(),
-												'p':'Ткань '+cloth.post_title+', '+calcWidth+'x'+calcHeight+' см - '+data.request.count+' шт.'
+												'p':'Ткань &laquo;'+$activeCloth.post_title+'&raquo;, '+calcWidth+'x'+calcHeight+' см - '+data.request.count+' шт.'
 													+' Крепление '+document.querySelector('.order-opt[data-name="mount"] .option[data-value="'
 																				+data.request.mount+'"] *:first-child').innerText.replace(/\s/g,'&nbsp;').toLowerCase()
 													+', управление '+document.querySelector('.order-input #control').innerText.replace(/\s/g,'&nbsp;').toLowerCase()
@@ -238,7 +287,7 @@ jQuery(function ($) {
 												'label':message,
 											},
 								};		// showMap declaration end
-							doShow(showMap);
+							doShow( orderData.showMap );
 						}
 					});
 				};		// doQuery function
@@ -277,6 +326,31 @@ jQuery(function ($) {
 		};
 	sample.parentNode.addEventListener('click', callWallColor);		// Whole zone clickable
 
+	let content = document.getElementById('color-frame');
+	content.innerHTML = '';
+	for (color in windows) {
+		let isActive = activeWindowColor === color ? "active" : "";
+		let e = hex2hsl(windows[color].color);
+		let borderColor = lightenDarkenColor(windows[color].color, 100);
+		if ((e[0] < 0.55 && e[2] >= 0.5) || (e[0] >= 0.55 && e[2] >= 0.75)) {
+			borderColor = lightenDarkenColor(windows[color].color, -80);
+		}
+		let ctrl = createObj('div', {'className':'window-color '+isActive,'title':windows[color].name,
+							'data-toggle':'tooltip','data-color-name':color,'data-placement':'top',
+							'style.backgroundColor':'#'+windows[color].color,'style.color':'#'+borderColor,'style.borderColor':'#'+borderColor,
+							'onclick':function() { let color = this.dataset.colorName;
+											content.querySelectorAll('div.window-color.active').forEach( 
+																	function(d) { d.className = d.className.replace(/\s*active/g,'')} 
+																										);
+											if ( windows[color] ) {
+												this.className += ' active';
+												activeWindowColor = color;
+											}
+										},
+								});
+		content.appendChild(ctrl);
+	}
+
 	var fieldsOpt = [
 			{'name':'density', 'field':'вес_гм2', 'title':''},
 			{'name':'type', 'field':'вид_модели', 'title':''},
@@ -307,7 +381,7 @@ jQuery(function ($) {
 				checked.forEach(
 								function(li) {
 									let key = li.parentNode.id.replace(/_pd$/,'');
-									if ( !param[key] ) param[key] = { 'field':fieldsOpt.find( function(o) { return o.name==key } ).field, 'values':[] };
+									if ( !param[key] ) param[key] = { 'field':fieldsOpt.find(o =>o.name===key).field, 'values':[] };
 									param[key].values.push( li.dataset.value );
 								}
 							);
@@ -396,12 +470,12 @@ jQuery(function ($) {
 																}, 
 										});
 				if ( ctrl.dataset.filter ) {
-					let opt = fieldsOpt.find( function(o) { return o.name == ctrl.dataset.filter } );
+					let opt = fieldsOpt.find(o => o.name === ctrl.dataset.filter);
 					if ( opt ) {
 						if ( opt.title.length > 0 ) ctrl.innerText = opt.title;
 						let ref = null;
 						if ( ctrl.dataset.ref ) {
-							ref = fieldsOpt.find( function(o) { return o.name == ctrl.dataset.ref } );
+							ref = fieldsOpt.find(o => o.name === ctrl.dataset.ref );
 						}
 						let vals = {};
 						let cnt = 0;
@@ -632,42 +706,43 @@ jQuery(function ($) {
 					});
 		};
 
+	var cloSelector = function (e) {
+			let host = e.target;
+			let clothId = parseInt( host.id.match(/clo_(\d+)$/i)[1] );
+			if ( host.className.match(/active/i) ) {
+				let cloth = cloths[activeModelType].find( c=> c.ID == clothId );
+				let clothFields = cloth.fields;
+				let modal = $("#clothInfo");
+				let thumbs = modal.find(".cloth-info-thumbs");
+				thumbs.html("");
+				cloth.gallery.forEach(function (img) {
+										thumbs.append("<div class=\"cloth-info-thumb\"><img src=\"" + img + "\" alt=\"\"></div>");
+									});
+				modal.find(".cloth-info-thumb:first-child").trigger("click");
+				modal.find(".cloth-info-title").text(cloth.post_title);
+				modal.find(".cloth-info-name").text(cloth.post_title);
+				modal.find(".cloth-info-vendor-code").text(cloth.vendor_code);
+				modal.find(".cloth-info-cat").text(clothFields.категория);
+				modal.find(".cloth-info-unit").text(clothFields.единица_измерения);
+				modal.find(".cloth-info-transparent").text(clothFields.прозрачность + "%");
+				modal.find(".cloth-info-width").text(clothFields.ширина_рулона);
+				modal.find(".cloth-info-structure").text(clothFields.структура);
+				modal.find(".cloth-info-weight").text(clothFields.вес_гм2);
+				modal.find(".cloth-info-wet-rooms").text(clothFields.пригодность_для_влажных_помещений ? "Да" : "Нет");
+				modal.find(".cloth-info-fade-resistance").text(clothFields.стойкость_к_выгоранию);
+				modal.find(".cloth-info-wash").text(clothFields.уход_и_чистка);
+				modal.find(".cloth-info-color").text(clothFields.цвет);
+				modal.find(".cloth-info-country").text(clothFields.страна_происхождения);
+				modal.find(".cloth-info-certification").text(clothFields.сертификация ? "Да" : "Нет");
+				modal.modal("show");
 
-	$(document).on('click', 'li.cloth-list-item', function (e) {
-		let clothId = $(this).data("cloth-id");
+			} else {
+				setCloth(clothId);
+			}
+			return false;
+		};
 
-		if ($(this).is(".active")) {
-			let cloth = cloths[activeModelType].filter(function (x) {return x.ID == clothId} )[0];
-			let clothFields = cloth.fields;
-			let modal = $("#clothInfo");
-			let thumbs = modal.find(".cloth-info-thumbs");
-			thumbs.html("");
-			cloth.gallery.forEach(function (img) {
-									thumbs.append("<div class=\"cloth-info-thumb\"><img src=\"" + img + "\" alt=\"\"></div>");
-								});
-			modal.find(".cloth-info-thumb:first-child").trigger("click");
-			modal.find(".cloth-info-title").text(cloth.post_title);
-			modal.find(".cloth-info-name").text(cloth.post_title);
-			modal.find(".cloth-info-vendor-code").text(cloth.vendor_code);
-			modal.find(".cloth-info-cat").text(clothFields.категория);
-			modal.find(".cloth-info-unit").text(clothFields.единица_измерения);
-			modal.find(".cloth-info-transparent").text(clothFields.прозрачность + "%");
-			modal.find(".cloth-info-width").text(clothFields.ширина_рулона);
-			modal.find(".cloth-info-structure").text(clothFields.структура);
-			modal.find(".cloth-info-weight").text(clothFields.вес_гм2);
-			modal.find(".cloth-info-wet-rooms").text(clothFields.пригодность_для_влажных_помещений ? "Да" : "Нет");
-			modal.find(".cloth-info-fade-resistance").text(clothFields.стойкость_к_выгоранию);
-			modal.find(".cloth-info-wash").text(clothFields.уход_и_чистка);
-			modal.find(".cloth-info-color").text(clothFields.цвет);
-			modal.find(".cloth-info-country").text(clothFields.страна_происхождения);
-			modal.find(".cloth-info-certification").text(clothFields.сертификация ? "Да" : "Нет");
-			modal.modal("show");
-
-		} else {
-			setCloth(clothId);
-		}
-		return false;
-	});
+	$('li.cloth-list-item').on('click', cloSelector);
 
 	function setCloth(id) {			// Pass any bool to disable AJAX recalc
 		let reGet = true;
@@ -675,6 +750,7 @@ jQuery(function ($) {
 			if ( typeof(id) === 'boolean' ) reGet = false;
 			id = activeCloth;
 		}
+
 		let active = document.getElementById('clo_'+id);
 		let div = document.querySelector('div.cloth-list');
 		let spare = document.querySelector('li.cloth-list-item:not([hidden])');		// Any first visible sample
@@ -690,9 +766,15 @@ jQuery(function ($) {
 		if ( active ) {
 			document.querySelectorAll('li.cloth-list-item.active').forEach( function(l) { l.className = l.className.replace(/\s*active/g,'') });
 			active.className += ' active';
-			activeCloth = active.dataset.clothId;
+			activeCloth = parseInt( active.id.match(/clo_(\d+)$/i)[1] );
 			setLocation('?type='+activeModelType+'&cloth=' + activeCloth);
-			getClothData();
+
+			// getClothData obsoleted
+			$activeClothUrl = cloths[activeModelType].find(x=>x.ID == activeCloth);
+			let clothColor = $activeClothUrl.fields[ fieldsOpt.find(o => o.name==='colorCode').field ];
+			activeClothOpacity = $activeClothUrl.fields[ fieldsOpt.find(o => o.name==='opacity').field ];
+			activeModelType = $activeClothUrl.fields[ fieldsOpt.find(o => o.name==='type').field ];
+			if ( activeClothColors.indexOf(clothColor) < 0 ) activeClothColors.push(clothColor);
 
 			let dvBox = div.getBoundingClientRect();		// Place active tile into viewport
 			let liBox = active.getBoundingClientRect();
@@ -711,43 +793,6 @@ jQuery(function ($) {
 		}
 		checkListComplete();
 	}
-
-	function getClothData() {
-		$activeClothUrl = cloths[activeModelType].filter(x=>x.ID == activeCloth);
-		let clothColor = $activeClothUrl[0].fields[ fieldsOpt.find( function(o) { return o.name=='colorCode' } ).field ];
-		activeClothOpacity = $activeClothUrl[0].fields[ fieldsOpt.find( function(o) { return o.name=='opacity' } ).field ];
-		activeModelType = $activeClothUrl[0].fields[ fieldsOpt.find( function(o) { return o.name=='type' } ).field ];
-		if ( activeClothColors.indexOf(clothColor) < 0 ) activeClothColors.push(clothColor);
-	}
-
-	function createWindowColors() {
-		let content = document.getElementById('color-frame');
-		content.innerHTML = '';
-		for (color in windows) {
-			let isActive = activeWindowColor === color ? "active" : "";
-			let e = hex2hsl(windows[color].color);
-			let borderColor = lightenDarkenColor(windows[color].color, 100);
-			if ((e[0] < 0.55 && e[2] >= 0.5) || (e[0] >= 0.55 && e[2] >= 0.75)) {
-				borderColor = lightenDarkenColor(windows[color].color, -80);
-			}
-			let ctrl = createObj('div', {'className':'window-color '+isActive,'title':windows[color].name,
-								'data-toggle':'tooltip','data-color-name':color,'data-placement':'top',
-								'style.backgroundColor':'#'+windows[color].color,'style.color':'#'+borderColor,'style.borderColor':'#'+borderColor,
-								'onclick':function() { let color = this.dataset.colorName;
-												content.querySelectorAll('div.window-color.active').forEach( 
-																		function(d) { d.className = d.className.replace(/\s*active/g,'')} 
-																										   );
-												if ( windows[color] ) {
-													this.className += ' active';
-													activeWindowColor = color;
-												}
-											},
-									});
-			content.appendChild(ctrl);
-		}
-	}
-
-	createWindowColors();
 
     /**
      * Clothes
@@ -794,16 +839,17 @@ jQuery(function ($) {
 					let li = createObj('li', {'className':'cloth-list-item', 'id':'clo_'+cloth.ID,
 										'style.backgroundImage':'url(\''+cloth.gallery[0]+'\')',
 										'title':short_title,
-										'data-cloth-id':cloth.ID,
-										'data-texture-lvt':cloth.texture_lvt,
-										'data-texture-mini':cloth.texture_mini,
-										'data-texture-uni':cloth.texture_uni,
-										'data-cat':cloth.fields['категория'],
-										'data-popularity':cloth.fields['popularity'] || '0',
-										'data-short-title':short_title,
+// 										'data-cloth-id':cloth.ID,
+// 										'data-texture-lvt':cloth.texture_lvt,				// Obsoleted to reduce code weight
+// 										'data-texture-mini':cloth.texture_mini,
+// 										'data-texture-uni':cloth.texture_uni,
+										'data-cat':cloth.fields[fieldsOpt.find(o => o.name==='cat').field],		// Used in fireSort
+										'data-popularity':cloth.fields['popularity'] || '0',		// Used in fireSort
+// 										'data-short-title':short_title,
 										'data-title':cloth.post_title,
-										'data-vendor-code':cloth.vendor_code,
-										'data-color-cloth':cloth.fields['цвет']
+// 										'data-vendor-code':cloth.vendor_code,
+// 										'data-color-cloth':cloth.fields[ fieldsOpt.find(o => o.name==='colorName').field ]
+										'onclick':cloSelector,
 									});
 					li.appendChild( createObj('i',{'className':'clo-info','aria-hidden':true,'innerHTML':'<img src="'+template_url+'/images/icons/findglass.svg" />'}) );
 					li.appendChild( createObj('input',{'type':'radio','hidden':true,'name':'cloth','value':cloth.ID,'className':'form-check-input'}));
@@ -869,6 +915,10 @@ jQuery(function ($) {
     /**
      * Orders
      */
+	document.getElementById('o-check').addEventListener('mouseup', function(e) {
+			document.getElementById('o-confirm').hidden = !document.getElementById('o-confirm').hidden;
+		});
+	
 	$("[data-infom-target='order']").on("click", function () {
         $("#all-right").prop('checked', false);
 		$(".btn-order").addClass("disabled");
@@ -1023,53 +1073,53 @@ jQuery(function ($) {
             return needResize;
         }
 
-        function render() {
-            scene.background.set(activeBGColor);
-            resizeRendererToDisplaySize(renderer);
-            updateImages();
-            renderer.render(scene, camera);
-            requestAnimationFrame(render);
-            //renderer.clear();
-        }
+		function render() {
+			scene.background.set(activeBGColor);
+			resizeRendererToDisplaySize(renderer);
+			if ( cloths[activeModelType] ) updateImages();
+			renderer.render(scene, camera);
+			requestAnimationFrame(render);
+			//renderer.clear();
+		}
 
-        function updateImages() {
-            let modelUrl = activeModelType + "/" + activeModelColor + "-";
-            let model = "";
-            let clothLoadPost = true;
-            let $activeCloth = $(".cloth-list .cloth-list-item [data-cloth-id=" + activeCloth + "]");
-            if (activeModelMount === "open") {
-                activeState = "CLOSE";
-                modelUrl += "lvt-";
-                model = "lvt";
-                if (activeModelEquip === "default") {
-                    modelUrl += "classic";
-                } else {
-                    clothLoadPost = false;
-                    modelUrl += "cassette";
-                }
-            } else {
-                if (activeModelEquip === "default") {
-                    activeState = "OPEN";
-                    model = "mini";
-                    modelUrl += "mini";
-                } else {
-                    activeState = "OPENCLOSE";
-                    model = "uni";
-                    modelUrl += "uni";
-                }
-            }
+		function updateImages() {
+			let $activeCloth = cloths[activeModelType].find(c => c.ID==activeCloth);
+			if ( !$activeCloth ) return;			// activeType may be switched
+			let modelUrl = activeModelType + "/" + activeModelColor + "-";
+			let model = "";
+			let clothLoadPost = true;
+			if (activeModelMount === "open") {
+				activeState = "CLOSE";
+				modelUrl += "lvt-";
+				model = "lvt";
+				if (activeModelEquip === "default") {
+					modelUrl += "classic";
+				} else {
+					clothLoadPost = false;
+					modelUrl += "cassette";
+				}
+			} else {
+				if (activeModelEquip === "default") {
+					activeState = "OPEN";
+					model = "mini";
+					modelUrl += "mini";
+				} else {
+					activeState = "OPENCLOSE";
+					model = "uni";
+					modelUrl += "uni";
+				}
+			}
 
-            updateImage("window", template_url + "/images/builder/windows/" + activeWindowColor + "-" + activeState + ".png");
-            updateImage("model", template_url + "/images/builder/models/" + modelUrl + ".png");
-            updateImage("furniture", template_url + "/images/builder/models/furniture/" + modelUrl + ".png");
-              if($activeClothUrl !== null){
-                  updateImage("material", $activeClothUrl[0]['texture_' + model], clothLoadPost ? 6 : 3);
-                  $activeClothUrl = null;
-             }
-             else{
-                updateImage("material", $activeCloth.data("texture-" + model), clothLoadPost ? 6 : 3);
-            }
-        }
+			updateImage("window", template_url + "/images/builder/windows/" + activeWindowColor + "-" + activeState + ".png");
+			updateImage("model", template_url + "/images/builder/models/" + modelUrl + ".png");
+			updateImage("furniture", template_url + "/images/builder/models/furniture/" + modelUrl + ".png");
+			if($activeClothUrl !== null){
+				updateImage("material", $activeClothUrl['texture_' + model], clothLoadPost ? 6 : 3);
+				$activeClothUrl = null;
+			} else {
+				updateImage("material", $activeCloth['texture-' + model], clothLoadPost ? 6 : 3);
+			}
+		}
         render();
     }
 });
