@@ -62,8 +62,8 @@
 					<?php echo is_user_logged_in() ? 'Личный кабинет' : 'Войти' ?>
 				</a>
 				<a class="btn header-link" href="/cart">
-					<span  class="header-cart">
-						<img src="<?php echo get_template_directory_uri() ?>/images/icons/cart.svg" class="icon" /><span>
+					<img src="<?php echo get_template_directory_uri() ?>/images/icons/cart.svg" class="icon" />
+					<span  class="cart-count"><?php echo WC()->instance()->cart->cart_contents_count ?></span>
 					Корзина
 				</a>
 <!-- 			</section> -->

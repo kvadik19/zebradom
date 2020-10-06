@@ -36,7 +36,8 @@ jQuery(function ($) {
 	document.getElementById('builder-display').style.top = (document.getElementById('bar-top').offsetHeight+10)+'px';
 
 	let canvas = document.querySelector('canvas#canvas');
-
+	let scene;
+	let camera;				// Need to use outside the builder()
 	let renderer = new THREE.WebGLRenderer({
 						canvas: canvas,
 						preserveDrawingBuffer: true
@@ -93,6 +94,10 @@ jQuery(function ($) {
 	var activeModelEquip = $('.order-opt[data-name="equip"] .sel').data('value');
 	var activeClothColors = [];
 
+	let preset = getCookie('builder');
+	if (preset) {				// Restore user settings here
+		console.log(preset);
+	}
 	var activeWidth = document.getElementById('size_width').value;
 	var activeHeight = document.getElementById('size_height').value;
 	var activeControl = document.getElementById('control').dataset.value;
@@ -118,13 +123,16 @@ jQuery(function ($) {
 			self.calc = function(num) {
 					if (!num) num = qty.value * 1;
 					activeCount = num;
-					return self.format(self.price * activeCount);
+					document.querySelector('div#o-data li.o-data[data-name="count"] .chValue').innerHTML = activeCount+'&nbsp;шт.';
+					let res = self.format(self.price * activeCount);
+					$('p.o-total').html(res);
+					return res;
 				};
 			self.displayP = function(num) {
 					if (!num) num = qty.value * 1;
 					activeCount = num;
-					document.querySelector('#o-total>p').innerHTML = self.calc(num);
-					document.querySelector('#o-info>p').innerHTML = document.querySelector('#o-info>p').innerHTML.replace(/(\-)\s*\d+\s*(шт)/i, '$1 '+num+' $2');
+					document.querySelector('#o-total>p').innerHTML = self.calc(activeCount);
+					document.querySelector('#o-info>p').innerHTML = document.querySelector('#o-info>p').innerHTML.replace(/([\D]+)\s*\d+\D*(шт)/i, '$1'+activeCount+'&nbsp;$2');
 					return self;
 				};
 		};
@@ -143,15 +151,16 @@ jQuery(function ($) {
 			} else if ( activeModelEquip === 'default' ) {
 				activeModel = 'MINI';
 			}
-			if ( activeModelType === 'zebra' ) activeModel += '-ЗЕБРА';
+			if ( activeModelType === 'zebra' ) activeModel = activeModel.replace(/\s+/,'') + '-ЗЕБРА';				// FUCKING UNI 2 && UNI2 !!!
 
 			let doShow = function(map) {			// Place data onto suitable nodes
 					let panels = document.querySelectorAll('#shop-order .order-detail');
 					let display = function(d) {
 											if ( !d.querySelector('p') ) return;
 											d.querySelector('p').innerHTML = '<img src="'+template_url+'/images/icons/load-dots.svg" width="100"/>';
+											document.querySelector('.btn.o-check').setAttribute('disabled', true);
 										};
-					if ( typeof(map) === 'object' ) {		// See showMap below
+					if ( typeof(map) === 'object' ) {		// See orderData.showMap below
 						display = function(d) {
 											let out = map[d.id];
 											if (out) {
@@ -160,6 +169,7 @@ jQuery(function ($) {
 														document.querySelector('#shop-order #'+d.id+'>'+p).innerHTML = out[p];
 													});
 											}
+											document.querySelector('.btn.o-check').removeAttribute('disabled');
 										};
 					}
 					panels.forEach( display );
@@ -198,10 +208,14 @@ jQuery(function ($) {
 							activeHeight = data.request.height*1;
 							activeCount = data.request.count*1;
 							$activeCloth = cloths[activeModelType].find( x=>x.ID == activeCloth);
+							setCookie('builder', {'size_width':activeWidth,'size_height':activeHeight,
+																'control':activeControl,
+																'mount':activeModelMount,'equip':activeModelEquip}, 
+				 								{'expires':'1Y'});
 
 							let max_width = data.sizes_range.max_width;
 							let max_height = data.sizes_range.max_height;
-							let calcWidth = activeWidth;
+							let calcWidth = activeWidth;			// 
 							let calcHeight = activeHeight;
 
 							if (data.sizes_guarantee) {
@@ -213,42 +227,55 @@ jQuery(function ($) {
 							let message = 'Ширина: от ' + data.sizes_range.min_width + ' до ' + max_width + ' см;<br>'
 										+'Высота: от ' + data.sizes_range.min_height + ' до ' + max_height + ' см';
 
+							let showImg = document.querySelector('div#o-img');
+							if ( !showImg.dataset.cache ) showImg.dataset.cache = '';
+							while ( showImg.firstElementChild ) { 
+								if ( showImg.firstElementChild.className.match(/fluid/) ) {
+									showImg.dataset.cache += (showImg.firstElementChild.src+';');
+								}
+								showImg.removeChild(showImg.firstElementChild) 
+							}
+
 							let orderData = {
-										'imgs': [],
+										'imgs': showImg.dataset.cache.replace(/;$/,'').split(';'),
+										'alert':'',
 										'check':[
 												{'show':true,'name':'model', 'title':'Изделие', 'value': activeModel},
 												{'show':true,'name':'cloth', 'title':'Ткань', 'value': $activeCloth.post_title},
 												{'show':true,'name':'sku', 'title':'Артикул', 'value': $activeCloth.vendor_code.join(', ')},
+												{'show':true,'name':'opacity', 'title':'Светопроницаемость,%', 'value': $activeCloth.fields[ fieldsOpt.find(o => o.name==='opacity').field]},
 												{'show':true,'name':'colorName', 'title':'Цвет', 'value': $activeCloth.fields[ fieldsOpt.find(o => o.name==='colorName').field]},
-												{'show':true,'name':'uwidth', 'title':'Ширина по замеру', 'value': activeWidth},
-												{'show':true,'name':'gwidth', 'title':'Ширина по габариту', 'value': activeWidth},
-												{'show':true,'name':'cwidth', 'title':'Ширина по ткани', 'value': activeWidth},
-												{'show':true,'name':'uheight', 'title':'Высота по замеру', 'value': activeHeight},
-												{'show':true,'name':'gheight', 'title':'Высота по габариту', 'value': activeHeight},
-												{'show':true,'name':'cheight', 'title':'Высота по ткани', 'value': activeHeight},
-												{'show':true,'name':'ctrlen', 'title':'Длина управления', 'value': activeHeight/4*3},
+												{'show':true,'name':'uwidth', 'title':'Ширина по замеру, см', 'value': activeWidth},
+												{'show':true,'name':'gwidth', 'title':'Ширина по габариту, см', 'value': activeWidth},
+												{'show':true,'name':'cwidth', 'title':'Ширина по ткани, см', 'value': activeWidth},
+												{'show':true,'name':'uheight', 'title':'Высота по замеру, см', 'value': activeHeight},
+												{'show':true,'name':'gheight', 'title':'Высота по габариту, см', 'value': activeHeight},
+												{'show':true,'name':'cheight', 'title':'Высота по ткани, см', 'value': activeHeight},
+												{'show':true,'name':'ctrlen', 'title':'Длина управления, см', 'value': activeHeight/4*3},
 												{'show':true,'name':'eqcolor', 'title':'Цвет фурнитуры', 'value': windows[activeWindowColor].name.toLowerCase()},
 												{'show':true,'name':'control', 'title':'Управление', 
 																	'value':document.getElementById('control_pd').querySelector('[data-value="'+activeControl+'"]').innerText },
+												{'show':true,'name':'count', 'title':'Количество, шт.', 'value': activeCount},
 											], 
 									};
 							if (data.imgs && data.imgs.length ) orderData.imgs = data.imgs;
 
 							if( data.request.mount === "flap") {
-								orderData.check.find(i => i.name==='gwidth').show = false;
-								orderData.check.find(i => i.name==='gheight').show = false;
+								orderData.check.find(i => i.name==='cwidth').show = false;
+								orderData.check.find(i => i.name==='cheight').show = false;
 								orderData.check.find(i => i.name==='gwidth').value = activeWidth + 3.5;
-								if (activeModel == 'UNI2') {
+								if ( activeModel.match(/^UNI\s*2$/i) ) {
 									orderData.check.find(i => i.name==='gwidth').value = activeWidth + 1.8;
 								}
 							} else {
-								orderData.check.find(i => i.name==='gwidth').show = false;
+								orderData.check.find(i => i.name==='cwidth').show = false;
 								orderData.check.find(i => i.name==='gheight').show = false;
 								orderData.check.find(i => i.name==='gwidth').value = activeWidth - 3.5;
-								if (activeModel == 'UNI2') {
+								if ( activeModel.match(/^UNI\s*2$/i) ) {
 									orderData.check.find(i => i.name==='gwidth').value = activeWidth - 1.8;
 								}
 							}
+							if ( data.request.electro ) orderData.check.find(i => i.name==='ctrlen').show = false;
 
 							if ( !data.is_guarantee ) {
 								orderData.alert = 'Мы не гарантируем изготовление по этим размерам.';
@@ -264,12 +291,26 @@ jQuery(function ($) {
 								}
 								message = orderData.alert.bold().fontcolor('#990000');
 							}
- 
+
+							let showList = document.querySelector('div#o-data>ul');
+							while ( showList.firstElementChild ) { showList.removeChild(showList.firstElementChild) };
+							orderData.check.forEach( li => {
+															if ( !li.show ) return;
+															let line = createObj('li',{'className':'o-data','data-name':li.name});
+															let [m, u] = li.title.match(/,(\s*\S{1,4})$/) || ['', ''];
+															let title = li.title.replace(/,(\s*\S{1,4})$/, '');
+															line.appendChild( createObj('span',{'className':'chTitle','innerHTML':title}) );
+															line.appendChild( createObj('span',{'className':'chValue','innerHTML':li.value+u}) );
+															showList.appendChild(line);
+														});
+							orderData.imgs.forEach( src => { showImg.appendChild( createObj('img',{'src':src})) } );
+							document.querySelector('div.o-footer p.o-msg').innerHTML = orderData.alert;
+
 							orderData.showMap = {
 									'o-info':{
 												'label':'Штора '+document.querySelector('.order-opt[data-name="type"] .option[data-value="'
 																				+data.request.type+'"] *:first-child').innerText.toLowerCase(),
-												'p':'Ткань &laquo;'+$activeCloth.post_title+'&raquo;, '+calcWidth+'x'+calcHeight+' см - '+data.request.count+' шт.'
+												'p':'Ткань &laquo;'+$activeCloth.post_title+'&raquo;, '+activeWidth+'x'+activeHeight+' см &ndash; '+data.request.count+'&nbsp;шт.'
 													+' Крепление '+document.querySelector('.order-opt[data-name="mount"] .option[data-value="'
 																				+data.request.mount+'"] *:first-child').innerText.replace(/\s/g,'&nbsp;').toLowerCase()
 													+', управление '+document.querySelector('.order-input #control').innerText.replace(/\s/g,'&nbsp;').toLowerCase()
@@ -278,7 +319,7 @@ jQuery(function ($) {
 											},
 									'o-total':{
 // 												'label':'Leave unchanged',
-												'p':showMoney.setPrice(data.price).calc()
+												'p':showMoney.setPrice(data.price).calc(),
 											},
 									'o-discnt':{
 												'p':showMoney.format(data.discount)
@@ -293,9 +334,104 @@ jQuery(function ($) {
 				};		// doQuery function
 
 			window.clearTimeout( ajaxDelay );
-			ajaxDelay = window.setTimeout( doQuery, 1500);			// Let User a bit of time to play!
+			ajaxDelay = window.setTimeout( doQuery, 1000);			// Let User a bit of time to play!
 		};			// getPrice variable
 
+	let screenKey = function(e) {			// Some keyboard operations while order confirmation window open
+			switch( e.keyCode ) {
+				case 27:			// Esc
+					closePop();
+					break;
+			};		/* keyCodes case switcher */
+		};
+
+	let closePop = function() {			// Hide order confirmation window
+			document.removeEventListener('keydown', screenKey);
+			$('.buttonbar .btn').attr('disabled', false);
+			$('#o-confirm .closebox').mouseup();
+		};
+	$('input[type="checkbox"]#o-chk').on('change', function() { 
+						if ( this.checked ) {
+							document.getElementById('o-add').removeAttribute('disabled');
+						} else {
+							document.getElementById('o-add').setAttribute('disabled', true);
+						}
+				});
+	document.querySelector('.btn.o-check').addEventListener('mouseup', function(e) {
+			if ( this.hasAttribute('disabled') ) return;
+			usePanel('#cart-confirm');
+			document.getElementById('dimmer').hidden = !document.getElementById('dimmer').hidden;
+			document.querySelector('input[type="checkbox"]#o-chk').checked = false;
+			document.getElementById('o-confirm').hidden = !document.getElementById('o-confirm').hidden;
+			document.getElementById('o-add').setAttribute('disabled', true);
+			setTimeout( e => {document.querySelector('div.o-content').scrollTo(0,0)}, 100);		// Only when visible!
+			document.addEventListener('keydown', screenKey);
+		});
+	$('.buttonbar .btn').on('mouseup', function(e) {
+					if ( e.target.hasAttribute('disabled') ) return;
+					if ( e.target.id === 'o-add' ) {
+						addToCart();
+					} else {
+						closePop();
+					}
+				});
+
+	var addToCart = function() {
+			if( document.querySelector('input[type="checkbox"]#o-chk').checked ) {
+				$('img#item').remove(); 
+				$('.buttonbar .btn').attr('disabled',true);
+				let await = createObj('img',{'id':'await','src':template_url+'/images/icons/load-dots.svg','style.width':100});
+				document.querySelector('div.o-footer').insertAdjacentElement('afterbegin', await);
+				renderer.render(scene, camera);					// Draw current design
+				canvas.toBlob( blob => { 
+										let src = new FileReader();
+										src.onload = function(e) { let sample = createObj( 'img',{'id':'item','src':e.target.result} );
+																	document.getElementById('item-show').appendChild(sample);
+																};
+										src.readAsDataURL(blob);
+									});
+
+				$.ajax({
+					url: "/wp-admin/admin-ajax.php",
+					type: "POST",
+					data: {
+						action: "addOrder",
+		   				model: activeModel,
+						equip: activeModelEquip,
+						control: activeControl,
+						mount: activeModelMount,
+						type: activeModelType,
+						cloth: activeCloth,
+						width: activeWidth,
+						height: activeHeight,
+						count: activeCount
+					},
+					success: function (data) {
+							if(data.status === "success") {
+								let cloth = cloths[data.type].find( x=>x.ID == data.cloth_id);
+								let [cartCount, cartPrice] = [0, 0];
+								data.cart.forEach( i => {cartCount += 1; cartPrice += (i.price*1 )} );
+// 								data.cart.forEach( i => {cartCount += (i.count*1); cartPrice += (i.price*1 )} );
+								$('.cart-count').text( cartCount );
+								$('.cart-price').text( cartPrice );
+
+								document.querySelector('#item-text .title').innerText 
+										= 'Штора '+document.querySelector('.order-opt[data-name="type"] .option[data-value="'+data.type+'"] *:first-child').innerText.toLowerCase(),
+								usePanel('#cart-success');
+// 								$("#goToCart").removeClass("fade").fadeIn(300);
+								$('.buttonbar .btn').attr('disabled',false);
+								$('div.o-footer img#await').remove(); 
+							}
+						},
+					fail: function( jqxhr, textStatus, error) {
+								host.src = synSrc;
+								console.log('Upload error : '+error+' - '+textStatus);
+// 								if (typeof(callback) === 'function') callback();
+						},
+				});
+			}
+		};
+	// Some about colors
 	let sample = document.getElementById('color-wall');
 	let callWallColor = function(evt) { 
 			evt.stopImmediatePropagation();
@@ -324,10 +460,14 @@ jQuery(function ($) {
 			document.addEventListener('click', hideMe);
 			
 		};
-	sample.parentNode.addEventListener('click', callWallColor);		// Whole zone clickable
+	function usePanel(selector) {
+		document.getElementById('o-confirm').querySelectorAll('.panel-content').forEach( d => d.style.display='none');
+		document.querySelector(selector).removeAttribute('style');
+	}
 
-	let content = document.getElementById('color-frame');
-	content.innerHTML = '';
+	sample.parentNode.addEventListener('click', callWallColor);		// Whole zone clickable
+	sample = document.getElementById('color-frame');
+	sample.innerHTML = '';
 	for (color in windows) {
 		let isActive = activeWindowColor === color ? "active" : "";
 		let e = hex2hsl(windows[color].color);
@@ -339,7 +479,7 @@ jQuery(function ($) {
 							'data-toggle':'tooltip','data-color-name':color,'data-placement':'top',
 							'style.backgroundColor':'#'+windows[color].color,'style.color':'#'+borderColor,'style.borderColor':'#'+borderColor,
 							'onclick':function() { let color = this.dataset.colorName;
-											content.querySelectorAll('div.window-color.active').forEach( 
+											sample.querySelectorAll('div.window-color.active').forEach( 
 																	function(d) { d.className = d.className.replace(/\s*active/g,'')} 
 																										);
 											if ( windows[color] ) {
@@ -348,8 +488,9 @@ jQuery(function ($) {
 											}
 										},
 								});
-		content.appendChild(ctrl);
+		sample.appendChild(ctrl);
 	}
+	// Some about colors END
 
 	var fieldsOpt = [
 			{'name':'density', 'field':'вес_гм2', 'title':''},
@@ -418,7 +559,7 @@ jQuery(function ($) {
 					}
 				});			// Apply filters
 			document.getElementById('countCloth').innerText = selectCount;
-			setCloth();
+			setCloth(false);
 		};
 
 	document.getElementById('filterRst').addEventListener('click', function() {
@@ -757,6 +898,7 @@ jQuery(function ($) {
 		if (active && active.hidden) {			// Active become hidden
 			if ( spare )  {
 				active = spare;
+				reGet = true;
 			} else {
 				active = false;
 			}
@@ -852,7 +994,7 @@ jQuery(function ($) {
 										'onclick':cloSelector,
 									});
 					li.appendChild( createObj('i',{'className':'clo-info','aria-hidden':true,'innerHTML':'<img src="'+template_url+'/images/icons/findglass.svg" />'}) );
-					li.appendChild( createObj('input',{'type':'radio','hidden':true,'name':'cloth','value':cloth.ID,'className':'form-check-input'}));
+// 					li.appendChild( createObj('input',{'type':'radio','hidden':true,'name':'cloth','value':cloth.ID,'className':'form-check-input'}));
 					clothList.appendChild(li);
 					countCloth++;
 				});
@@ -912,53 +1054,6 @@ jQuery(function ($) {
     }
 
 
-    /**
-     * Orders
-     */
-	document.getElementById('o-check').addEventListener('mouseup', function(e) {
-			document.getElementById('o-confirm').hidden = !document.getElementById('o-confirm').hidden;
-		});
-	
-	$("[data-infom-target='order']").on("click", function () {
-        $("#all-right").prop('checked', false);
-		$(".btn-order").addClass("disabled");
-    });
-	$("#all-right").on("click", function () {
-		if($(this).is(':checked')) $(".btn-order").removeClass("disabled");
-		else $(".btn-order").addClass("disabled");
-	});
-    $(document).on("click", ".btn-order:not(.disabled)", function (e) {
-        e.preventDefault();
-		if($("#all-right").is(":checked")) {
-			$.ajax({
-				url: "/wp-admin/admin-ajax.php",
-				type: "POST",
-				data: {
-					action: "addOrder",
-					equip: activeModelEquip,
-					control: activeControl,
-					mount: activeModelMount,
-					type: activeModelType,
-					cloth: activeCloth,
-					width: activeWidth,
-					height: activeHeight,
-					count: activeCount
-				},
-				success: function (data) {
-					if(data.status === "success") {
-						let cartCount = $(".js-order-cart-count");
-						cartCount.text(parseInt(cartCount.text()) + 1 * activeCount);
-						let cartPrice = $(".js-order-cart-price");
-                        cartPrice.text(parseInt(cartPrice.data('sum')) + data.price * activeCount);
-                        $("#goToCart").removeClass("fade").fadeIn(300);
-						$("[data-info='order'] [data-dismiss]").trigger("click");
-					}
-
-				}
-			});
-		}
-    });
-
     if (canvas){
         builder();
     }
@@ -967,12 +1062,12 @@ jQuery(function ($) {
 // 		renderer always declared
         let maxAnisotropy = renderer.capabilities.getMaxAnisotropy();
 
-        let camera = new THREE.PerspectiveCamera(40, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+        camera = new THREE.PerspectiveCamera(40, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
 		camera.position.set(0, 790, 0);
 		camera.up.set(0, 0, 1);
 		camera.lookAt(0, 0, 0);
 
-        let scene = new THREE.Scene();
+        scene = new THREE.Scene();
         let light = new THREE.AmbientLight(0xFFFFFF, 1);
 // 		light.castShadow = true;
         scene.add(light);

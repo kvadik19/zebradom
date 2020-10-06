@@ -460,37 +460,17 @@ function gallery_list_client($output, $attr)
 //ajax
 add_action('wp_ajax_addOrder', 'add_order');
 add_action('wp_ajax_nopriv_addOrder', 'add_order');
-function add_order()
-{
+function add_order() {
 	$equip = $_POST['equip'];
 	$control = $_POST['control'];
 	$mount = $_POST['mount'];
+	$model = $_POST['model'];
 	$type = $_POST['type'];
 	$cloth_id = $_POST['cloth'];
 	$width = $_POST['width'];
 	$height = $_POST['height'];
 	$count = $_POST['count'];
-	if ($type == 'zebra') {
-		if ($mount == 'open') {
-			$model = 'LVT-ЗЕБРА';
-		} else {
-			if ($equip == 'default') {
-				$model = 'MINI-ЗЕБРА';
-			} else {
-				$model = 'UNI2-ЗЕБРА';
-			}
-		}
-	} else {
-		if ($mount == 'open') {
-			$model = 'LVT';
-		} else {
-			if ($equip == 'default') {
-				$model = 'MINI';
-			} else {
-				$model = 'UNI 2';
-			}
-		}
-	}
+	
 	$category = get_field('категория', $cloth_id);
 	if ($category) {
 		$price = calc_price($model, $category, $equip, $width, $height, $control == 'electro');
@@ -499,7 +479,19 @@ function add_order()
 				$width, $height, $price['is_guarantee'], $price['price']);
 			global $woocommerce;
 			$woocommerce->cart->add_to_cart($product_id, $count);
-			echo json_encode([ "status" => "success", "price" => $price["price"]]);
+			$cart_content = [];
+			$woocart = $woocommerce->cart->cart_contents;
+			foreach ( $woocart as $key => $item) {
+				array_push( $cart_content, ['ID' => $item['product_id'], 'count' => $item['quantity'], 'price' => $item['line_total']]);
+			}
+			echo json_encode([ 'status' => 'success', 
+							'product_id' => $product_id,
+							'cloth_id' => $cloth_id,
+							'type' => $type, 
+							'count' => $count, 
+							'price' => $price["price"], 
+							'cart' => $cart_content,
+						]);
 			die;
 		}
 	}
@@ -575,7 +567,7 @@ function get_price( $set ) {
 	$count = $set['count'];
 
 	$price = calc_price($model, $category, $equip, $width, $height, $set['electro']);
-log_write( "Calc_price res: ".var_export($price, true) );
+// log_write( "Calc_price res: ".var_export($price, true) );
 
 	//Всегда брать для показа гарантийные высоту и ширину
 	//if (!$price['is_guarantee']) {
@@ -622,6 +614,7 @@ function calc_price($model, $category, $equip, $width, $height, $electro) {
 	$images_scheme = array();
 	
 	if ($model === 'LVT') {
+// log_write( 'LVT DETECTED '.$equip );
 		if ($equip === 'default') {
 			if (in_range($width, 2, 3) && in_range($height, 3, 4)) {
 				$additional = 19/*get_option('wc_up_setting_add1') + 0*/;
@@ -648,13 +641,14 @@ function calc_price($model, $category, $equip, $width, $height, $electro) {
 				
 			}
 		} else {
+// log_write(var_export($all_options, true));
 			if (in_range($width, 0.5, 2) && in_range($height, 1, 3)) {
 				$additional = 23.50 /*get_option('wc_up_setting_add3') + 0*/;
 			} elseif (in_range($width, 2, 3.3) && in_range($height, 3, 4.5)) {
 				$additional = 30.20 /*get_option('wc_up_setting_add4') + 0*/;
 			}
+// log_write( 'ADDING '.$additional );
 		}
-// log_write(var_export($all_options, true));
 
 	} elseif ($model === 'LVT-ЗЕБРА') {
 		if ($equip === 'default') {
@@ -757,7 +751,7 @@ function calc_price($model, $category, $equip, $width, $height, $electro) {
 	}
 
 
-log_write("ceil(($price + ($width * $additional)) * $percents * $exchange)");
+// log_write("ceil(($price + ($width * $additional)) * $percents * $exchange)");
 
 	return [
 		'price'		=> ceil(($price + ($width * $additional)) * $percents * $exchange),

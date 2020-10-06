@@ -72,7 +72,7 @@ foreach ($clothes as $item) {
 //  data-cloth-id="',$item['ID'],'" data-texture-lvt="',$item['texture_lvt'],'" data-texture-mini="',$item['texture_mini'],'" 
 //	echo 'data-short-title="',$short_title,'" data-vendor-code="',$item['vendor_code'][0],'" data-color-cloth="',$item['fields']['цвет'],'" ';
 	echo '<i aria-hidden="true" class="clo-info"><img src="',bloginfo('template_url'),'/images/icons/findglass.svg" /></i>',"\n";
-	echo '<input hidden type="radio" class="form-check-input" name="cloth" value="',$item['ID'],'" />',"\n";
+// 	echo '<input hidden type="radio" class="form-check-input" name="cloth" value="',$item['ID'],'" />',"\n";
 	echo "</li>\n";
 }
 ?>
@@ -194,8 +194,8 @@ foreach ($clothes as $item) {
 			</div>
 			<div id="o-shop" class="order-detail">
 				<div>
-					<span id="o-check" class="btn btn-app">Добавить</span>
-					<span id="o-cart" class="btn btn-app alt">Корзина</span>
+					<span class="btn btn-app o-check">Добавить</span>
+					<a href="/cart" class="btn btn-app alt o-cart">Корзина</a>
 				</div>
 			</div>
 		</div>
@@ -205,7 +205,7 @@ foreach ($clothes as $item) {
 	<?php 
 		include('buildermod.php');
 		// Sample content
-		$post = get_post(8032);
-		echo $post->post_content;
+//		$post = get_post(8032);
+//		echo $post->post_content;
 	?>
 </div>

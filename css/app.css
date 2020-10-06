@@ -227,6 +227,23 @@ ul.menu-bot li {
     color: #000;
 }
 
+.cart-count:not(:empty) {
+	width: 14px;
+	height: 14px;
+	display: inline-block;
+	border-radius: 7px;
+	font-size: 9px;
+	font-weight: bold;
+	line-height:14px;
+	text-align:center;
+	color: var(--body-back, '#ffffff');
+	background-color: var(--z-purple, '#6d2eff');
+}
+a.header-link .cart-count {
+	margin:7px 0px 0px -20px;
+	vertical-align:top;
+}
+
 .menu-main,
 .header-main {
 	justify-content:center;
@@ -472,30 +489,58 @@ footer .header {
 /**
  * Inbox modals
  */
+#dimmer {
+	background-color:rgba(0,0,0,0.6);
+	z-index:5;
+	position: fixed;
+	top: 0px;
+	bottom: 0px;
+	left:0px;
+	right:0px;
+}
 .popanel {
 	position: fixed;
 	top: 2em;
 	bottom: 2em;
 	padding: 1rem;
-	z-index: 5;
+	z-index: 6;
 	background-color: var(--body-back, '#ffffff');
-	box-shadow: 0px 0px 1em var(--z-gray, '#999999');
-	-moz-box-shadow: 0px 0px 1em var(--z-gray, '#999999');
-	-o-box-shadow: 0px 0px 1em var(--z-gray, '#999999');
-	-webkit-box-shadow: 0px 0px 1em var(--z-gray, '#999999');
-	width: 50%;
-	left: 25%;
-	overflow-y: auto;
+	border-radius:0.5em;
+	width: 40%;
+	left: 30%;
+	overflow: hidden;
+}
+.panel-content {
+	height:100%;
 }
 .popanel .closebox {
 	float: right;
-	margin-top: -1rem;
-	margin-right: -1rem;
+/*	margin-top: -1rem;
+	margin-right: -1rem;*/
 	cursor: pointer;
-	color: rgba(153,0,0,1);
-	font-weight:bold;
+	color: var(--z-gray,'#dddddd');
 	font-size: 150%;
 	line-height:1;
+}
+.popanel .closebox:hover {
+/* 	color: var(--z-gray,'#999999'); */
+}
+.popanel h4 {
+	margin-bottom:1em;
+	text-align:center;
+	font-size:120%;
+}
+.popanel h5 {
+	margin-top:-1em;
+	margin-bottom:1em;
+	font-weight:normal;
+	text-align:center;
+	font-size:100%;
+}
+.popanel .buttonbar {
+/* 	margin-top:1em; */
+	text-align:center;
+	font-size:80%
 }
 
 /**
@@ -647,7 +692,8 @@ body.category .about-links li, body.single .about-links li, body.page .about-lin
 	cursor: pointer;
 	font-size:100%;
 }
-.btn-app {
+.btn-app,
+a.btn-app {
 	height:3em;
 	line-height:3;
 	font-weight:bold;
@@ -658,6 +704,14 @@ body.category .about-links li, body.single .about-links li, body.page .about-lin
 }
 .btn-app:hover {
 	color:var(--body-back,'#ffffff');
+}
+.btn-app[disabled] {
+	opacity:0.6;
+	cursor:default;
+	filter: grayscale(1);
+	-webkit-filter: grayscale(1);
+	-moz-filter: grayscale(1);
+	-o-filter: grayscale(1);
 }
 .btn-app.alt {
 	color:var(--body-text,'#212529');
@@ -710,7 +764,10 @@ body.category .about-links li, body.single .about-links li, body.page .about-lin
 }
 .btn-callback.gray img,
 .btn-callback:hover img {
-	filter:grayscale(10);
+	filter:grayscale(1);
+	-webkit-filter:grayscale(1);
+	-moz-filter:grayscale(1);
+	-o-filter:grayscale(1);
 }
 .btn-callback.gray,
 .btn-callback.gray:visited,

@@ -437,7 +437,8 @@ div#shop-order {
 .order-detail label {
 	margin:0px;
 }
-.order-detail p {
+.order-detail p,
+#o-data p.o-total {
 	font-size:150%;
 	font-weight:bold;
 	margin:0px;
@@ -454,6 +455,89 @@ div#shop-order {
 #o-msg {
 	color:var(--z-purple,'#f6f3ff');
 	max-width:20%;
+}
+
+.o-content {
+	display:flex;
+	flex-wrap:nowrap;
+	justify-content: space-around;
+	border: solid var(--z-gray-m,'#dddddd');
+	border-width: 1px 0px;
+	height: calc(100% - 12em);
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+.o-content >* {
+	display:inline-flex;
+	flex-direction:column;
+	align-items:center;
+	justify-content:flex-start;
+	padding:1em 0px;
+}
+.o-footer {
+	display: flex;
+	flex-direction: column;
+	height: 8em;
+	justify-content: center;
+}
+.o-footer .o-msg {
+	font-size:80%;
+	margin:0.5em 2em;
+	padding-left:1em;
+	border-left:3px solid var(--z-purple,'#6d2eff');
+	color: var(--z-purple,'#6d2eff');
+}
+
+#o-img {
+	background-color:var(--body-back, '#ffffff');
+	flex-grow:1;
+}
+#o-data {
+/* 	border-left:1px solid var(--z-gray-m,'#dddddd'); */
+	flex-grow:2;
+	align-items:flex-start;
+}
+#o-data input[type="checkbox"] {
+	width:1.2em;
+	height:1.2em;
+	vertical-align:sub;
+}
+
+#o-data > ul {
+	list-style-type:none;
+	padding-left:0px;
+}
+#o-data > ul > li {
+	display:list-item;
+	font-weight:normal;
+	font-size:100%;
+}
+#o-data > ul > li span {
+}
+#o-data > ul > li[data-name="cloth"] {
+	margin-bottom:0.5em;
+}
+#o-data > ul > li span.chTitle {
+	font-weight:bold;
+	margin-right:0.5em;
+}
+#o-data > ul > li span.chTitle:after {
+	content:':';
+}
+#o-data p.o-total {
+	border-top:1px solid var(--z-gray-m,'#dddddd');
+	margin-top: 1em;
+	line-height: 1.8;
+	width: 80%;
+	text-align: right;
+}
+#item-show {
+	text-align:center;
+	margin-bottom:2em;
+}
+#item-show img {
+	max-height:15em;
+	border:1px solid var(--z-gray,'#cccccc');
 }
 /* CLOTH */
 div.cloth-list {
@@ -522,25 +606,6 @@ i.clo-info img {
 	-webkit-filter: brightness(8);
 	margin: 0px 0px 3px 1px;
 }
-
-
-/*.cloth-list-item > a:hover,
-.cloth-list-item > a:focus,
-.cloth-list-item > a:active {
-    text-decoration: none;
-    color: #000;
-}*/
-
-/*.cloth-list-item > a > img {
-    display: block;
-    width: 84px;
-    height: 84px;
-    border: 2px solid #c7c7c7;
-}*/
-
-/*.cloth-list-item.active > a > img {
-    border: 2px solid #505050;
-}*/
 
 .cloth-list.cloth-list-full {
     justify-content: flex-start;
