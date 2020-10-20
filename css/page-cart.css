@@ -1,72 +1,156 @@
-.layout-cart {}
-
-.product-list {
+.woocommerce {
+	display: -ms-flexbox;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	width:100%;
+	justify-content: space-between;
+}
+.woocommerce img, .woocommerce-page img {
+	height: unset;
+	max-width: unset;
+}
+.wc-proceed-to-checkout {
+	text-align:center;
+}
+.cart-list {
     margin-bottom: 2rem;
+	justify-content: space-between;
+	align-items:stretch;
 }
-.product-list-item {
-    position: relative;
-    display: -ms-flexbox;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    margin-bottom: 1rem;
-    padding: 1rem;
-    border: 1px solid #b1b1b1;
+.cart-list .part-wide {
+	margin-right:2em;
 }
-.product-list-item .close {
-    display: block;
-    width: 22px;
-    height: 22px;
-    border: 1px solid #333;
-    border-radius: 50%;
-    font-size: 1.25rem;
+
+.cart-item {
+	display: -ms-flexbox;
+	display: flex;
+	flex-wrap: nowrap;
+	align-items: stretch;
+	justify-content: space-between;
+	padding: 1em 0px;
+	border-top: 1px solid var(--z-gray-m, '#dddddd');
 }
-.product-list-item-remove {
-    position: absolute;
-    top: 5px;
-    right: 10px;
+.cart-item:last-of-type {
+	border-bottom: 1px solid var(--z-gray-m, '#dddddd');
 }
-.product-list-item-image {
-    padding-right: 1.5rem;
+.cart-item.rollOut {
+	overflow-y:hidden;
+	height:1em;
+	background-color:var(--z-gray-m, '#dddddd');
+	animation-name:rollOut;
+	-webkit-animation-name:rollOut;
+	-moz-animation-name:rollOut;
+	-o-animation-name:rollOut;
+	animation-iteration-count:1;
+	-webkit-animation-iteration-count:1;
+	-moz-animation-iteration-count:1;
+	-o-animation-iteration-count:1;
+	animation-duration:600ms;
+	-webkit-animation-duration:600ms;
+	-moz-animation-duration:600ms;
+	-o-animation-duration:600ms;
+	animation-timing-function: linear;
+	-webkit-animation-timing-function: linear;
+	-moz-animation-timing-function: linear;
+	-o-animation-timing-function: linear;
 }
-.product-list-item-image img {
-    display: block;
-    margin-bottom: 1rem;
-    max-width: 110px;
+@keyframes rollOut {
+	0% { height:120px;}
+	100% { height:1em;}
 }
-.product-list-item-info {
-    flex: 1 1 auto;
-    font-size: 0.875rem;
+
+
+
+.cart-item >* {
+	margin-right:1em;
+	display:flex;
+	flex-direction:column;
+	justify-content: space-between;
 }
-.product-list-item-count {
-    flex: 1 1 230px;
-    padding-left: 30px;
-    padding-right: 30px;
-    max-width: 230px;
+.cart-item >*:last-of-type {
+	margin-right:0px;
 }
-.product-list-item-price {
-    flex: 1 1 20%;
-    max-width: 20%;
-    text-align: center;
-    font-weight: 700;
-    font-size: 1.5rem;
+.item-kill {
+	display:inline-block;
+	color:var(--z-gray, '#999999');
+	cursor:pointer;
+}
+.item-kill:hover {
+	color:var(--z-purple, '#6d2eff');
+	text-decoration:underline;
+}
+#cart-total {
+	display:inline-block;
+	position:sticky;
+	position:-webkit-sticky;
+	padding:1em 1.5em;
+	border: 1px solid var(--z-gray-m, '#dddddd');
+	border-radius:0.5em;
+}
+.check {
+	display:flex;
+	justify-content:space-between;
+	margin:0.5em 0px;
+	align-items:baseline;
+}
+.check div:first-of-type {
+	margin-right:1em;
+}
+.check div:last-of-type {
+	font-weight:bold;
+}
+.check div.comment {
+	font-weight:normal;
+	text-align:right;
+}
+.check.order-total {
+	border-top: 1px solid var(--z-gray-m, '#dddddd');
+	margin-top:0.5em;
+	padding-top:0.5em;
+}
+.check.order-total strong {
+	font-size:150%;
+}
+
+.item-thumb img {
+	max-width: 100px;
+	max-height: 100px;
+}
+.item-info {
+	font-size: 80%;
+	width:50%;
+}
+.item-remove {
+	position: absolute;
+	top: 5px;
+	right: 10px;
+}
+
+.item-count {
+	padding:0px 1em;
+}
+.item-price {
+	text-align: right;
+	font-weight: bold;
+	min-width:6em;
 }
 
 
 .form-order {
-    display: -ms-flexbox;
-    display: flex;
+	display: -ms-flexbox;
+	display: flex;
 }
 .form-order-col {
-    flex: 1 1 45%;
-    max-width: 45%;
+	flex: 1 1 45%;
+	max-width: 45%;
 }
 .form-order-row {
-    padding: 1rem;
-    padding-right: 5rem;
+	padding: 1rem;
+	padding-right: 5rem;
 }
 .form-order-row:not(:first-child) {
-    border-top: 1px solid #b1b1b1;
+	border-top: 1px solid #b1b1b1;
 }
 .form-order-col:not(:first-child) .form-order-row {
     border-left: 1px solid #b1b1b1;
@@ -76,6 +160,3 @@
     border-radius: 50rem;
 }
 
-body.category .page-main, body.single .page-main, body.page .page-main {
-    padding: 1rem;
-}

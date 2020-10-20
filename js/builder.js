@@ -1,5 +1,4 @@
 /**
- * Application Script
  * Chiffa © 2019 http://goweb.pro
  */
 
@@ -77,6 +76,28 @@ jQuery(function ($) {
 				"name": "Серый"
 			}
 		};
+
+	var fieldsOpt = [					// NON-ASCII DATA NAMES MUST BE BANNED!!!
+			{'name':'density', 'field':'вес_гм2', 'title':''},
+			{'name':'type', 'field':'вид_модели', 'title':''},
+			{'name':'unit', 'field':'единица_измерения', 'title':''},
+			{'name':'pictLVT', 'field':'изображение_lvt', 'title':''},
+			{'name':'pictMINI', 'field':'изображение_mini', 'title':''},
+			{'name':'pictUNI', 'field':'изображение_uni', 'title':''},
+			{'name':'cat', 'field':'категория', 'title':'Категория'},
+			{'name':'waterproof', 'field':'пригодность_для_влажных_помещений', 'title':''},
+			{'name':'opacity', 'field':'прозрачность', 'title':''},
+			{'name':'certified', 'field':'сертификация', 'title':''},
+			{'name':'sunproof', 'field':'стойкость_к_выгоранию', 'title':''},
+			{'name':'origin', 'field':'страна_происхождения', 'title':''},
+			{'name':'texture', 'field':'структура', 'title':'Текстура'},
+			{'name':'care', 'field':'уход_и_чистка', 'title':''},
+			{'name':'colorName', 'field':'цвет', 'title':''},
+			{'name':'colorCode', 'field':'цвет_для_фильтра', 'title':''},
+			{'name':'width', 'field':'ширина_рулона', 'title':''},	
+			{'name':'motive', 'field':'тема_рисунка', 'title':''},			// Not implemented yet!
+			{'name':'popularity', 'field':'popularity', 'title':'Популярность'},			// Since Sept, 14, 2020
+		];
 
 	let $activeClothUrl = null;
 	let activeBGColor = "rgb(221,221,221)";
@@ -208,9 +229,10 @@ jQuery(function ($) {
 							activeHeight = data.request.height*1;
 							activeCount = data.request.count*1;
 							$activeCloth = cloths[activeModelType].find( x=>x.ID == activeCloth);
-							setCookie('builder', {'size_width':activeWidth,'size_height':activeHeight,
-																'control':activeControl,
-																'mount':activeModelMount,'equip':activeModelEquip}, 
+							setCookie('builder', {'ID':activeCloth,'type':activeModelType,
+													'size_width':activeWidth,'size_height':activeHeight,
+													'mount':activeModelMount,'control':activeControl,
+													'equip':activeModelEquip}, 
 				 								{'expires':'1Y'});
 
 							let max_width = data.sizes_range.max_width;
@@ -310,7 +332,9 @@ jQuery(function ($) {
 									'o-info':{
 												'label':'Штора '+document.querySelector('.order-opt[data-name="type"] .option[data-value="'
 																				+data.request.type+'"] *:first-child').innerText.toLowerCase(),
-												'p':'Ткань &laquo;'+$activeCloth.post_title+'&raquo;, '+activeWidth+'x'+activeHeight+' см &ndash; '+data.request.count+'&nbsp;шт.'
+												'p':'Ткань &laquo;'+pureName($activeCloth)+'&raquo;, '
+													+$activeCloth.fields[fieldsOpt.find(o =>o.name==='colorName').field]+', '
+													+activeWidth+'x'+activeHeight+' см &ndash; '+data.request.count+'&nbsp;шт.'
 													+' Крепление '+document.querySelector('.order-opt[data-name="mount"] .option[data-value="'
 																				+data.request.mount+'"] *:first-child').innerText.replace(/\s/g,'&nbsp;').toLowerCase()
 													+', управление '+document.querySelector('.order-input #control').innerText.replace(/\s/g,'&nbsp;').toLowerCase()
@@ -343,6 +367,14 @@ jQuery(function ($) {
 					closePop();
 					break;
 			};		/* keyCodes case switcher */
+		};
+	pureName = function(clth) {
+			let typeText = document.querySelector('.order-opt[data-name="type"] .option[data-value="'
+												+activeModelType+'"] *:first-child').innerText;
+			let rg = new RegExp('\\s*('+activeModelType+'|'+typeText+'|'
+									+clth.fields[fieldsOpt.find(o =>o.name==='colorName').field]
+									+')\\s*', 'ig');
+			return clth.post_title.replace( rg, ' ' ).replace(/^\s+|\s+$/g,'');
 		};
 
 	let closePop = function() {			// Hide order confirmation window
@@ -378,14 +410,17 @@ jQuery(function ($) {
 
 	var addToCart = function() {
 			if( document.querySelector('input[type="checkbox"]#o-chk').checked ) {
-				$('img#item').remove(); 
+				$('img.item-pict').remove(); 
 				$('.buttonbar .btn').attr('disabled',true);
+				let cloth = cloths[activeModelType].find( x=>x.ID == activeCloth);
 				let await = createObj('img',{'id':'await','src':template_url+'/images/icons/load-dots.svg','style.width':100});
 				document.querySelector('div.o-footer').insertAdjacentElement('afterbegin', await);
+
+				document.getElementById('item-show').appendChild(createObj('img', {'className':'item-pict', 'src':cloth.gallery[0]}));
 				renderer.render(scene, camera);					// Draw current design
 				canvas.toBlob( blob => { 
 										let src = new FileReader();
-										src.onload = function(e) { let sample = createObj( 'img',{'id':'item','src':e.target.result} );
+										src.onload = function(e) { let sample = createObj( 'img',{'className':'item-pict','src':e.target.result} );
 																	document.getElementById('item-show').appendChild(sample);
 																};
 										src.readAsDataURL(blob);
@@ -407,23 +442,29 @@ jQuery(function ($) {
 						count: activeCount
 					},
 					success: function (data) {
+							$('div.o-footer img#await').remove(); 
 							if(data.status === "success") {
-								let cloth = cloths[data.type].find( x=>x.ID == data.cloth_id);
 								let [cartCount, cartPrice] = [0, 0];
 								data.cart.forEach( i => {cartCount += 1; cartPrice += (i.price*1 )} );
 // 								data.cart.forEach( i => {cartCount += (i.count*1); cartPrice += (i.price*1 )} );
 								$('.cart-count').text( cartCount );
 								$('.cart-price').text( cartPrice );
 
-								document.querySelector('#item-text .title').innerText 
-										= 'Штора '+document.querySelector('.order-opt[data-name="type"] .option[data-value="'+data.type+'"] *:first-child').innerText.toLowerCase(),
+								let addedMsg = {
+										'#item-text .title': 'Штора '+document.querySelector('.order-opt[data-name="type"] .option[data-value="'+data.type+'"] *:first-child').innerText.toLowerCase(),
+										'#item-text .subtitle': activeWidth+'x'+activeHeight+' см, ткань &laquo;'+pureName(cloth)+'&raquo;, цвет '
+																+cloth.fields[fieldsOpt.find(o =>o.name==='colorName').field],
+									};
+									Object.keys( addedMsg ).forEach( k=> $(k).html(addedMsg[k]) );
 								usePanel('#cart-success');
 // 								$("#goToCart").removeClass("fade").fadeIn(300);
 								$('.buttonbar .btn').attr('disabled',false);
-								$('div.o-footer img#await').remove(); 
+							} else {
+								closePop();
 							}
 						},
 					fail: function( jqxhr, textStatus, error) {
+								$('div.o-footer img#await').remove(); 
 								host.src = synSrc;
 								console.log('Upload error : '+error+' - '+textStatus);
 // 								if (typeof(callback) === 'function') callback();
@@ -432,7 +473,7 @@ jQuery(function ($) {
 			}
 		};
 	// Some about colors
-	let sample = document.getElementById('color-wall');
+	let wallSmpl = document.getElementById('color-wall');
 	let callWallColor = function(evt) { 
 			evt.stopImmediatePropagation();
 			let pckr = document.querySelector('#f-picker');
@@ -452,9 +493,9 @@ jQuery(function ($) {
 								document.removeEventListener('click', hideMe);
 							};
 			let picker = $.farbtastic(pckr);
-			picker.setColor( rgbToHex(sample.style.backgroundColor) );
+			picker.setColor( rgbToHex(wallSmpl.style.backgroundColor) );
 			picker.linkTo( function(clr) {
-										sample.style.backgroundColor = clr;
+										wallSmpl.style.backgroundColor = clr;
 										activeBGColor = clr;
 									});
 			document.addEventListener('click', hideMe);
@@ -465,11 +506,11 @@ jQuery(function ($) {
 		document.querySelector(selector).removeAttribute('style');
 	}
 
-	sample.parentNode.addEventListener('click', callWallColor);		// Whole zone clickable
-	sample = document.getElementById('color-frame');
-	sample.innerHTML = '';
+	wallSmpl.parentNode.addEventListener('click', callWallColor);		// Whole zone clickable
+	let frameSmpl = document.getElementById('color-frame');
+	frameSmpl.innerHTML = '';
 	for (color in windows) {
-		let isActive = activeWindowColor === color ? "active" : "";
+		let isActive = activeWindowColor == color ? "active" : "";
 		let e = hex2hsl(windows[color].color);
 		let borderColor = lightenDarkenColor(windows[color].color, 100);
 		if ((e[0] < 0.55 && e[2] >= 0.5) || (e[0] >= 0.55 && e[2] >= 0.75)) {
@@ -479,7 +520,7 @@ jQuery(function ($) {
 							'data-toggle':'tooltip','data-color-name':color,'data-placement':'top',
 							'style.backgroundColor':'#'+windows[color].color,'style.color':'#'+borderColor,'style.borderColor':'#'+borderColor,
 							'onclick':function() { let color = this.dataset.colorName;
-											sample.querySelectorAll('div.window-color.active').forEach( 
+											frameSmpl.querySelectorAll('div.window-color.active').forEach( 
 																	function(d) { d.className = d.className.replace(/\s*active/g,'')} 
 																										);
 											if ( windows[color] ) {
@@ -488,31 +529,9 @@ jQuery(function ($) {
 											}
 										},
 								});
-		sample.appendChild(ctrl);
+		frameSmpl.appendChild(ctrl);
 	}
 	// Some about colors END
-
-	var fieldsOpt = [
-			{'name':'density', 'field':'вес_гм2', 'title':''},
-			{'name':'type', 'field':'вид_модели', 'title':''},
-			{'name':'unit', 'field':'единица_измерения', 'title':''},
-			{'name':'pictLVT', 'field':'изображение_lvt', 'title':''},
-			{'name':'pictMINI', 'field':'изображение_mini', 'title':''},
-			{'name':'pictUNI', 'field':'изображение_uni', 'title':''},
-			{'name':'cat', 'field':'категория', 'title':'Категория'},
-			{'name':'waterproof', 'field':'пригодность_для_влажных_помещений', 'title':''},
-			{'name':'opacity', 'field':'прозрачность', 'title':''},
-			{'name':'certified', 'field':'сертификация', 'title':''},
-			{'name':'sunproof', 'field':'стойкость_к_выгоранию', 'title':''},
-			{'name':'origin', 'field':'страна_происхождения', 'title':''},
-			{'name':'texture', 'field':'структура', 'title':'Текстура'},
-			{'name':'care', 'field':'уход_и_чистка', 'title':''},
-			{'name':'colorName', 'field':'цвет', 'title':''},
-			{'name':'colorCode', 'field':'цвет_для_фильтра', 'title':''},
-			{'name':'width', 'field':'ширина_рулона', 'title':''},	
-			{'name':'motive', 'field':'тема_рисунка', 'title':''},			// Not implemented yet!
-			{'name':'popularity', 'field':'popularity', 'title':'Популярность'},			// Since Sept, 14, 2020
-		];
 
 	var applyFilter = function() {
 			let param = {};
@@ -729,9 +748,9 @@ jQuery(function ($) {
 				});
 		});
 	document.querySelectorAll('.order-input .udata').forEach( function(i) {
-			setHandler( i, 'onchange', getPrice );
+			addAction( i, 'onchange', getPrice );
 		});
-	setHandler(document.getElementById('count'), 'onchange', function() { showMoney.displayP()  });
+	addAction(document.getElementById('count'), 'onchange', function() { showMoney.displayP()  });
 
 	document.querySelectorAll('div.spin').forEach( function(d) {
 			let [min, max] = [-65535, 65535];
@@ -739,7 +758,7 @@ jQuery(function ($) {
 			if ( i.max ) max = i.max*1; 
 			if ( i.min ) min = i.min*1;
 			i.onfocus = function() { i.className = i.className.replace(/\s*rangeAlert/gi,'') };
-			setHandler(i, 'onchange', function() {
+			addAction(i, 'onchange', function() {
 									if ( i.value*1 > max ) {
 										i.value = max;
 										i.className += ' rangeAlert';
@@ -950,58 +969,28 @@ jQuery(function ($) {
 
 	function updateClothList() {
 		let countCloth = 0;
-
-// 		let model = "lvt";
-// 		if (activeModelMount !== "open") {
-// 			if (activeModelEquip === "default") {
-// 				model = "mini";
-// 			} else {
-// 				model = "uni";
-// 			}
-// 		}
-
 		let clothList = document.querySelector('ul.cloth-list');
 		clothList.innerHTML = '';
 
 		cloths[activeModelType].forEach( function (cloth) {
-// 			if (parseInt(activeClothOpacity) === 1 && parseInt(cloth.fields.прозрачность) === 0) {
-// 				return;
-// 			}
-// 			if (parseInt(activeClothOpacity) === 0 && parseInt(cloth.fields.прозрачность) > 0) {
-// 				return;
-// 			}
-// 			if (activeClothColors.length !== 0 && !activeClothColors.includes(cloth.fields.цвет_для_фильтра)) {
-// 				return;
-// 			}
-// 			if (cloth.fields["изображение_" + model] === undefined || cloth.fields["изображение_" + model] === false) {
-// 				return;
-// 			}
-					let short_title = cloth.post_title.replace(/\s*зебра\s*/gi, '');//(cloth.post_title).replace(/[^0-9]/gim, "");
+					let short_title = pureName(cloth);
 			
 					let li = createObj('li', {'className':'cloth-list-item', 'id':'clo_'+cloth.ID,
 										'style.backgroundImage':'url(\''+cloth.gallery[0]+'\')',
 										'title':short_title,
-// 										'data-cloth-id':cloth.ID,
-// 										'data-texture-lvt':cloth.texture_lvt,				// Obsoleted to reduce code weight
-// 										'data-texture-mini':cloth.texture_mini,
-// 										'data-texture-uni':cloth.texture_uni,
 										'data-cat':cloth.fields[fieldsOpt.find(o => o.name==='cat').field],		// Used in fireSort
 										'data-popularity':cloth.fields['popularity'] || '0',		// Used in fireSort
-// 										'data-short-title':short_title,
 										'data-title':cloth.post_title,
-// 										'data-vendor-code':cloth.vendor_code,
-// 										'data-color-cloth':cloth.fields[ fieldsOpt.find(o => o.name==='colorName').field ]
 										'onclick':cloSelector,
 									});
 					li.appendChild( createObj('i',{'className':'clo-info','aria-hidden':true,'innerHTML':'<img src="'+template_url+'/images/icons/findglass.svg" />'}) );
-// 					li.appendChild( createObj('input',{'type':'radio','hidden':true,'name':'cloth','value':cloth.ID,'className':'form-check-input'}));
 					clothList.appendChild(li);
 					countCloth++;
 				});
 
 		document.getElementById('filterRst').click();
 		document.getElementById('countCloth').innerText = countCloth;
-		$(".builder-loading").addClass("d-none");
+		$('#builder-loading').addClass('d-none');
 		clothList.className = clothList.className.replace(/\s*d\-none/g,'');
 
 		let ord = document.querySelector('.tosort.on');
@@ -1020,7 +1009,7 @@ jQuery(function ($) {
 				type: activeModelType
 			},
 			beforeSend: function () {
-				$('.builder-loading').removeClass("d-none");
+				$('#builder-loading').removeClass('d-none');
 				$("ul.cloth-list").addClass("d-none");
 				document.getElementById('countCloth').innerText = '...';
 			},

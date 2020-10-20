@@ -1,10 +1,48 @@
 <?php
 add_theme_support('post-thumbnails');
+add_theme_support( 'title-tag' );
+
 add_image_size('zebradom-cloth73x73', 73, 73, true);
 add_image_size('zebradom-cloth300x345', 300, 345, true);
 
-function true_customizer_init($wp_customize)
-{
+$modelKeys = [
+	'type' => [
+		'name' => [ 'zebra' => 'зебра',
+					'classic' => 'классика'
+					],
+		'title' => [ 'зебра' => 'zebra', 
+					'классика' => 'classic'
+					]
+			],
+	'mount' => [ 
+		'name' => [ 'flap' => 'на створку',
+					'open' => 'на проем'
+					],
+		'title' => [ 'на створку' => 'flap',
+					'на проем' => 'open'
+					]
+			],
+	'equip' => [
+		'name' => [ 'inbox' => 'в коробе',
+					'default' => 'без короба'
+					],
+		'title' => [ 'в коробе' => 'inbox',
+					'без короба' => 'default'
+					]
+			],
+	'control' => [
+		'name' => [ 'man-right' => 'справа',
+					'man-left' => 'cлева',
+					'electro' => 'дистанционное'
+					],
+		'title' => [ 'справа' => 'man-right',
+					'cлева' => 'man-left',
+					'дистанционное' => 'electro'
+					]
+			]
+	];
+
+function true_customizer_init($wp_customize) {
 	$true_transport = 'postMessage';
 	$wp_customize->add_section(
 		'true_desc_index',
@@ -286,7 +324,7 @@ $def_links = [
 		],
 		'page-cart.php' => [
 			'style' => [
-				'builder' => get_stylesheet_directory_uri().'/css/builder.css',
+// 				'builder' => get_stylesheet_directory_uri().'/css/builder.css',
 				'page-cart' => get_template_directory_uri().'/css/page-cart.css',
 			],
 		],
@@ -302,7 +340,7 @@ function enqueue_scripts() {
 	foreach ( $def_links['global']['style'] as $key => $def ) {
 		wp_enqueue_style($key, $def, [], $version);
 	}
-// log_write("LOAD RESOURCES FOR: $page_template IN ".get_stylesheet_directory() );
+log_write("LOAD RESOURCES FOR: $page_template IN ".get_stylesheet_directory() );
 
 	// Stylesheets
 
@@ -332,15 +370,12 @@ function enqueue_scripts() {
 	wp_enqueue_script('app', get_stylesheet_directory_uri().'/js/app.js', ['jquery'], false, true);
 
 
-	if ( preg_match('/^page[\-\w]*\.php/', $page_template) ) {
-// 		wp_enqueue_script('tinycolor', 'https://cdnjs.cloudflare.com/ajax/libs/tinycolor/0.11.1/tinycolor.min.js',
-// 			['jquery'], false, true);
+// 	if ( preg_match('/^page[\-\w]*\.php/', $page_template) ) {
+	if ( $page_template === 'page.php' ) {
 		wp_enqueue_script('farbtastic-picker', get_stylesheet_directory_uri().'/js/farbtastic/farbtastic.js', 
 						['jquery'], false, true);
-		
 		wp_enqueue_script('jq-zoom', get_stylesheet_directory_uri().'/js/zoom.js', ['jquery'], false, true);
 		wp_enqueue_script('threejs', get_stylesheet_directory_uri().'/js/three.min.js', [], false, true);
-
 		wp_enqueue_script('builder', get_stylesheet_directory_uri()."/js/builder.js?$version", 
 						[ 'jquery',
 						'jq-zoom',
@@ -348,6 +383,9 @@ function enqueue_scripts() {
 						'app' ], false, true);
 	}
 
+	if (is_page_template('page-cart.php')) {
+		wp_enqueue_script('cart', get_stylesheet_directory_uri()."/js/cart.js?$version", ['jquery'], false, true);
+	}
 	if (is_page_template('page-clients.php')) {
 		wp_enqueue_script('clients', get_stylesheet_directory_uri()."/js/clients.js?$version", ['jquery'], false, true);
 	}
@@ -474,13 +512,16 @@ function add_order() {
 	$category = get_field('категория', $cloth_id);
 	if ($category) {
 		$price = calc_price($model, $category, $equip, $width, $height, $control == 'electro');
-		if ($price['is_real']) {
+		if ( $price['is_real'] ) {
 			$product_id = add_new_user_sol($model.' '.$width.'x'.$height, $type, $equip, $control, $mount, $cloth_id,
 				$width, $height, $price['is_guarantee'], $price['price']);
 			global $woocommerce;
 			$woocommerce->cart->add_to_cart($product_id, $count);
 			$cart_content = [];
 			$woocart = $woocommerce->cart->cart_contents;
+
+// log_write(var_export($woocart, true));
+
 			foreach ( $woocart as $key => $item) {
 				array_push( $cart_content, ['ID' => $item['product_id'], 'count' => $item['quantity'], 'price' => $item['line_total']]);
 			}
@@ -617,8 +658,10 @@ function calc_price($model, $category, $equip, $width, $height, $electro) {
 // log_write( 'LVT DETECTED '.$equip );
 		if ($equip === 'default') {
 			if (in_range($width, 2, 3) && in_range($height, 3, 4)) {
+// 			if ( $width < 3) {
 				$additional = 19/*get_option('wc_up_setting_add1') + 0*/;
 			} elseif (in_range($width, 3, /*3.3*/ 4) && in_range($height, 4, /*4.5*/ 6)) {
+// 			} else {
 				$additional = 22 /*get_option('wc_up_setting_add2') + 0*/;
 				
 				if($height == 6 || $width == 4){
@@ -642,9 +685,11 @@ function calc_price($model, $category, $equip, $width, $height, $electro) {
 			}
 		} else {
 // log_write(var_export($all_options, true));
-			if (in_range($width, 0.5, 2) && in_range($height, 1, 3)) {
+// 			if (in_range($width, 0.5, 2) && in_range($height, 1, 3)) {
+			if ( $width < 2) {
 				$additional = 23.50 /*get_option('wc_up_setting_add3') + 0*/;
-			} elseif (in_range($width, 2, 3.3) && in_range($height, 3, 4.5)) {
+// 			} elseif (in_range($width, 2, 3.3) && in_range($height, 3, 4.5)) {
+			} else {
 				$additional = 30.20 /*get_option('wc_up_setting_add4') + 0*/;
 			}
 // log_write( 'ADDING '.$additional );
@@ -816,6 +861,25 @@ function wc_up_setting_callback_function($val) {
 	<?php
 }
 
+add_action('wp_ajax_cart_hook', 'cart_hook');
+add_action('wp_ajax_nopriv_cart_hook', 'cart_hook');
+
+function cart_hook() {
+	$itm = WC()->cart->get_cart_item($_POST['id']);
+	global $woocommerce;
+
+	$ret = ['success' => false];
+	if ( $_POST['mode'] == 'rm' ) {
+		$ret = ['success' => WC()->cart->remove_cart_item($_POST['id']),
+				'item' => $itm];
+	} else if ( $_POST['mode'] == 'qty') {
+		$ret = ['success' => WC()->cart->set_quantity($_POST['id'], $_POST['qty']),
+				'qty' => $_POST['qty'], 
+				'item' => $itm];
+	}
+	exit( json_encode($ret) );
+}
+
 add_action('wp_ajax_getCloth', 'get_cloth_json');
 add_action('wp_ajax_nopriv_getCloth', 'get_cloth_json');
 
@@ -825,24 +889,29 @@ function get_cloth_json() {
 }
 
 function get_cloth( $type ) {			// For using outside of AJAX
-	$products_query = new WP_Query( [
-		'posts_per_page'=> -1,
-		'post_type'	  	=> 'product',
-		'order'			=> 'ASC',
-		'orderby'		=> 'ID',
-		'product_cat'	=> 'cloth',
-		'nopaging'		=> true,
-		//'post__in' => [ 435 ],
-		'meta_query'	=> [
-			'relation' => 'AND',
-								[
-									'key'	 => 'вид_модели',		// 
-									'value'   => $type,
-									'compare' => '=',
+	$qry = [
+			'posts_per_page'=> -1,
+			'post_type'	  	=> 'product',
+			'order'			=> 'ASC',
+			'orderby'		=> 'ID',
+			'product_cat'	=> 'cloth',
+			'nopaging'		=> true,
+			'meta_query'	=> [
+					'relation' => 'AND',
+								[ 'key'	 => 'вид_модели',
+								'value'   => $type,
+								'compare' => '=',
 								]
-				],
-	] );
-	$products = (array) $products_query->get_posts();
+							],
+		];
+	if ( preg_match('/^\d+$/', $type) ) {		// model_type or ID can be passed
+		$qry['p'] = $type;
+		$qry['meta_query'] = [];
+	}
+
+	$products_query = new WP_Query( $qry );
+
+	$products = (array) $products_query->get_posts($qry);
 	foreach ($products as $key => $product) {
 		$products[$key] = (array) $product;
 		$products[$key]['vendor_code'] = get_post_meta($products[$key]['ID'], '_sku');

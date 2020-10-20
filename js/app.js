@@ -43,6 +43,12 @@ jQuery(document).ready(function ($) {
 									});
 			} );
 
+	document.querySelectorAll('input[type="text"].digit').forEach( function(d) {
+					d.onkeypress = function(e) {
+						if ( e.keyCode.toString().match(/^13|27|7$/) ) e.target.blur();		// Enter|Esc|Tab	(Esc ignored while focus())
+						if ( e.keyCode < 48 || e.keyCode > 57 ) e.preventDefault();
+					};
+				});
 });
 
 function getCookie(c_name) {
@@ -90,7 +96,7 @@ function setCookie(name, value, options) {		// https://learn.javascript.ru/cooki
 	document.cookie = updatedCookie;
 }
 
-function setHandler(el, hdlr, callbk, prior) {			// To set queue of event handlers
+function addAction(el, hdlr, callbk, prior) {			// To set queue of event handlers
 	let proc = el[hdlr];
 	if ( proc ) {
 		if (prior) {

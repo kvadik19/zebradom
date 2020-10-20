@@ -8,11 +8,11 @@
 	</script>
 <div class="page-set">
 	<div class="builder">
-		<div class="builder-wide">
+		<div class="page-wide">
 			<h4>Рулонные шторы. Практично, удобно, стильно!</h4>
 			<span>Конструктор поможет выбрать индивидуальное интерьерное решение</span>
 		</div>
-		<div class="builder-part builder-left">
+		<div class="page-part part-narrow">
 			<div id="builder-display">
 				<div id="builder-preview">
 					<canvas id="canvas"></canvas>
@@ -33,7 +33,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="builder-part builder-right">
+		<div class="page-part part-wide">
 			<div class="opt-list">
 				<div class="opt-row">
 					<div class="opt-head">
@@ -59,7 +59,7 @@
 						</div>
 					</div>
 					<div class="cloth-list">
-						<div class="builder-loading d-none"><img src="<?php bloginfo('template_url') ?>/images/icons/load-rainbow.svg" alt=""/></div>
+						<div id="builder-loading" class="d-none"><img src="<?php bloginfo('template_url') ?>/images/icons/load-rainbow.svg" alt=""/></div>
 						<ul class="cloth-list">
 <?php
 foreach ($clothes as $item) {
@@ -137,24 +137,24 @@ foreach ($clothes as $item) {
 					<div class="opt-head">
 						<div class="order-input">
 							<label for="size_width">Ширина, см</label>
-							<input class="udata" id="size_width" type="text" value="115"/>
+							<input type="text" class="udata digit" id="size_width" value="115"/>
 						</div>
 						<div class="order-input">
 							<label for="size_height">Высота, см</label>
-							<input class="udata" id="size_height" type="text" value="120"/>
+							<input type="text" class="udata digit" id="size_height" value="120"/>
 						</div>
 						<div class="order-input">
 							<label for="count">Количество</label>
 							<div class="spin">
 								<span class="spin">&ndash;</span>
-								<input class="spin" id="count" type="text" value="1" min="1" max="100"/>
+								<input type="text" class="spin digit" id="count" value="1" min="1" max="100"/>
 								<span class="spin">+</span>
 							</div>
 						</div>
 						<div class="order-input">
 							<label for="control">Управление</label>
-							<span id="control" class="udata pulld" data-value="man-right">ручное справа</span>
-							<span hidden data-owner="control" data-value="man-left">ручное cлева</span>
+							<span id="control" class="udata pulld" data-value="man-right">справа</span>
+							<span hidden data-owner="control" data-value="man-left">cлева</span>
 							<span hidden data-owner="control" data-value="electro">дистанционное</span>
 						</div>
 						<div class="order-input">
@@ -169,13 +169,13 @@ foreach ($clothes as $item) {
 					</div>		<!-- Dimensions inputs -->
 				</div>		<!-- Dimensions input row -->
 			</div>		<!--opt-list-->
-		</div>		<!--builder-right-->
-	</div>
+		</div>		<!--part-wide-->
+	</div>	<!-- builder -->
 </div>	<!-- page-set -->
 <div id="shop-order" class="bar-wide">
 	<div class="header">
 		<div>
-			<div id="o-info" class="order-detail builder-left">
+			<div id="o-info" class="order-detail part-narrow">
 				<label></label>
 				<p></p>
 			</div>
