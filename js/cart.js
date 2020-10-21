@@ -12,13 +12,6 @@ jQuery(function ($) {
 							let tN = 0;
 							let tSet = titles[k];
 							if ( tSet.length > 1 ) {
-								o.addEventListener('change', function(e) {
-											if ( e.target.checked ) {
-												e.target.title = tSet[1];
-											} else {
-												e.target.title = tSet[0];
-											}
-										});
 								if (o.checked) tN = 1;
 							}
 							o.title = tSet[tN];
@@ -38,8 +31,9 @@ jQuery(function ($) {
 									} else if ( i.value*1 < min ) {
 										i.value = min;
 										i.className += ' rangeAlert';
+									} else {
+										lineRecalc(i.dataset.id);
 									}
-									lineRecalc(i.dataset.id);
 							}, 1);
 			d.querySelectorAll('span.spin').forEach( function(s) {
 					s.onmousedown = function() {
@@ -53,11 +47,73 @@ jQuery(function ($) {
 						};
 				});
 		});
+	document.querySelectorAll('input[type="checkbox"].item-check').forEach( function(c) {
+			c.addEventListener('change', function(e) {
+						let mark = 0;
+						if ( c.checked ) {
+							c.title = titles['.'+c.className][1];
+							mark = 1;
+						} else {
+							c.title = titles['.'+c.className][0];
+						}
+						clearTimeout(ajaxDelay);
+						ajaxDelay = setTimeout( function() {
+									$.ajax({'url': '/wp-admin/admin-ajax.php', 
+											'data':{'action':'cart_hook', 'mode':'mark', 'mark':mark, 'id':c.dataset.id},				// See functions.php
+											'type':'POST'
+											} )
+									.done( function(data) {
+											if ( data ) {
+			console.log(data);
+												let mark = data.mark;
+												totalRecalc(data.totals);
+											}
+									})
+									.fail( function( jqxhr, textStatus, error) { console.log(textStatus+' : '+error); }
+									);
+							}, 500);
+					});
+		});
+
+	let ajaxDelay = 0;
 	var lineRecalc = function(id) {
-			let qty = document.getElementById(id).querySelector('.item-count input[type="text"]').value;
+			let qHost = document.getElementById(id).querySelector('.item-count input[type="text"]');
+			let qty = qHost.value;
 			let prc = document.getElementById(id).querySelector('.item-price').dataset.price;
 			let dsp = document.getElementById(id).querySelector('.item-price span.woocommerce-Price-amount.amount');
-			dsp.innerHTML = dsp.innerHTML.replace(/^[^<]+/, (qty*prc).toLocaleString('ru-RU')+'&nbsp;');
+			dsp.innerHTML = dsp.innerHTML.replace(/^[^<]+/, (qty*prc).toLocaleString('ru-RU')+'&nbsp;');		// Momentary display value
+
+			clearTimeout(ajaxDelay);
+			ajaxDelay = setTimeout( function() {
+						$.ajax({'url': '/wp-admin/admin-ajax.php', 
+								'data':{'action':'cart_hook', 'mode':'qty', 'qty':qty, 'id':id},				// See functions.php
+								'type':'POST'
+								} )
+						.done( function(data) {
+								if ( data && data.success ) {
+console.log(data);
+									qHost.value = data.qty;
+									let prc = data.item.line_total;				// Display Actually stored values
+									let dsp = document.getElementById(id).querySelector('.item-price span.woocommerce-Price-amount.amount');
+									dsp.innerHTML = dsp.innerHTML.replace(/^[^<]+/, prc.toLocaleString('ru-RU')+'&nbsp;');
+									let cartCount = 0;
+									document.querySelectorAll('.item-count input[type="text"]').forEach( i => cartCount += (i.value*1) );
+									$('.cart-count').text( cartCount );
+									totalRecalc(data.totals);
+								}
+						})
+						.fail( function( jqxhr, textStatus, error) { console.log(textStatus+' : '+error); }
+						);
+				}, 500);
+		};
+	var totalRecalc = function(data) {
+			Object.keys(data).forEach( k =>{
+					let dsp = document.getElementById(k);
+					if (dsp) {
+						dsp = dsp.querySelector('span.woocommerce-Price-amount.amount');
+						dsp.innerHTML = dsp.innerHTML.replace(/^[^<]+/, (data[k]*1).toLocaleString('ru-RU')+'&nbsp;');
+					}
+				});
 		};
 
 	let screenKey = function(e) {			// Some keyboard operations while order confirmation window open
@@ -99,5 +155,4 @@ jQuery(function ($) {
 						};
 				});
 		});
-
 });

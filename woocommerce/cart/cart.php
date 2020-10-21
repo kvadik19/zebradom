@@ -76,9 +76,11 @@ function drawItem( $item ) {
 	if ( $_product && $_product->exists() && $item['quantity'] > 0 && apply_filters( 'woocommerce_cart_item_visible', true, $item, $item['key'] ) ) {
 		$product_permalink = apply_filters( 'woocommerce_cart_item_permalink', $_product->is_visible() ? $_product->get_permalink( $item ) : '', $item, $item['key'] );
 
-		$codeRet .= '<div class="item-mark"><input type="checkbox" class="item-check" checked data-id="'.$item['key'].'" /></div>';
+		$codeRet .= '<div class="item-mark"><input type="checkbox" class="item-check" checked data-id="'.$item['key'].'" disabled /></div>';
 
 		$cloth = get_cloth( get_field('cloth', $item['product_id'])->ID)[0];
+
+log_write('Visibility '.$_product->is_visible());
 
 		$thumbnail = '<img src="'.$cloth['gallery'][0].'" title="'.$cloth['post_title'].'"/>';
 		if ( $product_permalink ) {

@@ -13,24 +13,6 @@ jQuery(document).ready(function ($) {
 	$('.woocommerce-input-wrapper > *').unwrap();
 	$('.address-field').hide();
 
-	$(document).on('click', '.js-shop-count-down', function () {
-		let target = $('#' + $(this).data('target'));
-		if (target.length) {
-			let newVal = parseInt(target.val()) - 1;
-			target.val((newVal < 0) ? 0 : newVal);
-			target.trigger('change');
-		}
-		return false;
-	});
-	$(document).on('click', '.js-shop-count-up', function () {
-		let target = $('#' + $(this).data('target'));
-		if (target.length) {
-			let newVal = parseInt(target.val()) + 1;
-			target.val(newVal);
-			target.trigger('change');
-		}
-		return false;
-	});
 	jQuery("#lightgallery").lightGallery();
 
 	document.querySelectorAll('.popanel .closebox').forEach( function(s) { 
@@ -53,10 +35,10 @@ jQuery(document).ready(function ($) {
 
 function getCookie(c_name) {
 	if (document.cookie.length > 0) {
-		c_start = document.cookie.indexOf(c_name + "=");
+		c_start = document.cookie.indexOf(c_name + '=');
 		if (c_start != -1) {
 			c_start = c_start + c_name.length + 1;
-			c_end = document.cookie.indexOf(";", c_start);
+			c_end = document.cookie.indexOf(';', c_start);
 			if (c_end == -1) {
 				c_end = document.cookie.length;
 			}
@@ -67,7 +49,7 @@ function getCookie(c_name) {
 			return value;
 		}
 	}
-	return "";
+	return '';
 };
 
 function setCookie(name, value, options) {		// https://learn.javascript.ru/cookie
@@ -75,7 +57,7 @@ function setCookie(name, value, options) {		// https://learn.javascript.ru/cooki
 
 	let expires = options.expires;
 
-	if (typeof expires == "number" && expires) {
+	if (typeof expires === 'number' && expires) {
 		let d = new Date();
 		d.setTime(d.getTime() + expires * 1000);
 		expires = options.expires = d;
@@ -85,12 +67,12 @@ function setCookie(name, value, options) {		// https://learn.javascript.ru/cooki
 	}
 	if ( typeof(value) === 'object' ) value = JSON.stringify(value);
 	value = encodeURIComponent(value);
-	let updatedCookie = name + "=" + value;
+	let updatedCookie = name + '=' + value;
 	for (let propName in options) {
-		updatedCookie += "; " + propName;
+		updatedCookie += ';' + propName;
 		let propValue = options[propName];
 		if (propValue !== true) {
-		updatedCookie += "=" + propValue;
+		updatedCookie += '=' + propValue;
 		}
 	}
 	document.cookie = updatedCookie;

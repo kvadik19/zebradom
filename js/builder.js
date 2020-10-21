@@ -445,8 +445,8 @@ jQuery(function ($) {
 							$('div.o-footer img#await').remove(); 
 							if(data.status === "success") {
 								let [cartCount, cartPrice] = [0, 0];
-								data.cart.forEach( i => {cartCount += 1; cartPrice += (i.price*1 )} );
-// 								data.cart.forEach( i => {cartCount += (i.count*1); cartPrice += (i.price*1 )} );
+// 								data.cart.forEach( i => {cartCount += 1; cartPrice += (i.price*1 )} );
+								data.cart.forEach( i => {cartCount += (i.count*1); cartPrice += (i.price*1 )} );
 								$('.cart-count').text( cartCount );
 								$('.cart-price').text( cartPrice );
 

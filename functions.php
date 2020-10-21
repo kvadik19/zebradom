@@ -172,21 +172,18 @@ function log_write( $logstr ) {
 	fclose($log);
 }
 
-function true_sanitize($value)
-{
+function true_sanitize($value) {
 	return stripcslashes($value);
 }
 
-function true_customizer_live()
-{
+function true_customizer_live() {
 	wp_enqueue_script('true-theme-customizer', get_stylesheet_directory_uri().'/js/theme-customizer.js', array(
 		'jquery',
 		'customize-preview'
 	), null, true);
 }
 
-function get_most_viewed($args = '')
-{
+function get_most_viewed($args = '') {
 	parse_str($args, $i);
 	$num = isset($i['num']) ? $i['num'] : 10;
 	$key = isset($i['key']) ? $i['key'] : 'views';
@@ -269,12 +266,13 @@ function get_most_viewed($args = '')
 }
 
 add_action('after_setup_theme', function () {
-	register_nav_menus(array(
-		'main_menu'	=> __('Primary menu', 'crea'),
-		'sidebar_menu' => __('Sidebar menu', 'crea'),
-		'foot_menu'	=> __('Footer menu', 'crea'),
-	));
-});
+									register_nav_menus(array(
+										'main_menu'	=> __('Primary menu', 'crea'),
+										'sidebar_menu' => __('Sidebar menu', 'crea'),
+										'foot_menu'	=> __('Footer menu', 'crea'),
+									));
+								});
+
 add_action('customize_preview_init', 'true_customizer_live');
 
 $def_links = [
@@ -396,10 +394,10 @@ log_write("LOAD RESOURCES FOR: $page_template IN ".get_stylesheet_directory() );
 }
 
 add_action('wp_enqueue_scripts', 'enqueue_scripts');
-require_once('wp-bootstrap-navwalker.php');
-require_once('wp-bootstrap-footerwalker.php');
-function true_load_posts()
-{
+// require_once('wp-bootstrap-navwalker.php');
+// require_once('wp-bootstrap-footerwalker.php');
+
+function true_load_posts() {
 	$file = $_POST['file_content'];
 	$class = $_POST['class_content'];
 	$args = unserialize(stripslashes($_POST['query']));
@@ -425,8 +423,7 @@ add_action('wp_ajax_loadmore', 'true_load_posts');
 add_action('wp_ajax_nopriv_loadmore', 'true_load_posts');
 
 //Views
-function get_post_views($postID)
-{
+function get_post_views($postID) {
 	$count_key = 'post_views_count';
 	$count = get_post_meta($postID, $count_key, true);
 	if ($count == '') {
@@ -437,8 +434,7 @@ function get_post_views($postID)
 	return $count;
 }
 
-function set_post_views($postID)
-{
+function set_post_views($postID) {
 	$count_key = 'post_views_count';
 	$count = get_post_meta($postID, $count_key, true);
 	if ($count == '') {
@@ -458,16 +454,14 @@ function posts_column_views($defaults)
 	return $defaults;
 }
 
-function posts_custom_column_views($column_name, $id)
-{
+function posts_custom_column_views($column_name, $id) {
 	if ($column_name === 'post_views') {
 		echo get_post_views(get_the_ID());
 	}
 }
 
 add_filter('post_gallery', 'gallery_list_client', 10, 2);
-function gallery_list_client($output, $attr)
-{
+function gallery_list_client($output, $attr) {
 	$ids_arr = explode(',', $attr['ids']);
 	$ids_arr = array_map('trim', $ids_arr);
 	$pictures = get_posts(array(
@@ -510,38 +504,32 @@ function add_order() {
 	$count = $_POST['count'];
 	
 	$category = get_field('категория', $cloth_id);
+	$ret = [ "status" => "fail" ];
 	if ($category) {
 		$price = calc_price($model, $category, $equip, $width, $height, $control == 'electro');
 		if ( $price['is_real'] ) {
 			$product_id = add_new_user_sol($model.' '.$width.'x'.$height, $type, $equip, $control, $mount, $cloth_id,
 				$width, $height, $price['is_guarantee'], $price['price']);
-			global $woocommerce;
-			$woocommerce->cart->add_to_cart($product_id, $count);
+			WC()->cart->add_to_cart($product_id, $count);
 			$cart_content = [];
-			$woocart = $woocommerce->cart->cart_contents;
-
-// log_write(var_export($woocart, true));
-
-			foreach ( $woocart as $key => $item) {
+			$woocart = WC()->cart->cart_contents;
+			foreach ( $woocart as $item) {		// Lite version of cart
 				array_push( $cart_content, ['ID' => $item['product_id'], 'count' => $item['quantity'], 'price' => $item['line_total']]);
 			}
-			echo json_encode([ 'status' => 'success', 
-							'product_id' => $product_id,
-							'cloth_id' => $cloth_id,
-							'type' => $type, 
-							'count' => $count, 
-							'price' => $price["price"], 
-							'cart' => $cart_content,
-						]);
-			die;
+			$ret = [ 'status' => 'success', 
+					'product_id' => $product_id,
+					'cloth_id' => $cloth_id,
+					'type' => $type, 
+					'count' => $count, 
+					'price' => $price["price"], 
+					'cart' => $cart_content,
+				];
 		}
 	}
-	echo json_encode([ "status" => "fail" ]);
-	die;
+	exit( json_encode($ret) );
 }
 
-function add_new_user_sol($name, $type, $equip, $control, $mount, $cloth_id, $width, $height, $is_guarantee, $price)
-{
+function add_new_user_sol($name, $type, $equip, $control, $mount, $cloth_id, $width, $height, $is_guarantee, $price) {
 	$post_id = wp_insert_post(array(
 		'post_author'  => 1,
 		'post_title'   => $name,
@@ -865,17 +853,33 @@ add_action('wp_ajax_cart_hook', 'cart_hook');
 add_action('wp_ajax_nopriv_cart_hook', 'cart_hook');
 
 function cart_hook() {
-	$itm = WC()->cart->get_cart_item($_POST['id']);
-	global $woocommerce;
 
+// log_write(var_export($_POST, true));
 	$ret = ['success' => false];
 	if ( $_POST['mode'] == 'rm' ) {
+		$itm = WC()->cart->get_cart_item($_POST['id']);
 		$ret = ['success' => WC()->cart->remove_cart_item($_POST['id']),
-				'item' => $itm];
-	} else if ( $_POST['mode'] == 'qty') {
-		$ret = ['success' => WC()->cart->set_quantity($_POST['id'], $_POST['qty']),
+				'item' => $itm,
+				'totals' => WC()->cart->get_totals()
+				];
+	} else if ( $_POST['mode'] == 'qty' && $_POST['qty'] > 0 ) {
+		$ret = ['success' => WC()->cart->set_quantity($_POST['id'], $_POST['qty'], true),
 				'qty' => $_POST['qty'], 
-				'item' => $itm];
+				'item' => WC()->cart->get_cart_item($_POST['id']),
+				'totals' => WC()->cart->get_totals()
+				];
+	} else if ( $_POST['mode'] == 'mark' ) {
+		$itm = WC()->cart->get_cart_item($_POST['id']);
+		$vis = 'hidden';
+		if ( $_POST['mark'] == 1) $vis = 'visible';
+// log_write('Visibility have '.var_export(get_post_meta($itm['product_id'], '_visibility'),true)." set $vis");
+// 		update_post_meta($itm['product_id'], '_visibility', $vis)
+		$ret = ['success' => false,
+				'mark' => $_POST['mark'], 
+				'item' => WC()->cart->get_cart_item($_POST['id']),
+				'totals' => WC()->cart->get_totals()
+				];
+log_write(var_export($itm, true));
 	}
 	exit( json_encode($ret) );
 }
@@ -884,8 +888,7 @@ add_action('wp_ajax_getCloth', 'get_cloth_json');
 add_action('wp_ajax_nopriv_getCloth', 'get_cloth_json');
 
 function get_cloth_json() {
-	echo json_encode( get_cloth( $_POST['type'] ) );
-	die;
+	exit( json_encode( get_cloth( $_POST['type'])) );
 }
 
 function get_cloth( $type ) {			// For using outside of AJAX
@@ -1315,7 +1318,7 @@ add_filter('option_page_capability_true_options', create_function(NULL, 'return 
 // }
 
 
-
+//			See at js/solutions.js, js/ajax-add-to-cart.js
 add_action('wp_ajax_woocommerce_ajax_add_to_cart', 'woocommerce_ajax_add_to_cart');
 add_action('wp_ajax_nopriv_woocommerce_ajax_add_to_cart', 'woocommerce_ajax_add_to_cart');
 		
