@@ -1,4 +1,5 @@
 jQuery(function ($) {
+	// /cart page JS support
 	document.getElementById('cart-total').style.top = (document.getElementById('bar-top').offsetHeight+10)+'px';
 	let titles = {
 					'.item-check':[	'Отметьте, если хотите заказать это прямо сейчас',

@@ -1,5 +1,6 @@
-<?php
-	get_header();
+<?php get_header(); ?>
+<div class="page-set">
+<?php 
 	while(have_posts()) {
 		the_post();
 		get_template_part('content', 'page');
@@ -7,5 +8,6 @@
 			comments_template();
 		}
 	}
-	get_footer()
 ?>
+</div><!-- page-set -->
+<?php get_footer() ?>

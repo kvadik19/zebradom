@@ -9,7 +9,9 @@
 	<body <?php body_class('layout')?>>
 
 <?php
-	$post_id = 6869;
+// 	$post_id = url_to_postid('/glavnaja');
+	$post_id = get_option( 'page_on_front');
+
 	$phone_number = get_field('phone_number', $post_id);
 	$phone_clean = preg_replace("/[-+)(]/", "", $phone_number);
 	$href_viber = "viber://chat?number=+$phone_clean";
@@ -21,10 +23,15 @@
 						'<span class="navbar-toggler-icon"></span><button>';
 	}
 	include( 'bar-top.php' );
-	$crumb = get_post(null, 'OBJECT');
-
-	if ( !(is_home() || is_front_page()) && $crumb->post_title ) {
-		$crumb = '<a href="/">Главная</a><span>'.$crumb->post_title.'<span>';
+	global $parentURL;
+	$point = get_post(null, 'OBJECT');
+	$crumb = '';
+	if ( !(is_home() || is_front_page()) && $point->post_title ) {
+		$crumb = '<a href="/">Главная</a>';
+		if ( $parentURL ) {
+			$crumb .= '<a href="'.$parentURL.'">'.get_the_title( url_to_postid($parentURL) ).'</a>';
+		}
+		$crumb .= '<span>'.$point->post_title.'<span>';
 	} else {
 		$crumb = '';
 	}

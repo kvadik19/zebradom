@@ -20,53 +20,86 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-do_action( 'woocommerce_before_checkout_form', $checkout );
-
 // If checkout registration is disabled and not logged in, the user cannot checkout.
 if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_required() && ! is_user_logged_in() ) {
 	echo esc_html( apply_filters( 'woocommerce_checkout_must_be_logged_in_message', __( 'You must be logged in to checkout.', 'woocommerce' ) ) );
 	return;
 }
-
 ?>
+	<h4 class="page-wide"><?php echo get_post(null, OBJECT)->post_title ?></h4>
+<form name="checkout" method="post" class="checkout woocommerce-checkout page-wide cart-list" action="<?php echo esc_url( wc_get_checkout_url() ); ?>" enctype="multipart/form-data">
+	<div class=" page-part part-wide">
 
-<form name="checkout" method="post" class="checkout woocommerce-checkout" action="<?php echo esc_url( wc_get_checkout_url() ); ?>" enctype="multipart/form-data">
+		<div id="order_review_heading" class="btn"><?php esc_html_e( 'Your order', 'woocommerce' ); ?>: 
+			<?php echo WC()->cart->cart_contents_count,' ',plural_str(WC()->cart->cart_contents_count, ['товар', 'товара', 'товаров']) ?>
+			на сумму <?php wc_cart_totals_order_total_html(); ?></div>
 
-	<?php if ( $checkout->get_checkout_fields() ) : ?>
+		<div id="order_review" class="pop-list" hidden>
+<?php
+	foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
+		echo '<div class="order-item" id="', $cart_item_key,'">';
+		echo drawItem($cart_item);
+		echo '</div>';
+	}
+?>
+		</div><!-- pop-list -->
 
-		<?php do_action( 'woocommerce_checkout_before_customer_details' ); ?>
+		<?php if ( $checkout->get_checkout_fields() ) : ?>
 
-		<div class="col2-set" id="customer_details">
-			<div class="row">
-                <div class="col-12">
-                    <?php do_action( 'woocommerce_checkout_billing' ); ?>
-                </div>
-                <div class="col-12">
-                    <?php do_action( 'woocommerce_checkout_shipping' ); ?>
-                </div>
-            </div>
+			<?php // do_action( 'woocommerce_checkout_before_customer_details' ); ?>
+
+			<div class="col2-set" id="customer_details">
+				<div class="row">
+					<div class="col-12">
+						<?php do_action( 'woocommerce_checkout_billing' ); ?>
+					</div>
+					<div class="col-12">
+						<?php do_action( 'woocommerce_checkout_shipping' ); ?>
+					</div>
+				</div>
+			</div>
+
+			<?php do_action( 'woocommerce_checkout_after_customer_details' ); ?>
+
+		<?php endif; ?>
+	</div><!-- part-wide, left-->
+
+	<div class="page-part part-narrow">
+		<div id="cart-total" class="cart-collaterals ">
+			<div class="check">
+				<div><?php esc_html_e( 'Your order', 'woocommerce' ); ?></div>
+			</div>
+			<div class="check cart-subtotal">
+				<div><?php esc_html_e( 'Products', 'woocommerce' ); ?> (<span class="cart-count"><?php echo WC()->cart->cart_contents_count ?></span>)</div>
+				<div id="subtotal" data-title="<?php esc_attr_e( 'Products', 'woocommerce' ); ?>"><?php echo WC()->cart->get_cart_subtotal(); ?></div>
+			</div>
+
+			<div class="check order-total">
+				<div><?php esc_html_e( 'Total', 'woocommerce' ); ?>:</div>
+				<div  id="total" data-title="<?php esc_attr_e( 'Total', 'woocommerce' ); ?>"><?php wc_cart_totals_order_total_html(); ?></div>
+			</div>
+
+			<div class="wc-proceed-to-checkout">
+				<a class="btn btn-app" href="#">Оплатить заказ</a>
+			</div>
 		</div>
-
-		<?php do_action( 'woocommerce_checkout_after_customer_details' ); ?>
-
-	<?php endif; ?>
-	
-	<?php do_action( 'woocommerce_checkout_before_order_review_heading' ); ?>
-	
-	<h3 id="order_review_heading"><?php esc_html_e( 'Your order', 'woocommerce' ); ?></h3>
-	
-	<?php do_action( 'woocommerce_checkout_before_order_review' ); ?>
-
-	<div id="order_review" class="woocommerce-checkout-review-order">
-		<?php do_action( 'woocommerce_checkout_order_review' ); ?>
-	</div>
-
-	<?php do_action( 'woocommerce_checkout_after_order_review' ); ?>
-
-		
-<?php do_action( 'woocommerce_after_checkout_form', $checkout ); ?>
-
+	</div>	<!-- part-narrow -->
 </form>
 
-
+<?php 
+function drawItem( $item ) {
+	global $modelKeys;
+	$codeRet = '';
+	$_product = apply_filters( 'woocommerce_cart_item_product', $item['data'], $item, $item['key'] );
+	if ( $_product && $_product->exists() && $item['quantity'] > 0 && apply_filters( 'woocommerce_cart_item_visible', true, $item, $item['key'] ) ) {
+// log_write('Visibility '.$_product->is_visible());
+		$codeRet .= '<div class="item-name">'.$_product->get_name().'</div>';
+		$codeRet .= '<div class="item-count">'.$item['quantity'].'</div>';
+		$codeRet .= '<div class="item-price">';
+		$codeRet .= apply_filters( 'woocommerce_cart_item_subtotal', WC()->cart->get_product_subtotal( $_product, $item['quantity'] ), $item, $item['key'] );
+		$codeRet .= "</div>\n";
+	}
+	return $codeRet;
+}
+?>
 

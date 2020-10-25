@@ -20,15 +20,14 @@ defined( 'ABSPATH' ) || exit;
 ?>
 
 	<div class="check">
-		<div>Ваш заказ</div>
+		<div><?php esc_html_e( 'Your order', 'woocommerce' ); ?></div>
 	</div>
 
-	<div class="shop_table shop_table_responsive">
 
-		<div class="check cart-subtotal">
-			<div><?php esc_html_e( 'Subtotal', 'woocommerce' ); ?></div>
-			<div id="subtotal" data-title="<?php esc_attr_e( 'Subtotal', 'woocommerce' ); ?>"><?php wc_cart_totals_subtotal_html(); ?></div>
-		</div>
+	<div class="check cart-subtotal">
+		<div><?php esc_html_e( 'Products', 'woocommerce' ); ?> (<span class="cart-count"><?php echo WC()->cart->cart_contents_count ?></span>)</div>
+		<div id="subtotal" data-title="<?php esc_attr_e( 'Products', 'woocommerce' ); ?>"><?php echo WC()->cart->get_cart_subtotal(); ?></div>
+	</div>
 		<div class="check cart-shipping">
 			<div><?php esc_html_e( 'Shipping', 'woocommerce' ); ?></div>
 			<div class="comment" data-title="<?php esc_attr_e( 'Shipping', 'woocommerce' ); ?>">Стоимость достав&shy;ки будет под&shy;считана во время офор&shy;мления покупки</div>
@@ -86,13 +85,12 @@ defined( 'ABSPATH' ) || exit;
 		<?php do_action( 'woocommerce_cart_totals_before_order_total' ); ?>
 
 		<div class="check order-total">
-			<div><?php esc_html_e( 'Total', 'woocommerce' ); ?></div>
+			<div><?php esc_html_e( 'Total', 'woocommerce' ); ?>:</div>
 			<div  id="total" data-title="<?php esc_attr_e( 'Total', 'woocommerce' ); ?>"><?php wc_cart_totals_order_total_html(); ?></div>
 		</div>
 
 		<?php do_action( 'woocommerce_cart_totals_after_order_total' ); ?>
 
-	</div>
 
 	<div class="wc-proceed-to-checkout">
 		<a class="btn btn-app" href="/checkout/">Перейти к оформлению</a>

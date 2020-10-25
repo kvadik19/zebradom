@@ -184,7 +184,7 @@
 	padding:0.5em 0px;
 	box-shadow:0px 0px 1em rgba(0,0,0,0.3);
 	border-radius:0.75em;
-	z-index:5;
+	z-index:2;
 }
 /*.opt-head#filterCloth ul.poplist::before {		// Small pointing-up triangle on top of panel
 	content:'\00A0';

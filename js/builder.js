@@ -734,6 +734,7 @@ jQuery(function ($) {
 							opt.className += ' sel';
 // 							'type' => 'activeModelType', etc.
 							let varName = 'activeModel'+div.dataset.name.substr(0,1).toUpperCase()+div.dataset.name.substr(1).toLowerCase();
+// console.log( varName+'="'+opt.dataset.value+'"' );
 							eval( varName+'="'+opt.dataset.value+'"');
 							if ( div.dataset.name.match(/type$/i) ) {		// Cloth Type changed?
 								if ( !cloths[activeModelType] ) {

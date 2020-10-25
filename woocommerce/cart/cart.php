@@ -20,12 +20,8 @@ defined( 'ABSPATH' ) || exit;
 // do_action( 'woocommerce_before_cart' ); 
 ?>
 
-	<h4 class="page-wide">Корзина</h4>
-	<form class="woocommerce-cart-form page-wide cart-list" action="<?php echo esc_url( wc_get_cart_url() ); ?>" method="post">
-
-<?php do_action( 'woocommerce_before_cart_table' ); ?>
-
-<?php // do_action( 'woocommerce_before_cart_contents' ); ?>
+	<h4 class="page-wide"><?php echo get_post(null, OBJECT)->post_title ?></h4>
+<form class="woocommerce-cart-form page-wide cart-list" action="<?php echo esc_url( wc_get_cart_url() ); ?>" method="post">
 	<div class=" page-part part-wide">
 <?php
 	foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
@@ -37,7 +33,6 @@ defined( 'ABSPATH' ) || exit;
 	</div>	<!-- part-wide -->
 
 	<div class="page-part part-narrow">
-<?php do_action( 'woocommerce_before_cart_collaterals' ); ?>
 		<div id="cart-total" class="cart-collaterals ">
 			<?php
 				/**
@@ -80,7 +75,7 @@ function drawItem( $item ) {
 
 		$cloth = get_cloth( get_field('cloth', $item['product_id'])->ID)[0];
 
-log_write('Visibility '.$_product->is_visible());
+// log_write('Visibility '.$_product->is_visible());
 
 		$thumbnail = '<img src="'.$cloth['gallery'][0].'" title="'.$cloth['post_title'].'"/>';
 		if ( $product_permalink ) {

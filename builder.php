@@ -7,6 +7,7 @@
 		var activeModelType = '<?php echo $type ?>';
 	</script>
 <div class="page-set">
+
 	<div class="builder">
 		<div class="page-wide">
 			<h4>Рулонные шторы. Практично, удобно, стильно!</h4>

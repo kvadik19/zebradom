@@ -39,12 +39,12 @@ body.admin-bar {
 }*/
 
 a {
-    color: var(--body-text,'#212529');
+	color: var(--body-text,'#212529');
 }
 a:hover,
 a:focus,
 a:visited {
-    color: var(--body-text,'#212529');
+	color: var(--body-text,'#212529');
 }
 
 .CDEK-widget__popup-mask {
@@ -229,7 +229,7 @@ ul.menu-bot li {
 	width:100%;
 	display: flex;
 	flex-wrap: nowrap;
-	align-items:baseline;
+	align-items:stretch;
 	margin:1em 0px;
 }
 .page-part {
@@ -268,7 +268,7 @@ ul.menu-bot li {
     color: #000;
 }
 
-.cart-count:not(:empty) {
+a.header-link .cart-count:not(:empty) {
 	width: 14px;
 	height: 14px;
 	display: inline-block;
@@ -279,8 +279,6 @@ ul.menu-bot li {
 	text-align:center;
 	color: var(--body-back, '#ffffff');
 	background-color: var(--z-purple, '#6d2eff');
-}
-a.header-link .cart-count {
 	margin:7px 0px 0px -20px;
 	vertical-align:top;
 }
