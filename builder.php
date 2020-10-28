@@ -1,8 +1,21 @@
 <?php
+	$type = 'zebra';
+	if (isset($_GET['type']) ) $type = $_GET['type'];
 	$clothes = get_cloth($type);
+
+	$clSet = [];
+	if ( array_key_exists('builder', $_COOKIE) ) {
+		$clSet = str_replace('\"', '"', $_COOKIE['builder']);
+		$clSet = json_decode( utf8_decode( $clSet ), true );
+		if ( !array_key_exists('_'.$type, $clSet) ) {
+			$clSet['_'.$type] = $clothes[0]['ID'];
+		}
+	} else {
+		$clSet['_'.$type] = $clothes[0]['ID'];
+	}
 ?>
 	<script>
-		var activeCloth = <?php echo isset($_GET['cloth']) ? $_GET['cloth'] : $clothes[0]['ID'];?>;		// 
+		var activeCloth = <?php echo isset($_GET['cloth']) ? $_GET['cloth'] : $clSet['_'.$type];?>;		// 
 		var cloths = {'<?php echo $type ?>':<?php echo json_encode($clothes) ?>};
 		var activeModelType = '<?php echo $type ?>';
 	</script>
