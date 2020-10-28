@@ -14,10 +14,9 @@
 Конструктор вынесен в builder.php с возможностью замены на что-нибудь другое 
 
 Изменения шаблонов
-
+```
 zebradom_2020.ru/woocommerce/cart
-
 zebradom_2020.ru/woocommerce/checkout
-
+```
 ### functions.php
 Процесс загрузки стилей и скриптов по add_action('wp_enqueue_xxxxxx') управляется массивом $def_links, в котором подгружаемые элементы определяются по названию испольуемого шаблона
