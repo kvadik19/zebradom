@@ -939,25 +939,6 @@ a.btn-app {
     padding-right: 2rem;
 }
 
-
-/**
- * Woocomerce
- */
-
-.woocommerce span.onsale {
-	background: none;
-	padding: 0;
-    min-width: auto;
-    min-height: auto;
-}
-
-.woocommerce form .form-row {
-    width: 33%;
-    margin-bottom: 20px;
-}
-.woocommerce form .form-row-wide, .woocommerce-page form .form-row-wide {
-    clear: none;
-}
 body.page .page-main-index{
     padding-left:10px;
 }

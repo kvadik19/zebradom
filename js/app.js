@@ -12,6 +12,7 @@ jQuery(document).ready(function ($) {
 
 	$('.woocommerce-input-wrapper > *').unwrap();
 	$('.address-field').hide();
+	$('#billing_city_field').show();
 
 	jQuery("#lightgallery").lightGallery();
 
