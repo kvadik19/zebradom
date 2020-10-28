@@ -117,7 +117,20 @@ jQuery(function ($) {
 
 	let preset = getCookie('builder');
 	if (preset) {				// Restore user settings here
-		console.log(preset);
+		Object.keys(preset).forEach( k =>{ 
+				let ctrl = document.getElementById(k) || document.querySelector('div[data-name="'+k+'"]');
+				if ( !ctrl ) return;
+				if ( ctrl.type === 'text' ) {
+					ctrl.value = preset[k];
+				} else if ( ctrl.querySelector('figure.option[data-value="'+preset[k]+'"]') ) {
+					ctrl.querySelectorAll('figure.option.sel').forEach(c => c.className = c.className.replace(/\s*sel/g, ''));
+					ctrl.querySelector('figure.option[data-value="'+preset[k]+'"]').className += ' sel';
+					let varName = 'activeModel'+k.substr(0,1).toUpperCase()+k.substr(1).toLowerCase();
+					eval( varName+'="'+preset[k]+'"');
+				} else if ( ctrl.className.match(/udata/) && ctrl.className.match(/pulld/) ) {
+					// Not implemented yet
+				}
+			});
 	}
 	var activeWidth = document.getElementById('size_width').value;
 	var activeHeight = document.getElementById('size_height').value;
@@ -229,11 +242,16 @@ jQuery(function ($) {
 							activeHeight = data.request.height*1;
 							activeCount = data.request.count*1;
 							$activeCloth = cloths[activeModelType].find( x=>x.ID == activeCloth);
-							setCookie('builder', {'ID':activeCloth,'type':activeModelType,
-													'size_width':activeWidth,'size_height':activeHeight,
-													'mount':activeModelMount,'control':activeControl,
-													'equip':activeModelEquip}, 
-				 								{'expires':'1Y'});
+							let clSet = { ['_'+activeModelType] : activeCloth,
+											'size_width':activeWidth,'size_height':activeHeight,
+											'mount':activeModelMount,'control':activeControl,
+											'equip':activeModelEquip };
+							if ( typeof(preset) === 'object' ) {
+								Object.keys(clSet).forEach( k => preset[k] = clSet[k] );
+							} else {
+								preset = clSet;
+							}
+							setCookie('builder', preset, {'expires':'1Y'});
 
 							let max_width = data.sizes_range.max_width;
 							let max_height = data.sizes_range.max_height;
@@ -736,6 +754,9 @@ jQuery(function ($) {
 							let varName = 'activeModel'+div.dataset.name.substr(0,1).toUpperCase()+div.dataset.name.substr(1).toLowerCase();
 // console.log( varName+'="'+opt.dataset.value+'"' );
 							eval( varName+'="'+opt.dataset.value+'"');
+							if ( preset && preset['_'+activeModelType] ) {
+								activeCloth = preset['_'+activeModelType];
+							}
 							if ( div.dataset.name.match(/type$/i) ) {		// Cloth Type changed?
 								if ( !cloths[activeModelType] ) {
 									getAjaxCloth();
@@ -973,9 +994,10 @@ jQuery(function ($) {
 		let clothList = document.querySelector('ul.cloth-list');
 		clothList.innerHTML = '';
 
+		let reset = true;
 		cloths[activeModelType].forEach( function (cloth) {
+					if ( cloth.ID == activeCloth ) reset = false;
 					let short_title = pureName(cloth);
-			
 					let li = createObj('li', {'className':'cloth-list-item', 'id':'clo_'+cloth.ID,
 										'style.backgroundImage':'url(\''+cloth.gallery[0]+'\')',
 										'title':short_title,
@@ -996,7 +1018,7 @@ jQuery(function ($) {
 
 		let ord = document.querySelector('.tosort.on');
 		if (ord) fireSort(ord.dataset.sort, ord.className.match(/\b([fb]w)\b/)[1]);
-
+		if ( reset ) activeCloth = parseInt( document.querySelector('li.cloth-list-item').id.replace(/^\D+/g,'') );
 		filterPulldInit();
 		setCloth();
 	}
