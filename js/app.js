@@ -4,35 +4,35 @@
  */
 
 jQuery(document).ready(function ($) {
-	$('body').tooltip({
-			selector: '[data-toggle=tooltip]'
-		});
+		$('body').tooltip({
+				selector: '[data-toggle=tooltip]'
+			});
 
-	$.ajaxSetup({dataType: 'json'});
+		$.ajaxSetup({dataType: 'json'});
 
-	$('.woocommerce-input-wrapper > *').unwrap();
-	$('.address-field').hide();
-	$('#billing_city_field').show();
+		$('.woocommerce-input-wrapper > *').unwrap();
+		$('.address-field').hide();
+		$('#billing_city_field').show();
 
-	jQuery("#lightgallery").lightGallery();
+	// 	jQuery("#lightgallery").lightGallery();		// See page-clients.php
 
-	document.querySelectorAll('.popanel .closebox').forEach( function(s) { 
-// 					s.addEventListener('mouseup', function(e) { 
-				// Use JQuery instead to emulate ability
-					$(s).on('mouseup', function(e) { 
-										let panel = findParentBy(e.target, function(o) { return o.className.match('popanel') } );
-										document.getElementById('dimmer').hidden = true;
-										panel.hidden = true;
-									});
-			} );
+		document.querySelectorAll('.popanel .closebox').forEach( function(s) { 
+	// 					s.addEventListener('mouseup', function(e) { 
+					// Use JQuery instead to emulate ability
+						$(s).on('mouseup', function(e) { 
+											let panel = findParentBy(e.target, function(o) { return o.className.match('popanel') } );
+											document.getElementById('dimmer').hidden = true;
+											panel.hidden = true;
+										});
+				} );
 
-	document.querySelectorAll('input[type="text"].digit').forEach( function(d) {
-					d.onkeypress = function(e) {
-						if ( e.keyCode.toString().match(/^13|27|7$/) ) e.target.blur();		// Enter|Esc|Tab	(Esc ignored while focus())
-						if ( e.keyCode < 48 || e.keyCode > 57 ) e.preventDefault();
-					};
-				});
-});
+		document.querySelectorAll('input[type="text"].digit').forEach( function(d) {
+						d.onkeypress = function(e) {
+							if ( e.keyCode.toString().match(/^13|27|7$/) ) e.target.blur();		// Enter|Esc|Tab	(Esc ignored while focus())
+							if ( e.keyCode < 48 || e.keyCode > 57 ) e.preventDefault();
+						};
+					});
+	});
 
 function plural_str(i, str1, str2, str3) {
 	function plural (a){

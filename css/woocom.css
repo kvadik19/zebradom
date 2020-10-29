@@ -37,6 +37,7 @@ form.woocommerce-checkout h5 {
 	font-weight:bold;
 	line-height:2;
 	margin-top:1em;
+	clear:both;
 	border-bottom:1px solid var(--z-gray-m, '#dddddd');
 }
 form.woocommerce-checkout label {
@@ -51,6 +52,7 @@ form.woocommerce-checkout label .required {
 #billing_city,
 #billing_city_field {
 	width:100%;
+	display:block;
 }
 
 .cart-list {

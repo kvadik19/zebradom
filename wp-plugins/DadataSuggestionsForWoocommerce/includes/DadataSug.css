@@ -1,0 +1,30 @@
+﻿.ddtsugspoiler {
+ overflow: hidden;
+ margin-bottom: 20px;
+ margin-top: 20px;
+ border: 1px solid #dfdfdf;
+ border-left: 2px solid #026194;
+ box-shadow: 0 0 9px #dddddd inset;
+}
+ 
+.ddtsugtitle_h3 {
+ cursor:pointer;
+ font-size: 14px;
+ background: rgb(253, 253, 253);
+ margin: 8px 0 8px 0;
+ padding: 10px;
+ padding-left: 30px;
+ -moz-box-shadow: 0 0 9px #dddddd inset;
+ box-shadow: 0 0 9px #dddddd inset;
+}
+
+label.ddt .required {
+ color: red;
+ font-weight: 700;
+ border: 0!important;
+ text-decoration: none;
+}
+ 
+.ddtsugclosed .ddtsugcontents { display:none; }
+.ddtsugclosed h3 { background: #bbbbbb; }
+.ddtsugcontents { padding: 10px; }

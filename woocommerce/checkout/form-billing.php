@@ -29,22 +29,17 @@ defined('ABSPATH') || exit;
 				'billing_company' => [],
 				'billing_phone' => [],
 				'billing_email' => [],
-				'billing_address_1' => ['placeholder' => '']
+				'billing_address_1' => ['placeholder' => ''],
 			];
 
-// log_write(var_export($fform,true));
 	foreach ( $fform as $field => $def ) {
-// log_write(var_export($def,true));
 		$opts = $fields[$field];
 		if ( count($def) > 0 ) {
 			foreach ( $def as $k => $v) {
-log_write($k.' '.$v);
 				$opts[$k] = $v;
 			}
-log_write(var_export($opts, true));
 		}
 		woocommerce_form_field($field, $opts, $checkout->get_value($field));
-// log_write("Field $field ".$fields[$field]['priority']);
 	}
 ?>
 		<p class="form-row form-row-wide form-group float-left" id="billing_email_field" data-priority="110">

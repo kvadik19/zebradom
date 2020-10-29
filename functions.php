@@ -53,18 +53,24 @@ $def_links = [
 					'photoswipe-skin' => "$tmpl_uri/vendor/photoswipe/default-skin/default-skin.css",
 					'sprites' => "$tmpl_uri/css/sprites.css",
 					'app' => "$tmpl_uri/css/app.css",
-					'lightgallery' => "$tmpl_uri/css/lightgallery.css",
 					'style' => "$tmpl_uri/style.css"
 				],
 			'script' => [
 					['jquery', '//code.jquery.com/jquery-3.4.1.min.js', [], false, true],
 					['popper', '//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js', ['jquery'], false, true],
 					['bootstrap', '//stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js', ['popper'], false, true],
+					['photoswipe-zebra', "$tmpl_uri/js/photoswipe-ui-zebra.min.js", ['jquery','photoswipe'], false, true],
+					['app', "$tmpl_uri/js/app.js", ['jquery'], false, true]
+				]
+		],
+		'page-clients.php' => [
+			'style' => [
+					'lightgallery' => "$tmpl_uri/css/lightgallery.css",
+				],
+			'script' => [
 					['true_loadmore', "$tmpl_uri/js/loadmore.js", ['jquery']],
 					['lightgallery', "$tmpl_uri/js/lightgallery.min.js", ['jquery']],
 					['slick', "$tmpl_uri/js/slick.min.js", ['jquery']],
-					['photoswipe-zebra', "$tmpl_uri/js/photoswipe-ui-zebra.min.js", ['jquery','photoswipe'], false, true],
-					['app', "$tmpl_uri/js/app.js", ['jquery'], false, true]
 				]
 		],
 		'page.php' => [
@@ -283,7 +289,7 @@ function true_customizer_init($wp_customize) {
 add_action('customize_register', 'true_customizer_init');
 
 function log_write( $logstr ) {
-	$path = get_theme_root();
+	$path = ABSPATH;
 	if ( !file_exists("$path/log") ) {
 		mkdir("$path/log");
 	}
