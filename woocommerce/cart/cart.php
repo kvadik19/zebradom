@@ -32,6 +32,7 @@ defined( 'ABSPATH' ) || exit;
 ?>
 	</div>	<!-- part-wide -->
 
+<?php do_action( 'woocommerce_before_cart_collaterals' ); ?>
 	<div class="page-part part-narrow">
 		<div id="cart-total" class="cart-collaterals ">
 			<?php

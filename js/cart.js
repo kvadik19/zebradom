@@ -65,7 +65,7 @@ jQuery(function ($) {
 											} )
 									.done( function(data) {
 											if ( data ) {
-			console.log(data);
+// console.log(data);
 												let mark = data.mark;
 												totalRecalc(data.totals);
 											}
@@ -75,6 +75,8 @@ jQuery(function ($) {
 							}, 500);
 					});
 		});
+
+console.log(wc_cart_params);
 
 	let ajaxDelay = 0;
 	var lineRecalc = function(id) {
@@ -92,7 +94,7 @@ jQuery(function ($) {
 								} )
 						.done( function(data) {
 								if ( data && data.success ) {
-console.log(data);
+// console.log(data);
 									qHost.value = data.qty;
 									let prc = data.item.line_total;				// Display Actually stored values
 									let dsp = document.getElementById(id).querySelector('.item-price span.woocommerce-Price-amount.amount');

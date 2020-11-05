@@ -23,7 +23,7 @@ $("#fullname").suggestions({
 		type: "NAME",
 		/* Вызывается, когда пользователь выбирает одну из подсказок */
 		onSelect: function (suggestion) {
-				console.log(suggestion);
+// 				console.log(suggestion);
 				var fullname = suggestion.data;
 
 				$("#billing_first_name").val(fullname.name);
@@ -39,7 +39,7 @@ $("#address").suggestions({
 		type: "ADDRESS",
 		/* Вызывается, когда пользователь выбирает одну из подсказок */
 		onSelect: function (suggestion) {
-			console.log(suggestion);
+// 			console.log(suggestion);
 			var address = suggestion.data;
 			$("#billing_postcode").val(address.postal_code);
 			$("#billing_state").val(
@@ -66,7 +66,7 @@ $("#email").suggestions({
 		type: "EMAIL",
 		/* Вызывается, когда пользователь выбирает одну из подсказок */
 		onSelect: function (suggestion) {
-			console.log(suggestion);
+// 			console.log(suggestion);
 			var email = suggestion.data;
 			$("#billing_email").val(email.local + "@" + email.domain);
 		}

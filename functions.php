@@ -131,7 +131,7 @@ $def_links = [
 					'page-wooc' => "$tmpl_uri/css/woocom.css",
 				],
 			'script' => [
-					['order', "$tmpl_uri/js/order.js", ['jquery'], false, true]
+					['check', "$tmpl_uri/js/check.js", ['jquery'], false, true]
 				]
 		],
 	];

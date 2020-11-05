@@ -75,6 +75,11 @@ if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_requir
 				<div id="subtotal" data-title="<?php esc_attr_e( 'Products', 'woocommerce' ); ?>"><?php echo WC()->cart->get_cart_subtotal(); ?></div>
 			</div>
 
+			<div class="check cart-shipping">
+				<div><?php esc_html_e( 'Shipping', 'woocommerce' ); ?></div>
+				<div id="shipping" data-title="<?php esc_attr_e( 'Shipping', 'woocommerce' ); ?>"><?php echo WC()->cart->get_cart_shipping_total(); ?></div>
+			</div>
+
 			<div class="check order-total">
 				<div><?php esc_html_e( 'Total', 'woocommerce' ); ?>:</div>
 				<div  id="total" data-title="<?php esc_attr_e( 'Total', 'woocommerce' ); ?>"><?php wc_cart_totals_order_total_html(); ?></div>

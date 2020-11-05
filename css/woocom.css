@@ -55,6 +55,57 @@ form.woocommerce-checkout label .required {
 	display:block;
 }
 
+.shp-list {
+	text-align:justify;
+	text-align-last:justify;
+}
+.shp-item {
+	text-align:left;
+	text-align-last:left;
+	font-size:80%;
+	padding:1em 0px;
+	display: inline-block;
+	width: calc(50% - 1em);
+	height: 7em;
+	border-radius: 0.75em;
+	border: 1px solid var(--z-gray-m, '#dddddd');
+	cursor: pointer;
+	margin:1em 0px;
+	vertical-align:middle;
+}
+.shp-item:nth-of-type(even) {
+	margin-left:1em;
+}
+.shp-item.sel {
+	background-color:var(--z-purple-l, '#e6e3ff')
+}
+.shp-item>* {
+	margin:0px 2em 0px 3em;
+}
+.shp-title,
+.shp-price {
+	font-weight:bold;
+}
+.shp-title::before {
+	display:inline-flex;
+	justify-content:center;
+	align-items:center;
+	content:'';
+	width:1.2em;
+	height:1.2em;
+	border-radius:0.7em;
+	border:1px solid var(--z-gray-m, '#dddddd');
+	float: left;
+	margin: 0.2em 1em 0px -2em;
+}
+.shp-item.sel .shp-title::before {
+	color:var(--z-purple, '#6d2eff');
+	background-color:var(--body-back, '#ffffff');
+	border-color:var(--z-purple, '#6d2eff');
+	content: url('data:image/svg+xml;utf8,<svg width="12" height="16" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="6" cy="9" r="5" fill="%236d2eff"/></svg>');
+/* 	content:'\25CF'; */
+}
+
 .cart-list {
     margin-bottom: 2rem;
 	justify-content: space-between;
@@ -211,7 +262,7 @@ form.woocommerce-checkout label .required {
 	width:60%;
 }
 #order_review_heading {
-	background-color:var(--z-purple-l,'##e6e3ff');
+	background-color:var(--z-purple-l,'#e6e3ff');
 	width: 100%;
 	text-align: left;
 	height: 2.5em;

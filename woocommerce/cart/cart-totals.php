@@ -86,7 +86,7 @@ defined( 'ABSPATH' ) || exit;
 
 		<div class="check order-total">
 			<div><?php esc_html_e( 'Total', 'woocommerce' ); ?>:</div>
-			<div  id="total" data-title="<?php esc_attr_e( 'Total', 'woocommerce' ); ?>"><?php wc_cart_totals_order_total_html(); ?></div>
+			<div  id="total" data-title="<?php esc_attr_e( 'Total', 'woocommerce' ); ?>"><strong><?php echo WC()->cart->get_cart_subtotal(); // wc_cart_totals_order_total_html();//  ?></strong></div>
 		</div>
 
 		<?php do_action( 'woocommerce_cart_totals_after_order_total' ); ?>
