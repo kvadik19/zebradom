@@ -17,11 +17,7 @@
  */
 defined('ABSPATH') || exit;
 // log_write(var_export($checkout->get_checkout_fields(),true));
-?>
-<?php
-	$WC_Shipping = new WC_Shipping();
-	log_write( var_export( $WC_Shipping->get_shipping_methods()['rpaefw_post_calc'], true) );
-	
+// 	log_write( var_export( WC()->checkout['rpaefw_post_calc'], true) );
 ?>
 
 <div class="woocommerce-billing-fields">
@@ -33,12 +29,12 @@ defined('ABSPATH') || exit;
 	$fform = [ 'billing_first_name' => [],
 				'billing_last_name' => [],
 				'billing_company' => [],
-				'billing_state' => ['validate' => ['recalc_post']],
-				'billing_postcode' => ['validate' => ['recalc_post']],
-				'billing_country' => ['validate' => ['recalc_post']],
+				'billing_state' => [],
+				'billing_postcode' => [],
+				'billing_country' => [],
 				'billing_phone' => [],
 				'billing_email' => [],
-				'billing_address_1' => ['placeholder' => '', 'validate' => ['recalc_post']],
+				'billing_address_1' => ['placeholder' => ''],
 			];
 
 	foreach ( $fform as $field => $def ) {
@@ -58,15 +54,17 @@ defined('ABSPATH') || exit;
 	<h5>Город доставки</h5>
 		<label for="billing_city">Город</label>
 <?php woocommerce_form_field('billing_city', 
-							['label' => '','class' => array_push($fields['billing_city']['class'],'field-wide'), 'validate' => ['recalc_post']], 
+							['label' => '','class' => array_push($fields['billing_city']['class'],'field-wide')], 
 							$checkout->get_value('billing_city'));
 	do_action('woocommerce_after_checkout_billing_form', $checkout);
 ?>
 </div>
+
 	<h5>Способ доставки</h5>
 <input name="shipping_method" id="shipping_method" data-index="0" type="hidden" />
+
 <div class="shp-list">
-	<div class="shp-item sel" data-method="local_pickup">
+	<div class="shp-item shipping_method sel" data-method="local_pickup">
 		<div class="shp-title">Самовывоз
 		</div>
 		<div class="shp-desc">Заберите товар со склада в течение 5 дней
@@ -75,7 +73,7 @@ defined('ABSPATH') || exit;
 		</div>
 	</div>
 
-	<div class="shp-item" data-method="rpaefw_post_calc:8">
+	<div class="shp-item shipping_method" data-method="rpaefw_post_calc:8">
 		<div class="shp-title">Доставка Почта России (EMS)
 		</div>
 		<div class="shp-desc">Доставка курьерской службой с трек-номером для отслеживания
@@ -84,7 +82,7 @@ defined('ABSPATH') || exit;
 		</div>
 	</div>
 
-	<div class="shp-item" data-method="cdek">
+	<div class="shp-item shipping_method" data-method="cdek">
 		<div class="shp-title">Доставка СДЭК на ПВЗ
 		</div>
 		<div class="shp-desc"><a href="#">Выберите удобный для вас пункт выдачи заказов (ПВЗ) СДЭК</a>
@@ -93,7 +91,7 @@ defined('ABSPATH') || exit;
 		</div>
 	</div>
 
-	<div class="shp-item" data-method="cdek">
+	<div class="shp-item shipping_method" data-method="cdek">
 		<div class="shp-title">Доставка СДЭК курьером
 		</div>
 		<div class="shp-desc">Доставим товар по вашему адресу
@@ -104,10 +102,13 @@ defined('ABSPATH') || exit;
 
 </div>
 
+<div id="wc_reply" >
+</div>
 
-<?php // if (!is_user_logged_in() && $checkout->is_registration_enabled()) : ?>
+
+<?php if (!is_user_logged_in() && $checkout->is_registration_enabled()) : ?>
 	<div class="woocommerce-account-fields">
-		<?php // if (!$checkout->is_registration_required()) : ?>
+		<?php if (!$checkout->is_registration_required()) : ?>
 
 			<p class="form-row form-row-wide create-account">
 				<label class="woocommerce-form__label woocommerce-form__label-for-checkbox checkbox">
@@ -120,11 +121,11 @@ defined('ABSPATH') || exit;
 				</label>
 			</p>
 
-		<?php // endif; ?>
+		<?php endif; ?>
 
 		<?php do_action('woocommerce_before_checkout_registration_form', $checkout); ?>
 
-		<?php //  if ($checkout->get_checkout_fields('account')) : ?>
+		<?php if ($checkout->get_checkout_fields('account')) : ?>
 
 			<div class="create-account">
 				<?php foreach ($checkout->get_checkout_fields('account') as $key => $field) : ?>
@@ -133,9 +134,9 @@ defined('ABSPATH') || exit;
 				<div class="clear"></div>
 			</div>
 
-		<?php // endif; ?>
+		<?php endif; ?>
 
 		<?php do_action('woocommerce_after_checkout_registration_form', $checkout); ?>
 	</div>
-<?php // endif; ?>
+<?php endif; ?>
 

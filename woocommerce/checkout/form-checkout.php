@@ -28,7 +28,8 @@ if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_requir
 	do_action( 'woocommerce_before_checkout_form', $checkout );
 ?>
 	<h4 class="page-wide"><?php echo get_post(null, OBJECT)->post_title ?></h4>
-<form name="checkout" method="post" class="checkout woocommerce-checkout page-wide cart-list" action="<?php echo esc_url( wc_get_checkout_url() ); ?>" enctype="multipart/form-data">
+	
+<form class="checkout woocommerce-checkout woocommerce-cart-form page-wide cart-list" action="<?php echo esc_url( wc_get_checkout_url() ); ?>" method="post">
 	<div class=" page-part part-wide">
 
 		<div id="order_review_heading" class="btn"><?php esc_html_e( 'Your order', 'woocommerce' ); ?>: 
@@ -96,6 +97,7 @@ if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_requir
 <?php 
 function drawItem( $item ) {
 	global $modelKeys;
+	global $wp;
 	$codeRet = '';
 	$_product = apply_filters( 'woocommerce_cart_item_product', $item['data'], $item, $item['key'] );
 	if ( $_product && $_product->exists() && $item['quantity'] > 0 && apply_filters( 'woocommerce_cart_item_visible', true, $item, $item['key'] ) ) {
@@ -108,5 +110,6 @@ function drawItem( $item ) {
 	}
 	return $codeRet;
 }
+
 ?>
 

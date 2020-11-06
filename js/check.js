@@ -224,7 +224,8 @@ jQuery(function ($) {
 
 			var shipping_methods = {};
 			// eslint-disable-next-line max-len
-			$( 'select.shipping_method, :input[name^=shipping_method][type=radio]:checked, :input[name^=shipping_method][type=hidden]' ).each( function() {
+// 			$( 'select.shipping_method, :input[name^=shipping_method][type=radio]:checked, :input[name^=shipping_method][type=hidden]' ).each( function() {
+			$( 'input[name^=shipping_method][type=hidden]' ).each( function() {
 				shipping_methods[ $( this ).data( 'index' ) ] = $( this ).val();
 			} );
 
@@ -235,19 +236,17 @@ jQuery(function ($) {
 				shipping_method: shipping_methods
 			};
 
-console.log(wc_cart_params);
-
-			let url = '/cart?wc-ajax=update_shipping_method';
-
 			$.ajax( {
 				type:     'post',
-				url:      url,			// get_url( 'update_shipping_method' ),
+				url:      get_url( 'update_shipping_method' ),
 				data:     data,
-				dataType: 'html',
+				dataType: 'json',
 				success:  function( response ) {
 					update_cart_totals_div( response );
 				},
-				complete: function() {
+				complete: function(response) {
+// 					log_dump();
+					document.getElementById('wc_reply').innerHTML = response.responseText;
 					unblock( $( 'div.cart_totals' ) );
 					$( document.body ).trigger( 'updated_shipping_method' );
 				}
@@ -365,7 +364,7 @@ console.log(wc_cart_params);
 				type:     $form.attr( 'method' ),
 				url:      $form.attr( 'action' ),
 				data:     $form.serialize(),
-				dataType: 'html',
+				dataType: 'json',
 				success:  function( response ) {
 					update_wc_div( response, preserve_notices );
 				},
@@ -385,7 +384,7 @@ console.log(wc_cart_params);
 
 			$.ajax( {
 				url:      get_url( 'get_cart_totals' ),
-				dataType: 'html',
+				dataType: 'json',
 				success:  function( response ) {
 					update_cart_totals_div( response );
 				},

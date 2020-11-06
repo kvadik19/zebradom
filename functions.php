@@ -56,7 +56,7 @@ $def_links = [
 					'style' => "$tmpl_uri/style.css"
 				],
 			'script' => [
-					['jquery', '//code.jquery.com/jquery-3.4.1.min.js', [], false, true],
+// 					['jquery', '//code.jquery.com/jquery-3.4.1.min.js', [], false, true],
 					['popper', '//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js', ['jquery'], false, true],
 					['bootstrap', '//stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js', ['popper'], false, true],
 					['photoswipe-zebra', "$tmpl_uri/js/photoswipe-ui-zebra.min.js", ['jquery','photoswipe'], false, true],
@@ -68,6 +68,7 @@ $def_links = [
 					'lightgallery' => "$tmpl_uri/css/lightgallery.css",
 				],
 			'script' => [
+					['jquery', '//code.jquery.com/jquery-3.4.1.min.js', [], false, true],
 					['true_loadmore', "$tmpl_uri/js/loadmore.js", ['jquery']],
 					['lightgallery', "$tmpl_uri/js/lightgallery.min.js", ['jquery']],
 					['slick', "$tmpl_uri/js/slick.min.js", ['jquery']],
@@ -80,6 +81,7 @@ $def_links = [
 					'classic-pck' => "$tmpl_uri/css/classic.min.css",
 				],
 			'script' => [
+					['jquery', '//code.jquery.com/jquery-3.4.1.min.js', [], false, true],
 					['farbtastic-picker', "$tmpl_uri/js/farbtastic/farbtastic.js", ['jquery'], false, true],
 					['jq-zoom', "$tmpl_uri/js/zoom.js", ['jquery'], false, true],
 					['threejs', "$tmpl_uri/js/three.min.js", [], false, true],
@@ -97,6 +99,7 @@ $def_links = [
 					'slick-theme' => "$tmpl_uri/css/slick-theme.css",
 				],
 			'script' => [
+					['jquery', '//code.jquery.com/jquery-3.4.1.min.js', [], false, true],
 					['clients', "$tmpl_uri/js/clients.js", ['jquery'], false, true]
 				]
 		],
@@ -110,6 +113,7 @@ $def_links = [
 					'page-solutions' => "$tmpl_uri/css/page-resh.css",
 				],
 			'script' => [
+					['jquery', '//code.jquery.com/jquery-3.4.1.min.js', [], false, true],
 					['solutions', "$tmpl_uri/js/solutions.js", ['jquery'], false, true]
 				]
 		],
@@ -123,6 +127,7 @@ $def_links = [
 					'page-wooc' => "$tmpl_uri/css/woocom.css",
 				],
 			'script' => [
+					['jquery', '//code.jquery.com/jquery-3.4.1.min.js', [], false, true],
 					['cart', "$tmpl_uri/js/cart.js", ['jquery'], false, true]
 				]
 		],
@@ -131,6 +136,7 @@ $def_links = [
 					'page-wooc' => "$tmpl_uri/css/woocom.css",
 				],
 			'script' => [
+					['jquery', '//code.jquery.com/jquery-3.4.1.min.js', [], false, true],
 					['check', "$tmpl_uri/js/check.js", ['jquery'], false, true]
 				]
 		],
@@ -169,6 +175,15 @@ log_write("LOAD RESOURCES FOR: $page_template IN ".get_stylesheet_directory() );
 	}
 }
 add_action('wp_enqueue_scripts', 'enqueue_src');
+
+function observe($data) {
+	 $cart = WC()->cart->get_cart();
+// 	 log_write( var_export($checkout,true));
+}
+
+add_action('wp_ajax_observe', 'observe');
+add_action('wp_ajax_nopriv_observe', 'observe');
+
 
 function true_customizer_init($wp_customize) {
 	$true_transport = 'postMessage';

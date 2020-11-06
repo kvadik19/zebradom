@@ -17,7 +17,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-// do_action( 'woocommerce_before_cart' ); 
+do_action( 'woocommerce_before_cart' ); 
 ?>
 
 	<h4 class="page-wide"><?php echo get_post(null, OBJECT)->post_title ?></h4>
@@ -30,20 +30,43 @@ defined( 'ABSPATH' ) || exit;
 		echo '</div>';
 	}
 ?>
+
+	
+<table>
+		<?php do_action( 'woocommerce_after_cart_contents' ); ?>
+</table>
 	</div>	<!-- part-wide -->
 
 <?php do_action( 'woocommerce_before_cart_collaterals' ); ?>
 	<div class="page-part part-narrow">
 		<div id="cart-total" class="cart-collaterals ">
-			<?php
-				/**
-				* Cart collaterals hook.
-				*
-				* @hooked woocommerce_cross_sell_display
-				* @hooked woocommerce_cart_totals - 10
-				*/
-				do_action( 'woocommerce_cart_collaterals' );
-			?>
+			<div class="check">
+				<div><?php esc_html_e( 'Your order', 'woocommerce' ); ?></div>
+			</div>
+
+			<div class="check cart-subtotal">
+				<div><?php esc_html_e( 'Products', 'woocommerce' ); ?> (<span class="cart-count"><?php echo WC()->cart->cart_contents_count ?></span>)</div>
+				<div id="subtotal" data-title="<?php esc_attr_e( 'Products', 'woocommerce' ); ?>"><?php echo WC()->cart->get_cart_subtotal(); ?></div>
+			</div>
+				<div class="check cart-shipping">
+					<div><?php esc_html_e( 'Shipping', 'woocommerce' ); ?></div>
+					<div class="comment" data-title="<?php esc_attr_e( 'Shipping', 'woocommerce' ); ?>">Стоимость достав&shy;ки будет под&shy;считана во время офор&shy;мления покупки</div>
+				</div>
+
+				<?php do_action( 'woocommerce_cart_totals_before_order_total' ); ?>
+
+				<div class="check order-total">
+					<div><?php esc_html_e( 'Total', 'woocommerce' ); ?>:</div>
+					<div  id="total" data-title="<?php esc_attr_e( 'Total', 'woocommerce' ); ?>"><strong><?php echo WC()->cart->get_cart_subtotal(); // wc_cart_totals_order_total_html();//  ?></strong></div>
+				</div>
+
+<?php do_action( 'woocommerce_cart_totals_after_order_total' ); ?>
+
+			<div class="wc-proceed-to-checkout">
+				<a class="btn btn-app" href="/checkout/">Перейти к оформлению</a>
+			</div>
+
+			<?php do_action( 'woocommerce_after_cart_totals' ); ?>
 		</div>
 	</div>	<!-- part-narrow -->
 </form>	<!-- cart-list-->
@@ -102,54 +125,6 @@ function drawItem( $item ) {
 		$codeRet .= '<p class="o-strike"></p>';
 		$codeRet .= '<p class="o-discnt"></p>';
 		$codeRet .= "</div>\n";
-// 			<td class="product-name" data-title="esc_attr_e( 'Product', 'woocommerce' ); ">
-// 			
-// 			if ( ! $product_permalink ) {
-// 				echo wp_kses_post( apply_filters( 'woocommerce_cart_item_name', $_product->get_name(), $item, $item['key'] ) . '&nbsp;' );
-// 			} else {
-// 				echo wp_kses_post( apply_filters( 'woocommerce_cart_item_name', sprintf( '<a href="%s">%s</a>', esc_url( $product_permalink ), $_product->get_name() ), $item, $item['key'] ) );
-// 			}
-// 
-// 			// do_action( 'woocommerce_after_cart_item_name', $item, $item['key'] );
-// 
-// 			// Meta data.
-// 			echo wc_get_formatted_cart_item_data( $item ); // PHPCS: XSS ok.
-// 
-// 			// Backorder notification.
-// 			if ( $_product->backorders_require_notification() && $_product->is_on_backorder( $item['quantity'] ) ) {
-// 				echo wp_kses_post( apply_filters( 'woocommerce_cart_item_backorder_notification', '<p class="backorder_notification">' . esc_html__( 'Available on backorder', 'woocommerce' ) . '</p>', $product_id ) );
-// 			}
-// 			</td>
-// 
-// 			<td class="product-price" data-title="<php esc_attr_e( 'Price', 'woocommerce' ); >">
-// 					echo apply_filters( 'woocommerce_cart_item_price', WC()->cart->get_product_price( $_product ), $item, $item['key'] ); // PHPCS: XSS ok.
-// 			</td>
-// 
-// 			<td class="product-quantity" data-title="<? esc_attr_e( 'Quantity', 'woocommerce' ); >">
-// 			if ( $_product->is_sold_individually() ) {
-// 				$product_quantity = sprintf( '1 <input type="hidden" name="cart[%s][qty]" value="1" />', $item['key'] );
-// 			} else {
-// 				$product_quantity = woocommerce_quantity_input(
-// 					array(
-// 						'input_name'   => "cart[{$item['key']}][qty]",
-// 						'input_value'  => $item['quantity'],
-// 						'max_value'    => $_product->get_max_purchase_quantity(),
-// 						'min_value'    => '0',
-// 						'product_name' => $_product->get_name(),
-// 					),
-// 					$_product,
-// 					false
-// 				);
-// 			}
-// 
-// 			echo apply_filters( 'woocommerce_cart_item_quantity', $product_quantity, $item['key'], $item ); // PHPCS: XSS ok.
-// 			</td>
-// 
-// 			<td class="product-subtotal" data-title="<?php esc_attr_e( 'Subtotal', 'woocommerce' ); >">
-// 					echo apply_filters( 'woocommerce_cart_item_subtotal', WC()->cart->get_product_subtotal( $_product, $item['quantity'] ), $item, $item['key'] ); // PHPCS: XSS ok.
-// 				>
-// 			</td>
-// 		</tr>
 	}
 	return $codeRet;
 }

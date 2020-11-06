@@ -34,6 +34,22 @@ jQuery(document).ready(function ($) {
 					});
 	});
 
+function log_dump(id) {
+	let data = {'action':'observe','id':id};
+	$.ajax( {
+			type:     'post',
+			url: "/wp-admin/admin-ajax.php",
+			data:     data,
+			dataType: 'json',
+			success:  function( response ) {
+				console.log(response);
+			},
+			complete: function() {
+			},
+			fail: function( jqxhr, textStatus, error) { console.log(textStatus+' : '+error) }
+		} );
+}
+
 function plural_str(i, str1, str2, str3) {
 	function plural (a){
 		if ( a % 10 == 1 && a % 100 != 11 ) return 0

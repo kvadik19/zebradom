@@ -76,8 +76,6 @@ jQuery(function ($) {
 					});
 		});
 
-console.log(wc_cart_params);
-
 	let ajaxDelay = 0;
 	var lineRecalc = function(id) {
 			let qHost = document.getElementById(id).querySelector('.item-count input[type="text"]');
