@@ -55,9 +55,6 @@ if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_requir
 					<div class="col-12">
 						<?php do_action( 'woocommerce_checkout_billing' ); ?>
 					</div>
-					<div class="col-12">
-						<?php do_action( 'woocommerce_checkout_shipping' ); ?>
-					</div>
 				</div>
 			</div>
 
@@ -77,7 +74,7 @@ if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_requir
 			</div>
 
 			<div class="check cart-shipping">
-				<div><?php esc_html_e( 'Shipping', 'woocommerce' ); ?></div>
+				<div><?php esc_html_e( 'Shipping', 'woocommerce' ); ?><span id="shipping_desc"></span></div>
 				<div id="shipping" data-title="<?php esc_attr_e( 'Shipping', 'woocommerce' ); ?>"><?php echo WC()->cart->get_cart_shipping_total(); ?></div>
 			</div>
 

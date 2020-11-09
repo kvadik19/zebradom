@@ -49,13 +49,48 @@ form.woocommerce-checkout label .required {
 	color:var(--z-gray, '#999999') !important;
 }
 
-#billing_city,
-#billing_city_field {
+#dadata_field {
 	width:100%;
 	display:block;
 }
+#addressAlert {
+	padding: 1em;
+	border-radius: 0.5em;
+	background-color: var(--z-yellow-l,'#fff8e5');
+	color: var(--z-purple,'#6d2eff');
+	border: 1px solid var(--z-yellow,'#ffd52e');
+	margin-top: -2.5em;
+	position: absolute;
+	width: calc(100% - 2em);
+	z-index: 2;
+	opacity:0;
+}
+#addressAlert.alert {
+	animation-name:doAlert;
+	-webkit-animation-name:doAlert;
+	-moz-animation-name:doAlert;
+	-o-animation-name:doAlert;
+	animation-iteration-count:1;
+	-webkit-animation-iteration-count:1;
+	-moz-animation-iteration-count:1;
+	-o-animation-iteration-count:1;
+	animation-duration:3s;
+	-webkit-animation-duration:3s;
+	-moz-animation-duration:3s;
+	-o-animation-duration:3s;
+/*	animation-timing-function: ease-out;
+	-webkit-animation-timing-function: ease-out;
+	-moz-animation-timing-function: ease-out;
+	-o-animation-timing-function: ease-out;*/
+}
+@keyframes doAlert {
+	0% { opacity:1; }
+	60% { opacity:1; }
+	100% { opacity:initial;}
+}
 
-.shp-list {
+
+#shp-list {
 	text-align:justify;
 	text-align-last:justify;
 }
@@ -66,7 +101,7 @@ form.woocommerce-checkout label .required {
 	padding:1em 0px;
 	display: inline-block;
 	width: calc(50% - 1em);
-	height: 7em;
+	height: 8em;
 	border-radius: 0.75em;
 	border: 1px solid var(--z-gray-m, '#dddddd');
 	cursor: pointer;
@@ -96,7 +131,7 @@ form.woocommerce-checkout label .required {
 	border-radius:0.7em;
 	border:1px solid var(--z-gray-m, '#dddddd');
 	float: left;
-	margin: 0.2em 1em 0px -2em;
+	margin: 0.1em 1em 0px -2em;
 }
 .shp-item.sel .shp-title::before {
 	color:var(--z-purple, '#6d2eff');
@@ -104,6 +139,11 @@ form.woocommerce-checkout label .required {
 	border-color:var(--z-purple, '#6d2eff');
 	content: url('data:image/svg+xml;utf8,<svg width="12" height="16" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="6" cy="9" r="5" fill="%236d2eff"/></svg>');
 /* 	content:'\25CF'; */
+}
+
+textarea#order_comments {
+	font-size:80%;
+	border-radius:0.75em;
 }
 
 .cart-list {
@@ -196,6 +236,11 @@ form.woocommerce-checkout label .required {
 .check div.comment {
 	font-weight:normal;
 	text-align:right;
+}
+#shipping_desc{
+	display:block;
+	color:var(--z-gray, '#999999');
+	font-size:75%;
 }
 .check.order-total {
 	border-top: 1px solid var(--z-gray-m, '#dddddd');

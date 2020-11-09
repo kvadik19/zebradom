@@ -3,6 +3,12 @@
 wc_cart_params = wc_checkout_params;
 
 jQuery(function ($) {
+	$('.woocommerce-input-wrapper > *').unwrap();
+	$('.address-field').hide();
+	$('#billing_address_1_field').hide();
+// 	$('#billing_postcode').show();
+	$('#address').attr('placeholder', 'Введите Ваш город, улицу и дом');
+
 	document.getElementById('cart-total').style.top = (document.getElementById('bar-top').offsetHeight+10)+'px';
 	let hideView = function(evt) {
 						evt.stopImmediatePropagation();
@@ -22,18 +28,68 @@ jQuery(function ($) {
 										document.addEventListener('click', hideView);
 									}
 								};
+
+	let doMethod = function(b) {		// Assign delivery method to special field
+			let method = b.dataset.method;
+			if (b.dataset.index) method += ':'+b.dataset.index;
+			document.getElementById('shipping_method').value = method;
+		};
 	document.querySelectorAll('div.shp-item').forEach(d => d.onclick = function(e) {
+														document.getElementById('addressAlert').className = '';
 														if ( d.className.match(/\s*sel/) ) return;
-														d.parentNode.querySelectorAll('div.shp-item.sel').forEach( s => s.className = s.className.replace(/\s*sel/g,''));
+														d.parentNode.querySelectorAll('div.shp-item.sel').forEach( s => {s.className = s.className.replace(/\s*sel/g,'');
+																												s.querySelector('.shp-price').innerText = '';
+																											});
 														d.className += ' sel';
-														document.getElementById('shipping_method').value = d.dataset.method;
+														doMethod(d);
 														cart_shipping.shipping_method_selected();
 													});
 
-	document.getElementById('shipping_method').value = document.querySelector('div.shp-item.sel').dataset.method;
-	
-	// /checkout page JS
+	if ( document.querySelector('div.shp-item.sel') ) doMethod( document.querySelector('div.shp-item.sel') );
 
+	$(document.body).on('updated_checkout', function(evt, data){ 
+				console.log(data);
+				cart_shipping.shipping_method_selected();
+// 				document.getElementById('wc-out').innerHTML = data.fragments['.woocommerce-checkout-review-order-table'];
+			});
+
+	$(document.body).on('updated_shipping_method', function(evt, ht){ 
+				let d = createObj('div',{'innerHTML':ht});
+				let meth = d.querySelector('#shipping_method li input[type="radio"]:checked');
+				let row = meth.parentNode;
+				let meth_name = row.querySelector('label').firstChild.nodeValue.replace(/[:\s]+$/g,'');
+				let price = 'Бесплатно!';
+				let choosed = document.getElementById('shipping_method').value;
+				if ( choosed !== meth.value && meth.value.match(/\w+:\d+/) ) {
+					let [w, m, n] =meth.value.match(/(\w+):(\d+)/);
+					let sm = document.querySelector('.shp-item[data-method="'+m+'"][data-index="'+n+'"]');
+					if ( sm ) {
+						document.querySelectorAll('div.shp-item.sel').forEach( s => {s.className = s.className.replace(/\s*sel/g,'');
+																					s.querySelector('.shp-price').innerText = '';
+																					});
+						sm.className += ' sel';
+						doMethod(sm);
+						document.getElementById('addressAlert').className = 'alert';
+					}
+				}
+				if ( document.getElementById('address').value.replace(/\s/g,'').length === 0 ) {
+					let addr = '';
+					['billing_address_1', 'billing_city', 'billing_state', 'billing_postcode'].forEach( id => {
+							 addr +=  (document.getElementById(id).value + ', ');
+						});
+					document.getElementById('address').value = addr.replace(/, $/,'');
+				}
+				if ( row.querySelector('label span.amount') ) price = row.querySelector('label span.amount').innerHTML;
+				document.getElementById('shipping').innerHTML = price;
+				document.querySelector('div.shp-item.sel .shp-price').innerHTML = price;
+				document.getElementById('shipping_desc').innerText = meth_name;
+				document.getElementById('total').innerHTML = d.querySelector('tr.order-total td').innerHTML;
+// 				document.getElementById('wc-out').innerHTML = ht;
+			});
+
+	// /checkout page JS END
+
+	// Content of wp-content/plugins/woocommerce/assets/js/frontend/cart.js HERE
 	// wc_cart_params is required to continue, ensure the object exists
 	if ( typeof wc_cart_params === 'undefined' ) {
 		return false;
@@ -233,22 +289,20 @@ jQuery(function ($) {
 
 			var data = {
 				security: wc_cart_params.update_shipping_method_nonce,
-				shipping_method: shipping_methods
+				shipping_method: shipping_methods,
 			};
 
 			$.ajax( {
 				type:     'post',
 				url:      get_url( 'update_shipping_method' ),
 				data:     data,
-				dataType: 'json',
+				dataType: 'html',
 				success:  function( response ) {
 					update_cart_totals_div( response );
 				},
 				complete: function(response) {
-// 					log_dump();
-					document.getElementById('wc_reply').innerHTML = response.responseText;
 					unblock( $( 'div.cart_totals' ) );
-					$( document.body ).trigger( 'updated_shipping_method' );
+					$( document.body ).trigger( 'updated_shipping_method', response.responseText );
 				}
 			} );
 		},

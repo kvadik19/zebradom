@@ -10,10 +10,6 @@ jQuery(document).ready(function ($) {
 
 		$.ajaxSetup({dataType: 'json'});
 
-		$('.woocommerce-input-wrapper > *').unwrap();
-		$('.address-field').hide();
-		$('#billing_city_field').show();
-
 	// 	jQuery("#lightgallery").lightGallery();		// See page-clients.php
 
 		document.querySelectorAll('.popanel .closebox').forEach( function(s) { 

@@ -34,7 +34,8 @@ defined('ABSPATH') || exit;
 				'billing_country' => [],
 				'billing_phone' => [],
 				'billing_email' => [],
-				'billing_address_1' => ['placeholder' => ''],
+				'billing_city' => ['label' => 'Город'],
+				'billing_address_1' => ['class' => array_push($fields['billing_address_1']['class'],'field-wide')],
 			];
 
 	foreach ( $fform as $field => $def ) {
@@ -47,24 +48,23 @@ defined('ABSPATH') || exit;
 		woocommerce_form_field($field, $opts, $checkout->get_value($field));
 	}
 ?>
-		<p class="form-row form-row-wide form-group float-left" id="billing_email_field" data-priority="110">
+		<p class="form-row form-row-wide form-group float-left" id="dadata_field" data-priority="110">
 			<?php do_action('woocommerce_dadata', $checkout); ?>
 		</p>
 	</div>
-	<h5>Город доставки</h5>
-		<label for="billing_city">Город</label>
-<?php woocommerce_form_field('billing_city', 
-							['label' => '','class' => array_push($fields['billing_city']['class'],'field-wide')], 
-							$checkout->get_value('billing_city'));
+<?php
 	do_action('woocommerce_after_checkout_billing_form', $checkout);
 ?>
+</div>
+<div id="addressAlert">
+	Не удалось рассчитать стоимость доставки по указанному адресу. Попробуйте уточнить адрес.
 </div>
 
 	<h5>Способ доставки</h5>
 <input name="shipping_method" id="shipping_method" data-index="0" type="hidden" />
 
-<div class="shp-list">
-	<div class="shp-item shipping_method sel" data-method="local_pickup">
+<div id="shp-list" class="woocommerce-billing-fields">
+	<div class="shp-item shipping_method sel" data-index="6" data-method="local_pickup">
 		<div class="shp-title">Самовывоз
 		</div>
 		<div class="shp-desc">Заберите товар со склада в течение 5 дней
@@ -73,7 +73,7 @@ defined('ABSPATH') || exit;
 		</div>
 	</div>
 
-	<div class="shp-item shipping_method" data-method="rpaefw_post_calc:8">
+	<div class="shp-item shipping_method" data-index="1" data-method="rpaefw_post_calc">
 		<div class="shp-title">Доставка Почта России (EMS)
 		</div>
 		<div class="shp-desc">Доставка курьерской службой с трек-номером для отслеживания
@@ -82,7 +82,7 @@ defined('ABSPATH') || exit;
 		</div>
 	</div>
 
-	<div class="shp-item shipping_method" data-method="cdek">
+	<div class="shp-item shipping_method" data-method="cdek" hidden>
 		<div class="shp-title">Доставка СДЭК на ПВЗ
 		</div>
 		<div class="shp-desc"><a href="#">Выберите удобный для вас пункт выдачи заказов (ПВЗ) СДЭК</a>
@@ -91,7 +91,7 @@ defined('ABSPATH') || exit;
 		</div>
 	</div>
 
-	<div class="shp-item shipping_method" data-method="cdek">
+	<div class="shp-item shipping_method" data-method="cdek" hidden>
 		<div class="shp-title">Доставка СДЭК курьером
 		</div>
 		<div class="shp-desc">Доставим товар по вашему адресу
@@ -102,28 +102,35 @@ defined('ABSPATH') || exit;
 
 </div>
 
-<div id="wc_reply" >
+	<h5>Комментарий к заказу</h5>
+<div id="addons" class="woocommerce-additional-fields">
+<?php do_action( 'woocommerce_before_order_notes', $checkout ); ?>
+	<label for="order_comments">Комментарий</label>
+	<textarea name="order_comments" id="order_comments" rows="5" class="input-text form-control w-100" 
+			placeholder="Примечания к вашему заказу, например, особые пожелания отделу доставки.">
+	</textarea>
+<?php do_action( 'woocommerce_after_order_notes', $checkout ); ?>
 </div>
 
+<!--
+<h5>Отладочная информация</h5>
+<div id="wc-out" style="font-size:75%;color:#000066;"></div>
+-->
 
 <?php if (!is_user_logged_in() && $checkout->is_registration_enabled()) : ?>
 	<div class="woocommerce-account-fields">
-		<?php if (!$checkout->is_registration_required()) : ?>
+<?php if (!$checkout->is_registration_required()) : ?>
+			<input class="woocommerce-form__input woocommerce-form__input-checkbox input-checkbox"
+				type="hidden" value="1" 
+				id="createaccount" name="createaccount"
+<?php
+			checked((true === $checkout->get_value('createaccount') 
+				|| (true === apply_filters('woocommerce_create_account_default_checked', false))), true); 
+?>
+			/>
+<?php endif; ?>
 
-			<p class="form-row form-row-wide create-account">
-				<label class="woocommerce-form__label woocommerce-form__label-for-checkbox checkbox">
-					<input class="woocommerce-form__input woocommerce-form__input-checkbox input-checkbox"
-							id="createaccount" <?php checked((true === $checkout->get_value('createaccount') || (true === apply_filters('woocommerce_create_account_default_checked',
-								false))), true); ?>
-							type="checkbox"
-							name="createaccount"
-							value="1"/> <span><?php esc_html_e('Create an account?', 'woocommerce'); ?></span>
-				</label>
-			</p>
-
-		<?php endif; ?>
-
-		<?php do_action('woocommerce_before_checkout_registration_form', $checkout); ?>
+		<?php // do_action('woocommerce_before_checkout_registration_form', $checkout); ?>
 
 		<?php if ($checkout->get_checkout_fields('account')) : ?>
 
@@ -136,7 +143,7 @@ defined('ABSPATH') || exit;
 
 		<?php endif; ?>
 
-		<?php do_action('woocommerce_after_checkout_registration_form', $checkout); ?>
+		<?php // do_action('woocommerce_after_checkout_registration_form', $checkout); ?>
 	</div>
 <?php endif; ?>
 
