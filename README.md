@@ -40,7 +40,10 @@ zebradom_2020.ru/woocommerce/checkout
 		...
 	);
 `
-### Настройка способа доставки и russian-post-and-ems-for-woocommerce
+### Настройка способа доставки
+`wp-content/themes/zebradom_2020.ru/woocommerce/checkout/form-billing.php`
+
+
 Предустановленные способы доставки описываются в `<div id="shp-list">`. Назначаемый способ доставки формируется из `data-index` и `data-method` вложенных `<div class="shp-item ...">`. Например, `<div class="shp-item shipping_method" data-index="6" data-method="local_pickup">` дает метод **local_pickup:6**.
 
 Бесплатная версия **russian-post-and-ems-for-woocommerce** позволяет выбрать только один метод доставки - `rpaefw_post_calc:1`. Соотвестсвенно, настройки плуга из админ-панели WP обеспечивают алгоритм расчета, основывваясь на параметрах типа отправления и типа упаковки.
