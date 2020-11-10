@@ -34,38 +34,43 @@ jQuery(function ($) {
 			if (b.dataset.index) method += ':'+b.dataset.index;
 			document.getElementById('shipping_method').value = method;
 		};
-	document.querySelectorAll('div.shp-item').forEach(d => d.onclick = function(e) {
-														document.getElementById('addressAlert').className = '';
+	document.querySelectorAll('div.cell-item').forEach(d => d.onclick = function(e) {
 														if ( d.className.match(/\s*sel/) ) return;
-														d.parentNode.querySelectorAll('div.shp-item.sel').forEach( s => {s.className = s.className.replace(/\s*sel/g,'');
-																												s.querySelector('.shp-price').innerText = '';
+														d.parentNode.querySelectorAll('div.cell-item.sel').forEach( s => {s.className = s.className.replace(/\s*sel/g,'');
+																												s.querySelector('.cell-price').innerText = '';
 																											});
 														d.className += ' sel';
-														doMethod(d);
-														cart_shipping.shipping_method_selected();
+														if ( d.className.match(/shipping_method/) ) {
+															document.getElementById('addressAlert').className = '';
+															doMethod(d);
+															cart_shipping.shipping_method_selected();
+														} else if ( d.className.match(/payment_method/) ) {
+															
+console.log('Pay as '+d.dataset.method);
+														}
 													});
 
-	if ( document.querySelector('div.shp-item.sel') ) doMethod( document.querySelector('div.shp-item.sel') );
+	if ( document.querySelector('div.shipping_method.sel') ) doMethod( document.querySelector('div.shipping_method.sel') );
 
 	$(document.body).on('updated_checkout', function(evt, data){ 
-				console.log(data);
 				cart_shipping.shipping_method_selected();
-// 				document.getElementById('wc-out').innerHTML = data.fragments['.woocommerce-checkout-review-order-table'];
 			});
 
-	$(document.body).on('updated_shipping_method', function(evt, ht){ 
+	$(document.body).on('updated_shipping_method', function(evt, ht) { 
 				let d = createObj('div',{'innerHTML':ht});
 				let meth = d.querySelector('#shipping_method li input[type="radio"]:checked');
+				if ( !meth ) return;
 				let row = meth.parentNode;
 				let meth_name = row.querySelector('label').firstChild.nodeValue.replace(/[:\s]+$/g,'');
 				let price = 'Бесплатно!';
 				let choosed = document.getElementById('shipping_method').value;
+
 				if ( choosed !== meth.value && meth.value.match(/\w+:\d+/) ) {
 					let [w, m, n] =meth.value.match(/(\w+):(\d+)/);
-					let sm = document.querySelector('.shp-item[data-method="'+m+'"][data-index="'+n+'"]');
+					let sm = document.querySelector('div.shipping_method[data-method="'+m+'"][data-index="'+n+'"]');
 					if ( sm ) {
-						document.querySelectorAll('div.shp-item.sel').forEach( s => {s.className = s.className.replace(/\s*sel/g,'');
-																					s.querySelector('.shp-price').innerText = '';
+						document.querySelectorAll('div.shipping_method.sel').forEach( s => {s.className = s.className.replace(/\s*sel/g,'');
+																					s.querySelector('.cell-price').innerText = '';
 																					});
 						sm.className += ' sel';
 						doMethod(sm);
@@ -81,10 +86,9 @@ jQuery(function ($) {
 				}
 				if ( row.querySelector('label span.amount') ) price = row.querySelector('label span.amount').innerHTML;
 				document.getElementById('shipping').innerHTML = price;
-				document.querySelector('div.shp-item.sel .shp-price').innerHTML = price;
+				document.querySelector('div.shipping_method.sel .cell-price').innerHTML = price;
 				document.getElementById('shipping_desc').innerText = meth_name;
 				document.getElementById('total').innerHTML = d.querySelector('tr.order-total td').innerHTML;
-// 				document.getElementById('wc-out').innerHTML = ht;
 			});
 
 	// /checkout page JS END

@@ -90,38 +90,51 @@ form.woocommerce-checkout label .required {
 }
 
 
-#shp-list {
+.cell-list {
 	text-align:justify;
 	text-align-last:justify;
 }
-.shp-item {
+.cell-item.shipping_method {
+	width: calc(50% - 1em);
+	height: 8em;
+}
+.cell-item.shipping_method:nth-of-type(even) {
+	margin-left:1em;
+}
+.cell-item.payment_method {
+	width: calc(25% - 1em);
+	height: 6em;
+}
+.cell-item.payment_method:not(:first-of-type) {
+	margin-left:0.5em;
+}
+.cell-item.payment_method .cell-desc {
+/* 	font-size:75%; */
+}
+.cell-item {
 	text-align:left;
 	text-align-last:left;
 	font-size:80%;
 	padding:1em 0px;
 	display: inline-block;
-	width: calc(50% - 1em);
-	height: 8em;
 	border-radius: 0.75em;
 	border: 1px solid var(--z-gray-m, '#dddddd');
 	cursor: pointer;
 	margin:1em 0px;
 	vertical-align:middle;
+	overflow-y:hidden;
 }
-.shp-item:nth-of-type(even) {
-	margin-left:1em;
-}
-.shp-item.sel {
+.cell-item.sel {
 	background-color:var(--z-purple-l, '#e6e3ff')
 }
-.shp-item>* {
+.cell-item>* {
 	margin:0px 2em 0px 3em;
 }
-.shp-title,
-.shp-price {
+.cell-title,
+.cell-price {
 	font-weight:bold;
 }
-.shp-title::before {
+.cell-title::before {
 	display:inline-flex;
 	justify-content:center;
 	align-items:center;
@@ -133,13 +146,14 @@ form.woocommerce-checkout label .required {
 	float: left;
 	margin: 0.1em 1em 0px -2em;
 }
-.shp-item.sel .shp-title::before {
+.cell-item.sel .cell-title::before {
 	color:var(--z-purple, '#6d2eff');
 	background-color:var(--body-back, '#ffffff');
 	border-color:var(--z-purple, '#6d2eff');
 	content: url('data:image/svg+xml;utf8,<svg width="12" height="16" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="6" cy="9" r="5" fill="%236d2eff"/></svg>');
 /* 	content:'\25CF'; */
 }
+
 
 textarea#order_comments {
 	font-size:80%;

@@ -16,7 +16,6 @@
  * @global WC_Checkout $checkout
  */
 defined('ABSPATH') || exit;
-// log_write(var_export($checkout->get_checkout_fields(),true));
 // 	log_write( var_export( WC()->checkout['rpaefw_post_calc'], true) );
 ?>
 
@@ -63,43 +62,60 @@ defined('ABSPATH') || exit;
 	<h5>Способ доставки</h5>
 <input name="shipping_method" id="shipping_method" data-index="0" type="hidden" />
 
-<div id="shp-list" class="woocommerce-billing-fields">
-	<div class="shp-item shipping_method sel" data-index="6" data-method="local_pickup">
-		<div class="shp-title">Самовывоз
+<div id="shp-list" class="cell-list woocommerce-billing-fields">
+	<div class="cell-item shipping_method sel" data-index="6" data-method="local_pickup">
+		<div class="cell-title">Самовывоз
 		</div>
-		<div class="shp-desc">Заберите товар со склада в течение 5 дней
+		<div class="cell-desc">Заберите товар со склада в течение 5 дней
 		</div>
-		<div class="shp-price">Бесплатно
-		</div>
-	</div>
-
-	<div class="shp-item shipping_method" data-index="1" data-method="rpaefw_post_calc">
-		<div class="shp-title">Доставка Почта России (EMS)
-		</div>
-		<div class="shp-desc">Доставка курьерской службой с трек-номером для отслеживания
-		</div>
-		<div class="shp-price">
+		<div class="cell-price">Бесплатно
 		</div>
 	</div>
 
-	<div class="shp-item shipping_method" data-method="cdek" hidden>
-		<div class="shp-title">Доставка СДЭК на ПВЗ
+	<div class="cell-item shipping_method" data-index="1" data-method="rpaefw_post_calc">
+		<div class="cell-title">Доставка Почта России (EMS)
 		</div>
-		<div class="shp-desc"><a href="#">Выберите удобный для вас пункт выдачи заказов (ПВЗ) СДЭК</a>
+		<div class="cell-desc">Доставка курьерской службой с трек-номером для отслеживания
 		</div>
-		<div class="shp-price">
-		</div>
-	</div>
-
-	<div class="shp-item shipping_method" data-method="cdek" hidden>
-		<div class="shp-title">Доставка СДЭК курьером
-		</div>
-		<div class="shp-desc">Доставим товар по вашему адресу
-		</div>
-		<div class="shp-price">
+		<div class="cell-price">
 		</div>
 	</div>
 
+	<div class="cell-item shipping_method" data-method="cdek" hidden>
+		<div class="cell-title">Доставка СДЭК на ПВЗ
+		</div>
+		<div class="cell-desc"><a href="#">Выберите удобный для вас пункт выдачи заказов (ПВЗ) СДЭК</a>
+		</div>
+		<div class="cell-price">
+		</div>
+	</div>
+
+	<div class="cell-item shipping_method" data-method="cdek" hidden>
+		<div class="cell-title">Доставка СДЭК курьером
+		</div>
+		<div class="cell-desc">Доставим товар по вашему адресу
+		</div>
+		<div class="cell-price">
+		</div>
+	</div>
+
+</div>
+
+	<h5>Способы оплаты</h5>
+<input name="payment_method" id="payment_method" data-index="0" type="hidden" />
+
+<div id="pay-list" class="cell-list woocommerce-billing-fields">
+<?php
+	$available_gateways = WC()->payment_gateways->get_available_payment_gateways();
+	if ( ! empty( $available_gateways ) ) {
+		foreach ( $available_gateways as $gateway ) {
+			wc_get_template( 'checkout/payment-method.php', array( 'gateway' => $gateway ) );
+		}
+	} else {
+		echo 'Способы оплаты не определены',"\n";;
+	}
+
+?>
 </div>
 
 	<h5>Комментарий к заказу</h5>
