@@ -20,6 +20,7 @@ defined('ABSPATH') || exit;
 ?>
 
 <div class="woocommerce-billing-fields">
+	<?php do_action('woocommerce_before_checkout_billing_form', $checkout); ?>
 	
 	<h5>Данные получателя</h5>
 	<div class="woocommerce-billing-fields__field-wrapper">
@@ -51,10 +52,10 @@ defined('ABSPATH') || exit;
 			<?php do_action('woocommerce_dadata', $checkout); ?>
 		</p>
 	</div>
-<?php
-	do_action('woocommerce_after_checkout_billing_form', $checkout);
-?>
+
+<?php do_action('woocommerce_after_checkout_billing_form', $checkout); ?>
 </div>
+
 <div id="addressAlert">
 	Не удалось рассчитать стоимость доставки по указанному адресу. Попробуйте уточнить адрес.
 </div>

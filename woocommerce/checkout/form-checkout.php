@@ -29,7 +29,8 @@ if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_requir
 ?>
 	<h4 class="page-wide"><?php echo get_post(null, OBJECT)->post_title ?></h4>
 	
-<form class="checkout woocommerce-checkout woocommerce-cart-form page-wide cart-list" action="<?php echo esc_url( wc_get_checkout_url() ); ?>" method="post">
+<form name="checkout" class="checkout woocommerce-checkout woocommerce-cart-form page-wide cart-list" action="<?php echo esc_url( wc_get_checkout_url() ); ?>" 
+			method="post" enctype="multipart/form-data">
 	<div class=" page-part part-wide">
 
 		<div id="order_review_heading" class="btn"><?php esc_html_e( 'Your order', 'woocommerce' ); ?>: 
@@ -38,11 +39,13 @@ if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_requir
 
 		<div id="order_review" class="pop-list" hidden>
 <?php
+	do_action( 'woocommerce_checkout_before_order_review' );
 	foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
 		echo '<div class="order-item" id="', $cart_item_key,'">';
 		echo drawItem($cart_item);
 		echo '</div>';
 	}
+	do_action( 'woocommerce_checkout_after_order_review' );
 ?>
 		</div><!-- pop-list -->
 
@@ -83,9 +86,11 @@ if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_requir
 				<div  id="total" data-title="<?php esc_attr_e( 'Total', 'woocommerce' ); ?>"><?php wc_cart_totals_order_total_html(); ?></div>
 			</div>
 
+			<?php do_action( 'woocommerce_pay_order_before_submit' ); ?>
 			<div class="wc-proceed-to-checkout">
 				<a class="btn btn-app" href="#">Оплатить заказ</a>
 			</div>
+			<?php do_action( 'woocommerce_pay_order_after_submit' ); ?>
 		</div>
 	</div>	<!-- part-narrow -->
 <?php do_action( 'woocommerce_after_checkout_form', $checkout ); ?>
@@ -98,7 +103,6 @@ function drawItem( $item ) {
 	$codeRet = '';
 	$_product = apply_filters( 'woocommerce_cart_item_product', $item['data'], $item, $item['key'] );
 	if ( $_product && $_product->exists() && $item['quantity'] > 0 && apply_filters( 'woocommerce_cart_item_visible', true, $item, $item['key'] ) ) {
-// log_write('Visibility '.$_product->is_visible());
 		$codeRet .= '<div class="item-name">'.$_product->get_name().'</div>';
 		$codeRet .= '<div class="item-count">'.$item['quantity'].'</div>';
 		$codeRet .= '<div class="item-price">';

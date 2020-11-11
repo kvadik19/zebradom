@@ -137,7 +137,11 @@ $def_links = [
 				],
 			'script' => [
 					['jquery', '//code.jquery.com/jquery-3.4.1.min.js', [], false, true],
-					['check', "$tmpl_uri/js/check.js", ['jquery'], false, true]
+					['check', "$tmpl_uri/js/check.js", ['jquery'], false, true],
+					['REPLACE','wc-checkout', "$tmpl_uri/woocommerce/js/checkout.js", ['jquery', 
+																		'woocommerce', 
+																		'wc-country-select', 
+																		'wc-address-i18n'], false, true],
 				]
 		],
 	];
@@ -168,6 +172,10 @@ log_write("LOAD RESOURCES FOR: $page_template IN ".get_stylesheet_directory() );
 		}
 		if ( array_key_exists( 'script', $def_links[$page_template]) ) {
 			foreach ( $def_links[$page_template]['script'] as $def ) {
+				if ( $def[0] === 'REPLACE' ) {
+					array_shift($def);
+					wp_deregister_script($def[0]);
+				}
 				$def[1] .= "?$verJS";
 				wp_enqueue_script( ...$def );
 			}

@@ -1,4 +1,5 @@
-// // document.head.appendChild( createObj('script',{'type':'text/javascript', 'src':plugs+'/woocommerce/assets/js/frontend/cart.js?ver=4.3.1',}) );
+// document.head.appendChild( createObj('script',{'type':'text/javascript', 'src':plugs+'/woocommerce/assets/js/frontend/checkout.js?ver=9.3.1',}) );
+// document.head.appendChild( createObj('script',{'type':'text/javascript', 'src':plugs+'/woocommerce/assets/js/frontend/cart.js?ver=4.3.1',}) );
 /* global wc_cart_params */
 wc_cart_params = wc_checkout_params;
 
@@ -39,18 +40,30 @@ jQuery(function ($) {
 														d.parentNode.querySelectorAll('div.cell-item.sel').forEach( s => {s.className = s.className.replace(/\s*sel/g,'');
 																												s.querySelector('.cell-price').innerText = '';
 																											});
+// 														$('#pay-list .cell-item input[type="radio"]').prop('checked',false);
 														d.className += ' sel';
 														if ( d.className.match(/shipping_method/) ) {
 															document.getElementById('addressAlert').className = '';
 															doMethod(d);
 															cart_shipping.shipping_method_selected();
 														} else if ( d.className.match(/payment_method/) ) {
-															
-console.log('Pay as '+d.dataset.method);
+// 															d.querySelector('input[type="radio"]').checked = true;
+															$('.wc-proceed-to-checkout .btn-app').attr('disabled', false);
+															document.getElementById('payment_method').value = d.dataset.method;
 														}
 													});
 
 	if ( document.querySelector('div.shipping_method.sel') ) doMethod( document.querySelector('div.shipping_method.sel') );
+// 	if ( document.querySelector('#pay-list .cell-item input[type="radio"]:checked') ) {
+	if ( document.querySelector('#pay-list .cell-item.sel') ) {
+// 		$('#pay-list .cell-item input[type="radio"]:checked').parent().addClass('sel');
+// 		document.getElementById('payment_method').value = $('#pay-list .cell-item input[type="radio"]:checked').parent().data('method');
+		document.getElementById('payment_method').value = $('#pay-list .cell-item.sel').data('method');
+	} else {
+// 		$('#pay-list .cell-item input[type="radio"]').parent().removeClass('sel');
+		$('.wc-proceed-to-checkout .btn-app').attr('disabled', true);
+		document.getElementById('payment_method').value = '';
+	}
 
 	$(document.body).on('updated_checkout', function(evt, data){ 
 				cart_shipping.shipping_method_selected();
@@ -77,10 +90,11 @@ console.log('Pay as '+d.dataset.method);
 						document.getElementById('addressAlert').className = 'alert';
 					}
 				}
-				if ( document.getElementById('address').value.replace(/\s/g,'').length === 0 ) {
+				if ( document.getElementById('address').value.replace(/\s/g,'').length == 0 ) {
 					let addr = '';
 					['billing_address_1', 'billing_city', 'billing_state', 'billing_postcode'].forEach( id => {
-							 addr +=  (document.getElementById(id).value + ', ');
+							let val = document.getElementById(id).value.replace(/^[,\.;:'"\s]*|[,\.;:'"\s]*$/gm,'');
+							if ( val.length > 0 ) addr +=  (val + ', ');
 						});
 					document.getElementById('address').value = addr.replace(/, $/,'');
 				}
@@ -92,6 +106,8 @@ console.log('Pay as '+d.dataset.method);
 			});
 
 	// /checkout page JS END
+
+// console.log(wc_checkout_form);
 
 	// Content of wp-content/plugins/woocommerce/assets/js/frontend/cart.js HERE
 	// wc_cart_params is required to continue, ensure the object exists
@@ -281,6 +297,8 @@ console.log('Pay as '+d.dataset.method);
 		 * Handles when a shipping method is selected.
 		 */
 		shipping_method_selected: function() {
+			
+console.log('Form '+typeof(wc_checkout_form));
 
 			var shipping_methods = {};
 			// eslint-disable-next-line max-len

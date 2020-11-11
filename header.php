@@ -4,6 +4,8 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=<?php bloginfo('charset')?>">
 		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<?php echo "\t\t",'<script type="text/javascript">var plugs=\'',plugins_url(),"';</script>\n"; ?>
+
 		<?php wp_head() ?>
 	</head>
 	<body <?php body_class('layout')?>>
