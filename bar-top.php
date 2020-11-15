@@ -57,10 +57,17 @@
 
 		<div class="header-user">
 <!-- 			<section> -->
-				<a class="btn header-link" href="<?php echo get_page_link(51) ?>">
+				<?php if(is_user_logged_in()) {?>
+				<a class="btn header-link " href="<?php echo get_page_link(51) ?>">
 					<img src="<?php echo get_template_directory_uri() ?>/images/icons/ucab.svg" class="icon" />
-					<?php echo is_user_logged_in() ? 'Личный кабинет' : 'Войти' ?>
+					Личный кабинет
 				</a>
+				<?php } else {?>
+				<span class="btn header-link xoo-el-login-tgr">
+					<img src="<?php echo get_template_directory_uri() ?>/images/icons/ucab.svg" class="icon" />
+					Войти
+				</span>
+				<?php } ?>
 				<a class="btn header-link" href="/cart">
 					<img src="<?php echo get_template_directory_uri() ?>/images/icons/cart.svg" class="icon" />
 					<span  class="cart-count"><?php echo WC()->instance()->cart->cart_contents_count ?></span>
