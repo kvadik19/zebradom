@@ -33,13 +33,13 @@ zebradom_2020.ru/woocommerce/checkout
 Перемещение функционала woocommerce из стандартного URL `/cart` в `/checkout` согласно дизайн-проекта, связано с изменением frontend .php и .js скриптов.
 В разделе "Оформление заказа" содержимое скрипта `wp-content/plugins/woocommerce/assets/js/frontend/cart.js` перенесено в `wp-content/themes/zebradom_2020.ru/js/check.js`.
 Изменения в `wp-content/plugins/woocommerce/includes/class-wc-frontend-scripts.php:~515` - добавлен параметр, передаваемый объектом wc_checkout_params
-`
+```
 	case "wc-checkout":
 	$params = array(
 	"update_shipping_method_nonce" => wp_create_nonce( "update-shipping-method" ),
 		...
 	);
-`
+```
 ### Настройка способа доставки
 `wp-content/themes/zebradom_2020.ru/woocommerce/checkout/form-billing.php`
 
