@@ -5,6 +5,7 @@ Description: Zebradom v.20.08 theme
 Author: mac-t@yandex.ru
 Author URI: https://onpositive.net
 */
+
 .section {
     position: relative;
     overflow: hidden;
@@ -12,42 +13,52 @@ Author URI: https://onpositive.net
     padding-top: 30px;
     padding-bottom: 30px;
 }
+
 .alignnone {
     margin: 5px 20px 20px 0;
 }
+
 .aligncenter,
 div.aligncenter {
     display: block;
     margin: 5px auto 5px auto;
 }
+
 .alignright {
-    float:right;
+    float: right;
     margin: 5px 0 20px 20px;
 }
+
 .alignleft {
     float: left;
     margin: 5px 20px 20px 0;
 }
+
 .aligncenter {
     display: block;
     margin: 5px auto 5px auto;
 }
+
 a img.alignright {
     float: right;
     margin: 5px 0 20px 20px;
 }
+
 a img.alignnone {
     margin: 5px 20px 20px 0;
 }
+
 a img.alignleft {
     float: left;
     margin: 5px 20px 20px 0;
 }
+
 a img.aligncenter {
     display: block;
     margin-left: auto;
     margin-right: auto
 }
+
 .wp-caption {
     background: #fff;
     border: 1px solid #f0f0f0;
@@ -55,15 +66,19 @@ a img.aligncenter {
     padding: 5px 3px 10px;
     text-align: center;
 }
+
 .wp-caption.alignnone {
     margin: 5px 20px 20px 0;
 }
+
 .wp-caption.alignleft {
     margin: 5px 20px 20px 0;
 }
+
 .wp-caption.alignright {
     margin: 5px 0 20px 20px;
 }
+
 .wp-caption img {
     border: 0 none;
     height: auto;
@@ -72,44 +87,171 @@ a img.aligncenter {
     padding: 0;
     width: auto;
 }
+
 .wp-caption p.wp-caption-text {
     font-size: 11px;
     line-height: 17px;
     margin: 0;
     padding: 0 4px 5px;
 }
-.h_title{
-	display: none;
-}
-.zebra-dynamic-content{
-    display:flex;
+
+.h_title {
+    display: none;
 }
 
-.variations_form .input-group-prepend,.variations_form .qty,.variations_form .input-group-append{
-	display:none;
+.zebra-dynamic-content {
+    display: flex;
 }
-.page-template-page-solutions .woocommerce-Price-amount{
-font-weight: 700;
-margin-bottom: .8rem;
+
+.variations_form .input-group-prepend,
+.variations_form .qty,
+.variations_form .input-group-append {
+    display: none;
 }
-.single_add_to_cart_button{
-background-color: #859094;
-border: none;
-border-radius: 1rem;
-padding-left: 1.75rem;
-padding-right: 1.75rem;
-font-weight: 700;
-color: #fff;
-white-space: nowrap;
-width:100%;
+
+.page-template-page-solutions .woocommerce-Price-amount {
+    font-weight: 700;
+    margin-bottom: .8rem;
 }
-.slick-prev::before, .slick-next::before{
-color: #000;
-font-size:30px;
+
+.single_add_to_cart_button {
+    background-color: #859094;
+    border: none;
+    border-radius: 1rem;
+    padding-left: 1.75rem;
+    padding-right: 1.75rem;
+    font-weight: 700;
+    color: #fff;
+    white-space: nowrap;
+    width: 100%;
 }
-.gallery-item{
+
+.slick-prev::before,
+.slick-next::before {
+    color: #000;
+    font-size: 30px;
+}
+
+.gallery-item {
     height: 250px;
-    display:block;
+    display: block;
     overflow: hidden;
     margin-left: 10px;
+}
+
+.header-brand img {
+    max-width: initial;
+}
+
+form.woocommerce-EditAccountForm.edit-account button.woocommerce-Button.button.btn-app {
+    background: #6D2EFF;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 22px;
+    color: #FFFFFF;
+    padding: 14px;
+    min-width: 350px;
+    outline: none;
+}
+
+.woocommerce form .woocommerce-form-row input.woocommerce-Input {
+    border: 1px solid #DADADA;
+    box-sizing: border-box;
+    border-radius: 10px;
+    font-size: 16px;
+    line-height: 19px;
+    color: #333333;
+    padding: 12px 20px 13px;
+    outline: none;
+    width: 350px;
+}
+
+nav.woocommerce-MyAccount-navigation>ul li a {
+    padding: 15px;
+    display: block;
+}
+
+nav.woocommerce-MyAccount-navigation>ul {
+    padding: 0px;
+    padding-top: 0px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+    padding-left: 0px;
+    list-style: none;
+    margin: 0px;
+}
+
+nav.woocommerce-MyAccount-navigation {
+    background: #FFFFFF;
+    box-shadow: 0px 4px 25px rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+}
+
+.title-page {
+    font-weight: bold;
+    font-size: 32px;
+    line-height: 39px;
+    color: #333333;
+    margin-bottom: 20px;
+}
+
+.woocommerce-account .woocommerce-MyAccount-navigation {
+    width: 200px;
+}
+
+.woocommerce-account .woocommerce-MyAccount-content {
+    width: calc(100% - 250px);
+}
+
+nav.woocommerce-MyAccount-navigation>ul .woocommerce-MyAccount-navigation-link--orders a {
+    padding-left: 62px;
+    background: url(/wp-content/themes/zebradom_2020.ru/images/icon2.svg);
+    background-position: center left 26px;
+    background-repeat: no-repeat;
+}
+
+nav.woocommerce-MyAccount-navigation>ul .woocommerce-MyAccount-navigation-link--edit-account a {
+    padding-left: 62px;
+    background: url(/wp-content/themes/zebradom_2020.ru/images/icon1.svg);
+    background-position: center left 26px;
+    background-repeat: no-repeat;
+}
+
+li.woocommerce-MyAccount-navigation-link.is-active {
+    background: #F6F3FF;
+}
+
+.password-btn {
+    font-size: 16px;
+    line-height: 19px;
+    color: #5207FF;
+    border-bottom: 1px dashed;
+    display: inline-block;
+    margin: 5px 0px 20px;
+    cursor: pointer;
+    margin-left: 143px;
+}
+
+.password-btn:hover {
+    border-color: transparent;
+}
+
+.woocommerce form .woocommerce-form-row label {
+    width: 118px;
+    text-align: right;
+    margin-right: 20px;
+    font-size: 16px;
+    line-height: 19px;
+    color: #A6A6A6;
+    margin-bottom: 0px;
+}
+
+.woocommerce form .woocommerce-form-row {
+    margin-bottom: 15px;
+    padding: 0px;
+}
+
+form.woocommerce-EditAccountForm.edit-account button.woocommerce-Button.button.btn-app {
+    margin-left: 143px;
 }

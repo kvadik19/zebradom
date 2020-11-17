@@ -2,6 +2,7 @@
 // document.head.appendChild( createObj('script',{'type':'text/javascript', 'src':plugs+'/woocommerce/assets/js/frontend/cart.js?ver=4.3.1',}) );
 /* global wc_cart_params */
 wc_cart_params = wc_checkout_params;
+var wc_checkout_form, wc_checkout_coupons, wc_checkout_login_form, wc_terms_toggle;
 
 jQuery(function ($) {
 	$('.woocommerce-input-wrapper > *').unwrap();
@@ -45,7 +46,9 @@ jQuery(function ($) {
 														if ( d.className.match(/shipping_method/) ) {
 															document.getElementById('addressAlert').className = '';
 															doMethod(d);
-															cart_shipping.shipping_method_selected();
+// 															cart_shipping.shipping_method_selected();
+															$( document.body ).trigger( 'updated_checkout');
+
 														} else if ( d.className.match(/payment_method/) ) {
 // 															d.querySelector('input[type="radio"]').checked = true;
 															$('.wc-proceed-to-checkout .btn-app').attr('disabled', false);
@@ -64,7 +67,10 @@ jQuery(function ($) {
 		$('.wc-proceed-to-checkout .btn-app').attr('disabled', true);
 		document.getElementById('payment_method').value = '';
 	}
-
+	document.querySelector('.wc-proceed-to-checkout .btn-app').onclick = function(e) { 
+				if ( this.hasAttribute('disabled') ) return;
+				wc_checkout_form.init();
+			};
 	$(document.body).on('updated_checkout', function(evt, data){ 
 				cart_shipping.shipping_method_selected();
 			});
@@ -297,8 +303,6 @@ jQuery(function ($) {
 		 * Handles when a shipping method is selected.
 		 */
 		shipping_method_selected: function() {
-			
-console.log('Form '+typeof(wc_checkout_form));
 
 			var shipping_methods = {};
 			// eslint-disable-next-line max-len

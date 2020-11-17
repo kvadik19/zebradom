@@ -8,7 +8,7 @@ jQuery( function( $ ) {
 
 	$.blockUI.defaults.overlayCSS.cursor = 'default';
 
-	var wc_checkout_form = {
+	wc_checkout_form = {
 		updateTimer: false,
 		dirtyInput: false,
 		selectedPaymentMethod: false,
@@ -19,11 +19,11 @@ jQuery( function( $ ) {
 			$( document.body ).bind( 'update_checkout', this.update_checkout );
 			$( document.body ).bind( 'init_checkout', this.init_checkout );
 
-			// Payment methods
-			this.$checkout_form.on( 'click', 'input[name="payment_method"]', this.payment_method_selected );
+			// Payment methods See handlers at check.js
+// 			this.$checkout_form.on( 'click', 'input[name="payment_method"]', this.payment_method_selected );
 
 			if ( $( document.body ).hasClass( 'woocommerce-order-pay' ) ) {
-				this.$order_review.on( 'click', 'input[name="payment_method"]', this.payment_method_selected );
+// 				this.$order_review.on( 'click', 'input[name="payment_method"]', this.payment_method_selected );
 				this.$order_review.on( 'submit', this.submitOrder );
 				this.$order_review.attr( 'novalidate', 'novalidate' );
 			}
@@ -65,34 +65,37 @@ jQuery( function( $ ) {
 			var $payment_methods = $( '.woocommerce-checkout' ).find( 'input[name="payment_method"]' );
 
 			// If there is one method, we can hide the radio input
-			if ( 1 === $payment_methods.length ) {
-				$payment_methods.eq(0).hide();
-			}
+// 			if ( 1 === $payment_methods.length ) {
+// 				$payment_methods.eq(0).hide();
+// 			}
 
 			// If there was a previously selected method, check that one.
-			if ( wc_checkout_form.selectedPaymentMethod ) {
-				$( '#' + wc_checkout_form.selectedPaymentMethod ).prop( 'checked', true );
-			}
+// 			if ( wc_checkout_form.selectedPaymentMethod ) {
+// 				$( '#' + wc_checkout_form.selectedPaymentMethod ).prop( 'checked', true );
+// 			}
 
 			// If there are none selected, select the first.
-			if ( 0 === $payment_methods.filter( ':checked' ).length ) {
-				$payment_methods.eq(0).prop( 'checked', true );
-			}
+// 			if ( 0 === $payment_methods.filter( ':checked' ).length ) {
+// 				$payment_methods.eq(0).prop( 'checked', true );
+// 			}
 
 			// Get name of new selected method.
-			var checkedPaymentMethod = $payment_methods.filter( ':checked' ).eq(0).prop( 'id' );
+// 			var checkedPaymentMethod = $payment_methods.filter( ':checked' ).eq(0).prop( 'id' );
 
-			if ( $payment_methods.length > 1 ) {
-				// Hide open descriptions.
-				$( 'div.payment_box:not(".' + checkedPaymentMethod + '")' ).filter( ':visible' ).slideUp( 0 );
-			}
+// 			if ( $payment_methods.length > 1 ) {
+// 				// Hide open descriptions.
+// 				$( 'div.payment_box:not(".' + checkedPaymentMethod + '")' ).filter( ':visible' ).slideUp( 0 );
+// 			}
 
 			// Trigger click event for selected method
-			$payment_methods.filter( ':checked' ).eq(0).trigger( 'click' );
+// 			$payment_methods.filter( ':checked' ).eq(0).trigger( 'click' );
 		},
+
 		get_payment_method: function() {
-			return wc_checkout_form.$checkout_form.find( 'input[name="payment_method"]:checked' ).val();
+			return wc_checkout_form.$checkout_form.find( 'input[name="payment_method"]' ).val();			// Find hidden input
+// 			return wc_checkout_form.$checkout_form.find( 'input[name="payment_method"]:checked' ).val();
 		},
+
 		payment_method_selected: function( e ) {
 			e.stopPropagation();
 
@@ -117,11 +120,12 @@ jQuery( function( $ ) {
 				$( '#place_order' ).text( $( '#place_order' ).data( 'value' ) );
 			}
 
-			var selectedPaymentMethod = $( '.woocommerce-checkout input[name="payment_method"]:checked' ).attr( 'id' );
+			var selectedPaymentMethod = $('.woocommerce-checkout input[name="payment_method"]' ).val();
+// 			var selectedPaymentMethod = $( '.woocommerce-checkout input[name="payment_method"]:checked' ).attr( 'id' );
 
-			if ( selectedPaymentMethod !== wc_checkout_form.selectedPaymentMethod ) {
-				$( document.body ).trigger( 'payment_method_selected' );
-			}
+// 			if ( selectedPaymentMethod !== wc_checkout_form.selectedPaymentMethod ) {
+// 				$( document.body ).trigger( 'payment_method_selected' );
+// 			}
 
 			wc_checkout_form.selectedPaymentMethod = selectedPaymentMethod;
 		},
@@ -199,6 +203,8 @@ jQuery( function( $ ) {
 			}
 		},
 		validate_field: function( e ) {
+console.log('Do validate_field');
+
 			var $this             = $( this ),
 				$parent           = $this.closest( '.form-row' ),
 				validated         = true,
@@ -245,6 +251,8 @@ jQuery( function( $ ) {
 			wc_checkout_form.updateTimer = setTimeout( wc_checkout_form.update_checkout_action, '5', args );
 		},
 		update_checkout_action: function( args ) {
+console.log('update_checkout_action');
+
 			if ( wc_checkout_form.xhr ) {
 				wc_checkout_form.xhr.abort();
 			}
@@ -307,6 +315,7 @@ jQuery( function( $ ) {
 				has_full_address: has_full_address,
 				post_data       : $( 'form.checkout' ).serialize()
 			};
+console.log(data);
 
 			if ( false !== args.update_shipping_method ) {
 				var shipping_methods = {};
@@ -574,7 +583,7 @@ jQuery( function( $ ) {
 		}
 	};
 
-	var wc_checkout_coupons = {
+	wc_checkout_coupons = {
 		init: function() {
 			$( document.body ).on( 'click', 'a.showcoupon', this.show_coupon_form );
 			$( document.body ).on( 'click', '.woocommerce-remove-coupon', this.remove_coupon );
@@ -674,7 +683,7 @@ jQuery( function( $ ) {
 		}
 	};
 
-	var wc_checkout_login_form = {
+	wc_checkout_login_form = {
 		init: function() {
 			$( document.body ).on( 'click', 'a.showlogin', this.show_login_form );
 		},
@@ -684,7 +693,7 @@ jQuery( function( $ ) {
 		}
 	};
 
-	var wc_terms_toggle = {
+	wc_terms_toggle = {
 		init: function() {
 			$( document.body ).on( 'click', 'a.woocommerce-terms-and-conditions-link', this.toggle_terms );
 		},
@@ -707,10 +716,9 @@ jQuery( function( $ ) {
 			}
 		}
 	};
-console.log(wc_checkout_form);
 
-	wc_checkout_form.init();
-	wc_checkout_coupons.init();
-	wc_checkout_login_form.init();
-	wc_terms_toggle.init();
+// 	wc_checkout_form.init();
+// 	wc_checkout_coupons.init();
+// 	wc_checkout_login_form.init();
+// 	wc_terms_toggle.init();
 });

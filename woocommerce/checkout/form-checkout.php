@@ -88,7 +88,7 @@ if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_requir
 
 			<?php do_action( 'woocommerce_pay_order_before_submit' ); ?>
 			<div class="wc-proceed-to-checkout">
-				<a class="btn btn-app" href="#">Оплатить заказ</a>
+				<span class="btn btn-app">Оплатить заказ</span>
 			</div>
 			<?php do_action( 'woocommerce_pay_order_after_submit' ); ?>
 		</div>
