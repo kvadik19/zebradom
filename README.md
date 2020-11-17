@@ -33,17 +33,18 @@ zebradom_2020.ru/woocommerce/checkout
 Перемещение функционала woocommerce из стандартного URL `/cart` в `/checkout` согласно дизайн-проекта, связано с изменением frontend .php и .js скриптов.
 В разделе "Оформление заказа" содержимое скрипта `wp-content/plugins/woocommerce/assets/js/frontend/cart.js` перенесено в `wp-content/themes/zebradom_2020.ru/js/check.js`.
 Изменения в `wp-content/plugins/woocommerce/includes/class-wc-frontend-scripts.php:~515` - добавлен параметр, передаваемый объектом wc_checkout_params
-`
+```
 	case "wc-checkout":
 	$params = array(
 	"update_shipping_method_nonce" => wp_create_nonce( "update-shipping-method" ),
 		...
 	);
-`
+```
 ### Настройка способа доставки
 `wp-content/themes/zebradom_2020.ru/woocommerce/checkout/form-billing.php`
 
+Поскольку дизайн-проект интерфейса предусматривает использование заранее предустановленных способов доставки, в этот раздел выводится не список установленных в WP плугов служб доставки, а выборка их отдельных вариантов.
 
-Предустановленные способы доставки описываются в `<div id="shp-list">`. Назначаемый способ доставки формируется из `data-index` и `data-method` вложенных `<div class="shp-item ...">`. Например, `<div class="shp-item shipping_method" data-index="6" data-method="local_pickup">` дает метод **local_pickup:6**.
+Предустановленные способы доставки описываются в `<div id="shp-list">`. Назначаемый способ доставки формируется из `data-index` и `data-method` вложенных `<div class="cell-item ...">`. Например, `<div class="cell-item shipping_method" data-index="6" data-method="local_pickup">` дает метод **local_pickup:6**.
 
-Бесплатная версия **russian-post-and-ems-for-woocommerce** позволяет выбрать только один метод доставки - `rpaefw_post_calc:1`. Соотвестсвенно, настройки плуга из админ-панели WP обеспечивают алгоритм расчета, основывваясь на параметрах типа отправления и типа упаковки.
+Бесплатная версия **russian-post-and-ems-for-woocommerce** позволяет выбрать только один метод доставки - `rpaefw_post_calc:1`. Соответсвенно, настройки плуга из админ-панели WP обеспечивают алгоритм расчета, основывваясь на параметрах типа отправления и типа упаковки.
