@@ -8,7 +8,7 @@ function ddtsug_woo_fields_start() {
 	if(get_option('ddtsug_woo_need_address')!=true) {
 ?>
         <label for="address" class="w-100">Адрес&nbsp;<abbr class="required" title="обязательно">*</abbr></label>
-        <input type="email" class="input-text form-control w-100" name="address" id="address" placeholder="Введите Ваш адрес в произвольной форме" value="" autocomplete="address">
+        <input type="text" class="input-text form-control w-100" name="address" id="address" placeholder="Введите Ваш адрес в произвольной форме" value="" autocomplete="address">
 <?php
 	}
 	if(get_option('ddtsug_woo_need_phone')!=true) {
@@ -49,7 +49,6 @@ add_action('woocommerce_after_checkout_billing_form', 'ddtsug_woo_fields_end');
 
 function ddtsug_woo_adding_scripts() {
 	wp_register_script('ddtsug_woo_script', plugins_url('DadataSug.js', __FILE__), '', '', true);
-	log_write('Load Suggs from '.plugins_url('DadataSug.js', __FILE__) );
 	wp_enqueue_script('ddtsug_woo_script');
 }
 

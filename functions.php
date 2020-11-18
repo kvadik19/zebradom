@@ -1041,8 +1041,116 @@ function get_cloth_current( $id ) {			// For using outside of AJAX
 	return $products;
 }
 
+// //	https://stackoverflow.com/questions/55423974/submit-and-create-an-order-on-checkout-via-ajax-in-woocommerce-3
+//add_action('wp_footer', 'checkout_billing_email_js_ajax' );
+// function checkout_billing_email_js_ajax() {
+// 	// Only on Checkout
+// 	if( is_checkout() && ! is_wc_endpoint_url() ) :
+// 	? >
+// 	<script type="text/javascript">
+// 	jQuery(function($){
+// 		if (typeof wc_checkout_params === 'undefined') 
+// 			return false;
+// 
+// 		$(document.body).on("click", "#place_order" ,function(evt) {
+// 			evt.preventDefault();
+// 
+// 			$.ajax({
+// 				type:    'POST',
+// 				url: wc_checkout_params.ajax_url,
+// 				contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+// 				enctype: 'multipart/form-data',
+// 				data: {
+// 					'action': 'ajax_order',
+// 					'fields': $('form.checkout').serializeArray(),
+// 					'user_id': <?php echo get_current_user_id(); ? >,
+// 				},
+// 				success: function (result) {
+// 					console.log(result); // For testing (to be removed)
+// 				},
+// 				error:   function(error) {
+// 					console.log(error); // For testing (to be removed)
+// 				}
+// 			});
+// 		});
+// 	});
+// 	</script>
+// 	< // ?php
+// 	endif;
+// }
 
+add_action('wp_ajax_ajax_order', 'submited_ajax_order_data');
+add_action( 'wp_ajax_nopriv_ajax_order', 'submited_ajax_order_data' );
+function submited_ajax_order_data() {
+	if( isset($_POST['fields']) && ! empty($_POST['fields']) ) {
 
+		$order    = new WC_Order();
+		$cart     = WC()->cart;
+		$checkout = WC()->checkout;
+		$data     = [];
+
+		// Loop through posted data array transmitted via jQuery
+		foreach( $_POST['fields'] as $values ){
+			// Set each key / value pairs in an array
+			$data[$values['name']] = $values['value'];
+		}
+
+		$cart_hash          = md5( json_encode( wc_clean( $cart->get_cart_for_session() ) ) . $cart->total );
+		$available_gateways = WC()->payment_gateways->get_available_payment_gateways();
+
+		// Loop through the data array
+		foreach ( $data as $key => $value ) {
+			// Use WC_Order setter methods if they exist
+			if ( is_callable( array( $order, "set_{$key}" ) ) ) {
+				$order->{"set_{$key}"}( $value );
+
+			// Store custom fields prefixed with wither shipping_ or billing_
+			} elseif ( ( 0 === stripos( $key, 'billing_' ) || 0 === stripos( $key, 'shipping_' ) )
+				&& ! in_array( $key, array( 'shipping_method', 'shipping_total', 'shipping_tax' ) ) ) {
+				$order->update_meta_data( '_' . $key, $value );
+			}
+		}
+
+		$order->set_created_via( 'checkout' );
+		$order->set_cart_hash( $cart_hash );
+		$order->set_customer_id( apply_filters( 'woocommerce_checkout_customer_id', isset($_POST['user_id']) ? $_POST['user_id'] : '' ) );
+		$order->set_currency( get_woocommerce_currency() );
+		$order->set_prices_include_tax( 'yes' === get_option( 'woocommerce_prices_include_tax' ) );
+		$order->set_customer_ip_address( WC_Geolocation::get_ip_address() );
+		$order->set_customer_user_agent( wc_get_user_agent() );
+		$order->set_customer_note( isset( $data['order_comments'] ) ? $data['order_comments'] : '' );
+		$order->set_payment_method( isset( $available_gateways[ $data['payment_method'] ] ) ? $available_gateways[ $data['payment_method'] ]  : $data['payment_method'] );
+		$order->set_shipping_total( $cart->get_shipping_total() );
+		$order->set_discount_total( $cart->get_discount_total() );
+		$order->set_discount_tax( $cart->get_discount_tax() );
+		$order->set_cart_tax( $cart->get_cart_contents_tax() + $cart->get_fee_tax() );
+		$order->set_shipping_tax( $cart->get_shipping_tax() );
+		$order->set_total( $cart->get_total( 'edit' ) );
+
+		$checkout->create_order_line_items( $order, $cart );
+		$checkout->create_order_fee_lines( $order, $cart );
+		$checkout->create_order_shipping_lines( $order, WC()->session->get( 'chosen_shipping_methods' ), WC()->shipping->get_packages() );
+		$checkout->create_order_tax_lines( $order, $cart );
+		$checkout->create_order_coupon_lines( $order, $cart );
+
+		/**
+		* Action hook to adjust order before save.
+		* @since 3.0.0
+		*/
+		do_action( 'woocommerce_checkout_create_order', $order, $data );
+
+		// Save the order.
+		$order_id = $order->save();
+
+		do_action( 'woocommerce_checkout_update_order_meta', $order_id, $data );
+
+		echo 'New order created with order ID: #'.$order_id.'.' ;
+	}
+	die();
+}
+//	END https://stackoverflow.com/questions/55423974/submit-and-create-an-order-on-checkout-via-ajax-in-woocommerce-3 
+
+// remove_action( 'template_redirect', 'wc_send_frame_options_header' );
 //woocomerce
 function do_excerpt($string, $word_limit) {
 	$words = explode(' ', $string, ($word_limit + 1));

@@ -19,6 +19,9 @@ defined( 'ABSPATH' ) || exit;
 
 do_action( 'woocommerce_before_edit_account_form' ); ?>
 
+<h1 class="title-page">Мои данные</h1>
+
+
 <form class="woocommerce-EditAccountForm edit-account" action="" method="post" <?php do_action( 'woocommerce_edit_account_form_tag' ); ?> >
 
 	<?php do_action( 'woocommerce_edit_account_form_start' ); ?>
@@ -55,9 +58,9 @@ do_action( 'woocommerce_before_edit_account_form' ); ?>
 		<input type="text" class="woocommerce-Input woocommerce-Input--adres input-text" name="address" id="address" value="<?php echo esc_attr( $user->address ); ?>" />
 	</div>
 
-	<div class="password-btn">Изменить пароль</div>
+	<div class="password-btn"><span>Изменить пароль</span><span style="display: none;">Скрыть изменение пароля</span></div>
 
-	<div class="content-password" style="display: none;">
+	<div class="content-password" style="display: none;" >
 		<fieldset>
 			<div class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide align-items-center">
 				<label for="password_current">Старый пароль</label>
@@ -86,3 +89,5 @@ do_action( 'woocommerce_before_edit_account_form' ); ?>
 </form>
 
 <?php do_action( 'woocommerce_after_edit_account_form' ); ?>
+
+ 

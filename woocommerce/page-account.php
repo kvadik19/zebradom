@@ -4,6 +4,7 @@
 */
 get_header();
 wp_enqueue_script('jquery', '//code.jquery.com/jquery-3.4.1.min.js', false, false, true);
+wp_enqueue_script('maskedinput', '//cdn.jsdelivr.net/npm/jquery.maskedinput@1.4.1/src/jquery.maskedinput.min.js', false, false, true);
 ?>
 <div class="page-set">
 	<article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>

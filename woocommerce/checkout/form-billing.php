@@ -113,7 +113,8 @@ defined('ABSPATH') || exit;
 			wc_get_template( 'checkout/payment-method.php', array( 'gateway' => $gateway ) );
 		}
 	} else {
-		echo 'Способы оплаты не определены',"\n";;
+		apply_filters( 'woocommerce_no_available_payment_methods_message', esc_html__( 'Sorry, it seems that there are no available payment methods for your location. Please contact us if you require assistance or wish to make alternate arrangements.', 'woocommerce' ) );
+// 		echo 'Способы оплаты не определены',"\n";;
 	}
 
 ?>
@@ -129,10 +130,10 @@ defined('ABSPATH') || exit;
 <?php do_action( 'woocommerce_after_order_notes', $checkout ); ?>
 </div>
 
-<!--
+
 <h5>Отладочная информация</h5>
-<div id="wc-out" style="font-size:75%;color:#000066;"></div>
--->
+<div id="wc-out" style="font-size:75%;color:#000066;background-color:#cccccc;"></div>
+
 
 <?php if (!is_user_logged_in() && $checkout->is_registration_enabled()) : ?>
 	<div class="woocommerce-account-fields">
@@ -147,7 +148,7 @@ defined('ABSPATH') || exit;
 			/>
 <?php endif; ?>
 
-		<?php // do_action('woocommerce_before_checkout_registration_form', $checkout); ?>
+		<?php do_action('woocommerce_before_checkout_registration_form', $checkout); ?>
 
 		<?php if ($checkout->get_checkout_fields('account')) : ?>
 
@@ -160,7 +161,7 @@ defined('ABSPATH') || exit;
 
 		<?php endif; ?>
 
-		<?php // do_action('woocommerce_after_checkout_registration_form', $checkout); ?>
+		<?php do_action('woocommerce_after_checkout_registration_form', $checkout); ?>
 	</div>
 <?php endif; ?>
 

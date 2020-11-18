@@ -203,7 +203,7 @@ jQuery( function( $ ) {
 			}
 		},
 		validate_field: function( e ) {
-console.log('Do validate_field');
+// console.log('Do validate_field');
 
 			var $this             = $( this ),
 				$parent           = $this.closest( '.form-row' ),
@@ -251,7 +251,7 @@ console.log('Do validate_field');
 			wc_checkout_form.updateTimer = setTimeout( wc_checkout_form.update_checkout_action, '5', args );
 		},
 		update_checkout_action: function( args ) {
-console.log('update_checkout_action');
+// console.log('update_checkout_action');
 
 			if ( wc_checkout_form.xhr ) {
 				wc_checkout_form.xhr.abort();
@@ -315,7 +315,6 @@ console.log('update_checkout_action');
 				has_full_address: has_full_address,
 				post_data       : $( 'form.checkout' ).serialize()
 			};
-console.log(data);
 
 			if ( false !== args.update_shipping_method ) {
 				var shipping_methods = {};
@@ -338,7 +337,7 @@ console.log(data);
 
 			wc_checkout_form.xhr = $.ajax({
 				type:		'POST',
-				url:		wc_checkout_params.wc_ajax_url.toString().replace( '%%endpoint%%', 'update_order_review' ),
+				url:		wc_checkout_params.wc_ajax_url.toString().replace( '%%endpoint%%',  'pay_action'),		// 'update_order_review'
 				data:		data,
 				success:	function( data ) {
 
@@ -347,6 +346,7 @@ console.log(data);
 						window.location.reload();
 						return;
 					}
+// console.log('Ajaxed wc_checkout_form.xhr');
 
 					// Remove any notices added previously
 					$( '.woocommerce-NoticeGroup-updateOrderReview' ).remove();

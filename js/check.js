@@ -46,12 +46,12 @@ jQuery(function ($) {
 														if ( d.className.match(/shipping_method/) ) {
 															document.getElementById('addressAlert').className = '';
 															doMethod(d);
-// 															cart_shipping.shipping_method_selected();
-															$( document.body ).trigger( 'updated_checkout');
+															cart_shipping.shipping_method_selected();
+															wc_checkout_form.update_checkout()
 
 														} else if ( d.className.match(/payment_method/) ) {
 // 															d.querySelector('input[type="radio"]').checked = true;
-															$('.wc-proceed-to-checkout .btn-app').attr('disabled', false);
+															$('#init_order').attr('disabled', false);
 															document.getElementById('payment_method').value = d.dataset.method;
 														}
 													});
@@ -64,15 +64,29 @@ jQuery(function ($) {
 		document.getElementById('payment_method').value = $('#pay-list .cell-item.sel').data('method');
 	} else {
 // 		$('#pay-list .cell-item input[type="radio"]').parent().removeClass('sel');
-		$('.wc-proceed-to-checkout .btn-app').attr('disabled', true);
+		$('#init_order').attr('disabled', true);
 		document.getElementById('payment_method').value = '';
 	}
-	document.querySelector('.wc-proceed-to-checkout .btn-app').onclick = function(e) { 
+	document.getElementById('init_order').onclick = function(e) { 
 				if ( this.hasAttribute('disabled') ) return;
-				wc_checkout_form.init();
+// 				wc_checkout_form.init();
+				document.querySelector('form.checkout').submit();
+
 			};
 	$(document.body).on('updated_checkout', function(evt, data){ 
-				cart_shipping.shipping_method_selected();
+				console.log('Updated checkout');
+				console.log(data);
+				if ( data.result === 'success' ) {
+					let oData = createObj('div',{'innerHTML':data.fragments['.woocommerce-checkout-payment']});
+					let frm = document.querySelector('form.checkout');
+					let submit = oData.querySelector('button#place_order');
+// 					$(frm).find('button#place_order').remove();
+// 					$(frm).find('input[name="_wp_http_referer"]').val($(oData).find('input[name="_wp_http_referer"]').val() );
+					submit.style.display = 'none';
+// 					frm.appendChild(submit);
+// 					frm.submit();
+				}
+// 				cart_shipping.shipping_method_selected();
 			});
 
 	$(document.body).on('updated_shipping_method', function(evt, ht) { 
@@ -111,7 +125,40 @@ jQuery(function ($) {
 				document.getElementById('total').innerHTML = d.querySelector('tr.order-total td').innerHTML;
 			});
 
-	// /checkout page JS END
+// 
+// 		$(document.body).on("click", "#place_order" ,function(evt) {
+// 			evt.preventDefault();
+// 
+// 			$.ajax({
+// 				type:    'POST',
+// 				url: wc_checkout_params.ajax_url,
+// 				contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+// 				enctype: 'multipart/form-data',
+// 				data: {
+// 					'action': 'ajax_order',
+// 					'fields': $('form.checkout').serializeArray(),
+// 					'user_id': <?php echo get_current_user_id(); ? >,
+// 				},
+// 				success: function (result) {
+// 					console.log(result); // For testing (to be removed)
+// 				},
+// 				error:   function(error) {
+// 					console.log(error); // For testing (to be removed)
+// 				}
+// 			});
+// 		});
+// 		See at functions.php add_action 'wp_ajax_ajax_order'
+// 	$(document).on("click", "#place_order" ,function(e) {
+// 				e.preventDefault();
+// 				var post_data: $( 'form.checkout' ).serialize()
+// 				var data = {
+// 					action: 'ajax_order',
+// 					post_data : post_data
+// 				};
+// 
+// 				$.post('<?php echo esc_url( home_url() ); ?>/wp-admin/admin-ajax.php', data);
+// 			});
+// /checkout page JS END
 
 // console.log(wc_checkout_form);
 

@@ -25,11 +25,7 @@ defined( 'ABSPATH' ) || exit;
 do_action( 'woocommerce_account_navigation' ); ?>
 
 <div class="woocommerce-MyAccount-content">
-<?php 	while(have_posts()) {
-		the_post();
-		?> <h1 class="title-page"><?php the_title(); ?></h1> <?php
-	}
-	?>	
+ 
 
 	<?php
 		/**
