@@ -251,7 +251,6 @@ jQuery( function( $ ) {
 			wc_checkout_form.updateTimer = setTimeout( wc_checkout_form.update_checkout_action, '5', args );
 		},
 		update_checkout_action: function( args ) {
-// console.log('update_checkout_action');
 
 			if ( wc_checkout_form.xhr ) {
 				wc_checkout_form.xhr.abort();
@@ -337,7 +336,7 @@ jQuery( function( $ ) {
 
 			wc_checkout_form.xhr = $.ajax({
 				type:		'POST',
-				url:		wc_checkout_params.wc_ajax_url.toString().replace( '%%endpoint%%',  'pay_action'),		// 'update_order_review'
+				url:		wc_checkout_params.wc_ajax_url.toString().replace( '%%endpoint%%',  'update_order_review'), 
 				data:		data,
 				success:	function( data ) {
 
@@ -346,7 +345,6 @@ jQuery( function( $ ) {
 						window.location.reload();
 						return;
 					}
-// console.log('Ajaxed wc_checkout_form.xhr');
 
 					// Remove any notices added previously
 					$( '.woocommerce-NoticeGroup-updateOrderReview' ).remove();

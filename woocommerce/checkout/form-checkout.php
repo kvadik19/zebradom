@@ -86,20 +86,15 @@ if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_requir
 				<div><?php esc_html_e( 'Total', 'woocommerce' ); ?>:</div>
 				<div  id="total" data-title="<?php esc_attr_e( 'Total', 'woocommerce' ); ?>"><?php wc_cart_totals_order_total_html(); ?></div>
 			</div>
-<div id="payment">
 			<input type="hidden" name="woocommerce_pay" value="1" />
 			<input type="hidden" name="woocommerce_checkout_place_order" value="<?php echo $order_button_text ?>" />
 	<?php do_action( 'woocommerce_pay_order_before_submit' ); ?>
 			<div class="wc-proceed-to-checkout">
 				<span class="btn btn-app" id="init_order">Оплатить заказ</span>
 			</div>
-
-	<?php echo apply_filters( 'woocommerce_pay_order_button_html', '<button type="submit" class="button alt" id="place_order" value="' . esc_attr( $order_button_text ) . '" data-value="' . esc_attr( $order_button_text ) . '">' . esc_html( $order_button_text ) . '</button>' ); // @codingStandardsIgnoreLine ?>
-
 	<?php wp_nonce_field( 'woocommerce-process_checkout', 'woocommerce-process-checkout-nonce' ); ?>
 	<?php // wp_nonce_field( 'woocommerce-pay', 'woocommerce-pay-nonce' ); ?>
 	<?php do_action( 'woocommerce_pay_order_after_submit' ); ?>
-</div><!-- payment -->
 		</div>
 	</div>	<!-- part-narrow -->
 <?php do_action( 'woocommerce_after_checkout_form', $checkout ); ?>

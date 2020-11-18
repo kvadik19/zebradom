@@ -41,57 +41,40 @@ jQuery(function ($) {
 														d.parentNode.querySelectorAll('div.cell-item.sel').forEach( s => {s.className = s.className.replace(/\s*sel/g,'');
 																												s.querySelector('.cell-price').innerText = '';
 																											});
-// 														$('#pay-list .cell-item input[type="radio"]').prop('checked',false);
 														d.className += ' sel';
 														if ( d.className.match(/shipping_method/) ) {
 															document.getElementById('addressAlert').className = '';
 															doMethod(d);
 															cart_shipping.shipping_method_selected();
-															wc_checkout_form.update_checkout()
+															wc_checkout_form.update_checkout();
 
 														} else if ( d.className.match(/payment_method/) ) {
-// 															d.querySelector('input[type="radio"]').checked = true;
 															$('#init_order').attr('disabled', false);
 															document.getElementById('payment_method').value = d.dataset.method;
 														}
 													});
 
 	if ( document.querySelector('div.shipping_method.sel') ) doMethod( document.querySelector('div.shipping_method.sel') );
-// 	if ( document.querySelector('#pay-list .cell-item input[type="radio"]:checked') ) {
 	if ( document.querySelector('#pay-list .cell-item.sel') ) {
-// 		$('#pay-list .cell-item input[type="radio"]:checked').parent().addClass('sel');
-// 		document.getElementById('payment_method').value = $('#pay-list .cell-item input[type="radio"]:checked').parent().data('method');
 		document.getElementById('payment_method').value = $('#pay-list .cell-item.sel').data('method');
 	} else {
-// 		$('#pay-list .cell-item input[type="radio"]').parent().removeClass('sel');
 		$('#init_order').attr('disabled', true);
 		document.getElementById('payment_method').value = '';
 	}
 	document.getElementById('init_order').onclick = function(e) { 
 				if ( this.hasAttribute('disabled') ) return;
-// 				wc_checkout_form.init();
 				document.querySelector('form.checkout').submit();
 
 			};
-	$(document.body).on('updated_checkout', function(evt, data){ 
-				console.log('Updated checkout');
-				console.log(data);
-				if ( data.result === 'success' ) {
-					let oData = createObj('div',{'innerHTML':data.fragments['.woocommerce-checkout-payment']});
-					let frm = document.querySelector('form.checkout');
-					let submit = oData.querySelector('button#place_order');
-// 					$(frm).find('button#place_order').remove();
-// 					$(frm).find('input[name="_wp_http_referer"]').val($(oData).find('input[name="_wp_http_referer"]').val() );
-					submit.style.display = 'none';
-// 					frm.appendChild(submit);
-// 					frm.submit();
-				}
-// 				cart_shipping.shipping_method_selected();
-			});
+	$('#dadata_field input').on('change', function() { wc_checkout_form.update_checkout() } );
+
+	$(document.body).on('updated_checkout', function(evt, data) { 			// Delayed functionality
+// 					let oData = createObj('div',{'innerHTML':data.fragments['.woocommerce-checkout-payment']});
+			} );
 
 	$(document.body).on('updated_shipping_method', function(evt, ht) { 
 				let d = createObj('div',{'innerHTML':ht});
-				let meth = d.querySelector('#shipping_method li input[type="radio"]:checked');
+				let meth = d.querySelector('#shipping_method li input[type="radio"]:checked');		// Decompose ajax response
 				if ( !meth ) return;
 				let row = meth.parentNode;
 				let meth_name = row.querySelector('label').firstChild.nodeValue.replace(/[:\s]+$/g,'');
@@ -110,13 +93,13 @@ jQuery(function ($) {
 						document.getElementById('addressAlert').className = 'alert';
 					}
 				}
-				if ( document.getElementById('address').value.replace(/\s/g,'').length == 0 ) {
+				if ( $('#dadata_field input').val().replace(/\s/g,'').length == 0 ) {
 					let addr = '';
 					['billing_address_1', 'billing_city', 'billing_state', 'billing_postcode'].forEach( id => {
 							let val = document.getElementById(id).value.replace(/^[,\.;:'"\s]*|[,\.;:'"\s]*$/gm,'');
 							if ( val.length > 0 ) addr +=  (val + ', ');
 						});
-					document.getElementById('address').value = addr.replace(/, $/,'');
+					$('#dadata_field input').val( addr.replace(/, $/,'') );
 				}
 				if ( row.querySelector('label span.amount') ) price = row.querySelector('label span.amount').innerHTML;
 				document.getElementById('shipping').innerHTML = price;
@@ -126,7 +109,8 @@ jQuery(function ($) {
 			});
 
 // 
-// 		$(document.body).on("click", "#place_order" ,function(evt) {
+//// 		See at functions.php add_action 'wp_ajax_ajax_order'
+//// 		$(document.body).on("click", "#place_order" ,function(evt) {
 // 			evt.preventDefault();
 // 
 // 			$.ajax({
@@ -147,8 +131,7 @@ jQuery(function ($) {
 // 				}
 // 			});
 // 		});
-// 		See at functions.php add_action 'wp_ajax_ajax_order'
-// 	$(document).on("click", "#place_order" ,function(e) {
+//// 	$(document).on("click", "#place_order" ,function(e) {
 // 				e.preventDefault();
 // 				var post_data: $( 'form.checkout' ).serialize()
 // 				var data = {
@@ -160,9 +143,7 @@ jQuery(function ($) {
 // 			});
 // /checkout page JS END
 
-// console.log(wc_checkout_form);
-
-	// Content of wp-content/plugins/woocommerce/assets/js/frontend/cart.js HERE
+	// Content of wp-content/plugins/woocommerce/assets/js/frontend/cart.js BELOW
 	// wc_cart_params is required to continue, ensure the object exists
 	if ( typeof wc_cart_params === 'undefined' ) {
 		return false;

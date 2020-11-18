@@ -137,6 +137,7 @@ $def_links = [
 				],
 			'script' => [
 					['jquery', '//code.jquery.com/jquery-3.4.1.min.js', [], false, true],
+					['jmask', "$tmpl_uri/js/jquery.mask.min.js", ['jquery'], false, true],
 					['check', "$tmpl_uri/js/check.js", ['jquery'], false, true],
 					['REPLACE','wc-checkout', "$tmpl_uri/woocommerce/js/checkout.js", ['jquery', 
 																		'woocommerce', 
