@@ -32,7 +32,6 @@
 
 		<a class="header-brand" href="/">
 			<img src="<?php echo get_field('main_logo',$post_id); ?>" alt="">
-			<small><?php  echo get_field('logo_text'); ?></small>
 		</a>
 		<div class="header-main">
 <!-- 			<div class="header-contacts"> -->
@@ -50,7 +49,7 @@
 			<section>
 				<a href="#" class="btn btn-callback" data-toggle="modal" data-target="#callback">
 					<img src="<?php echo get_template_directory_uri() ?>/images/icons/phone.svg" class="icon" />Заказать звонок</a>
-				<a href="#" class="btn btn-callback gray" data-toggle="modal" data-target="#callback">
+				<a href="#" class="btn btn-callback gray" data-toggle="modal" data-target="#master">
 					<img src="<?php echo get_template_directory_uri() ?>/images/icons/measure.svg" class="icon" />Вызвать замерщика</a>
 			</section>
 		</div>

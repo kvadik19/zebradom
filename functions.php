@@ -60,7 +60,8 @@ $def_links = [
 					['popper', '//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js', ['jquery'], false, true],
 					['bootstrap', '//stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js', ['popper'], false, true],
 					['photoswipe-zebra', "$tmpl_uri/js/photoswipe-ui-zebra.min.js", ['jquery','photoswipe'], false, true],
-					['app', "$tmpl_uri/js/app.js", ['jquery'], false, true]
+					['app', "$tmpl_uri/js/app.js", ['jquery'], false, true],
+					['jmask', "$tmpl_uri/js/jquery.mask.min.js", ['jquery'], false, true],
 				]
 		],
 		'page-clients.php' => [
@@ -68,10 +69,10 @@ $def_links = [
 					'lightgallery' => "$tmpl_uri/css/lightgallery.css",
 				],
 			'script' => [
-					['jquery', '//code.jquery.com/jquery-3.4.1.min.js', [], false, true],
-					['true_loadmore', "$tmpl_uri/js/loadmore.js", ['jquery']],
+					//['jquery', '//code.jquery.com/jquery-3.4.1.min.js', [], false, true],
+					//['true_loadmore', "$tmpl_uri/js/loadmore.js", ['jquery']],
 					['lightgallery', "$tmpl_uri/js/lightgallery.min.js", ['jquery']],
-					['slick', "$tmpl_uri/js/slick.min.js", ['jquery']],
+					//['slick', "$tmpl_uri/js/slick.min.js", ['jquery']],
 				]
 		],
 		'page.php' => [
@@ -81,7 +82,7 @@ $def_links = [
 					'classic-pck' => "$tmpl_uri/css/classic.min.css",
 				],
 			'script' => [
-					['jquery', '//code.jquery.com/jquery-3.4.1.min.js', [], false, true],
+					//['jquery', '//code.jquery.com/jquery-3.4.1.min.js', [], false, true],
 					['farbtastic-picker', "$tmpl_uri/js/farbtastic/farbtastic.js", ['jquery'], false, true],
 					['jq-zoom', "$tmpl_uri/js/zoom.js", ['jquery'], false, true],
 					['threejs', "$tmpl_uri/js/three.min.js", [], false, true],
@@ -91,18 +92,18 @@ $def_links = [
 															'app' ], false, true]
 				]
 		],
-		'page-clients.php' => [
-			'style' => [
-					'page-clients' => "$tmpl_uri/css/page-clients.css",
-					'page-solutions' => "$tmpl_uri/css/page-resh.css",
-					'slick' => "$tmpl_uri/css/slick.css",
-					'slick-theme' => "$tmpl_uri/css/slick-theme.css",
-				],
-			'script' => [
-					['jquery', '//code.jquery.com/jquery-3.4.1.min.js', [], false, true],
-					['clients', "$tmpl_uri/js/clients.js", ['jquery'], false, true]
-				]
-		],
+		// 'page-clients.php' => [
+		// 	'style' => [
+		// 			'page-clients' => "$tmpl_uri/css/page-clients.css",
+		// 			'page-solutions' => "$tmpl_uri/css/page-resh.css",
+		// 			'slick' => "$tmpl_uri/css/slick.css",
+		// 			'slick-theme' => "$tmpl_uri/css/slick-theme.css",
+		// 		],
+		// 	'script' => [
+		// 			//['jquery', '//code.jquery.com/jquery-3.4.1.min.js', [], false, true],
+		// 			['clients', "$tmpl_uri/js/clients.js", ['jquery'], false, true]
+		// 		]
+		// ],
 		'page-dealers.php' => [
 			'style' => [
 				'page-dealers' => "$tmpl_uri/css/page-opt.css",
@@ -113,7 +114,7 @@ $def_links = [
 					'page-solutions' => "$tmpl_uri/css/page-resh.css",
 				],
 			'script' => [
-					['jquery', '//code.jquery.com/jquery-3.4.1.min.js', [], false, true],
+					//['jquery', '//code.jquery.com/jquery-3.4.1.min.js', [], false, true],
 					['solutions', "$tmpl_uri/js/solutions.js", ['jquery'], false, true]
 				]
 		],
@@ -127,22 +128,13 @@ $def_links = [
 					'page-wooc' => "$tmpl_uri/css/woocom.css",
 				],
 			'script' => [
-					['jquery', '//code.jquery.com/jquery-3.4.1.min.js', [], false, true],
+					//['jquery', '//code.jquery.com/jquery-3.4.1.min.js', [], false, true],
 					['cart', "$tmpl_uri/js/cart.js", ['jquery'], false, true]
 				]
 		],
 		'page-order.php' => [
 			'style' => [
 					'page-wooc' => "$tmpl_uri/css/woocom.css",
-				],
-			'script' => [
-					['jquery', '//code.jquery.com/jquery-3.4.1.min.js', [], false, true],
-					['jmask', "$tmpl_uri/js/jquery.mask.min.js", ['jquery'], false, true],
-					['check', "$tmpl_uri/js/check.js", ['jquery'], false, true],
-					['REPLACE','wc-checkout', "$tmpl_uri/woocommerce/js/checkout.js", ['jquery', 
-																		'woocommerce', 
-																		'wc-country-select', 
-																		'wc-address-i18n'], false, true],
 				]
 		],
 	];
@@ -155,7 +147,7 @@ function enqueue_src() {
 log_write("LOAD RESOURCES FOR: $page_template IN ".get_stylesheet_directory() );
 	$verCSS = filemtime( get_stylesheet_directory().'/css' );
 	$verJS = filemtime( get_stylesheet_directory().'/js' );
-	wp_deregister_script('jquery');
+	//wp_deregister_script('jquery');
 
 	foreach ( $def_links['global']['style'] as $key => $def ) {
 		wp_enqueue_style($key, $def, [], $verCSS);
@@ -354,87 +346,87 @@ function true_customizer_live() {
 	), null, true);
 }
 
-function get_most_viewed($args = '') {
-	parse_str($args, $i);
-	$num = isset($i['num']) ? $i['num'] : 10;
-	$key = isset($i['key']) ? $i['key'] : 'views';
-	$order = isset($i['order']) ? 'ASC' : 'DESC';
-	$cache = isset($i['cache']) ? 1 : 0;
-	$days = isset($i['days']) ? (int) $i['days'] : 0;
-	$echo = isset($i['echo']) ? 0 : 1;
-	$format = isset($i['format']) ? stripslashes($i['format']) : 0;
-	global $wpdb, $post;
-	$cur_postID = $post->ID;
-	if ($cache) {
-		$cache_key = (string) md5(__FUNCTION__.serialize($args));
-		if ($cache_out = wp_cache_get($cache_key)) { //получаем и отдаем кеш если он есть
-			if ($echo) {
-				return print($cache_out);
-			} else {
-				return $cache_out;
-			}
-		}
-	}
-	if ($days) {
-		$AND_days = "AND post_date > CURDATE() - INTERVAL $days DAY";
-		if (strlen($days) == 4) {
-			$AND_days = "AND YEAR(post_date)=".$days;
-		}
-	}
-	$sql = "SELECT p.ID, p.post_title, p.post_date, p.guid, p.comment_count, (pm.meta_value+0) AS views
-	FROM $wpdb->posts p
-		LEFT JOIN $wpdb->postmeta pm ON(pm.post_id = p.ID)
-	WHERE pm.meta_key = '$key' $AND_days
-		AND p.post_type = 'post'
-		AND p.post_status = 'publish'
-	ORDER BY views $order LIMIT $num";
-	$results = $wpdb->get_results($sql);
-	if (!$results) {
-		return false;
-	}
-	$out = '';
-	preg_match('!{date:(.*?)}!', $format, $date_m);
-	$x = 'li2';
-	foreach ($results as $pst) {
-		$x == 'li1' ? $x = 'li2' : $x = 'li1';
-		if ((int) $pst->ID == (int) $cur_postID) {
-			$x .= " current-item";
-		}
-		$Title = $pst->post_title;
-		$a1 = "<a href='".get_permalink($pst->ID)."' title='{$pst->views} просмотров: $Title'>";
-		$a2 = "</a>";
-		$comments = $pst->comment_count;
-		$views = $pst->views;
-		if ($format) {
-			$date = apply_filters('the_time', mysql2date($date_m[1], $pst->post_date));
-			$Sformat = str_replace($date_m[0], $date, $format);
-			$Sformat = str_replace(array(
-				'{a}',
-				'{title}',
-				'{/a}',
-				'{comments}',
-				'{views}'
-			), array(
-				$a1,
-				$Title,
-				$a2,
-				$comments,
-				$views
-			), $Sformat);
-		} else {
-			$Sformat = $a1.$Title.$a2;
-		}
-		$out .= "<li class='$x'>$Sformat</li>";
-	}
-	if ($cache) {
-		wp_cache_add($cache_key, $out);
-	}
-	if ($echo) {
-		return print $out;
-	} else {
-		return $out;
-	}
-}
+// function get_most_viewed($args = '') {
+// 	parse_str($args, $i);
+// 	$num = isset($i['num']) ? $i['num'] : 10;
+// 	$key = isset($i['key']) ? $i['key'] : 'views';
+// 	$order = isset($i['order']) ? 'ASC' : 'DESC';
+// 	$cache = isset($i['cache']) ? 1 : 0;
+// 	$days = isset($i['days']) ? (int) $i['days'] : 0;
+// 	$echo = isset($i['echo']) ? 0 : 1;
+// 	$format = isset($i['format']) ? stripslashes($i['format']) : 0;
+// 	global $wpdb, $post;
+// 	$cur_postID = $post->ID;
+// 	if ($cache) {
+// 		$cache_key = (string) md5(__FUNCTION__.serialize($args));
+// 		if ($cache_out = wp_cache_get($cache_key)) { //получаем и отдаем кеш если он есть
+// 			if ($echo) {
+// 				return print($cache_out);
+// 			} else {
+// 				return $cache_out;
+// 			}
+// 		}
+// 	}
+// 	if ($days) {
+// 		$AND_days = "AND post_date > CURDATE() - INTERVAL $days DAY";
+// 		if (strlen($days) == 4) {
+// 			$AND_days = "AND YEAR(post_date)=".$days;
+// 		}
+// 	}
+// 	$sql = "SELECT p.ID, p.post_title, p.post_date, p.guid, p.comment_count, (pm.meta_value+0) AS views
+// 	FROM $wpdb->posts p
+// 		LEFT JOIN $wpdb->postmeta pm ON(pm.post_id = p.ID)
+// 	WHERE pm.meta_key = '$key' $AND_days
+// 		AND p.post_type = 'post'
+// 		AND p.post_status = 'publish'
+// 	ORDER BY views $order LIMIT $num";
+// 	$results = $wpdb->get_results($sql);
+// 	if (!$results) {
+// 		return false;
+// 	}
+// 	$out = '';
+// 	preg_match('!{date:(.*?)}!', $format, $date_m);
+// 	$x = 'li2';
+// 	foreach ($results as $pst) {
+// 		$x == 'li1' ? $x = 'li2' : $x = 'li1';
+// 		if ((int) $pst->ID == (int) $cur_postID) {
+// 			$x .= " current-item";
+// 		}
+// 		$Title = $pst->post_title;
+// 		$a1 = "<a href='".get_permalink($pst->ID)."' title='{$pst->views} просмотров: $Title'>";
+// 		$a2 = "</a>";
+// 		$comments = $pst->comment_count;
+// 		$views = $pst->views;
+// 		if ($format) {
+// 			$date = apply_filters('the_time', mysql2date($date_m[1], $pst->post_date));
+// 			$Sformat = str_replace($date_m[0], $date, $format);
+// 			$Sformat = str_replace(array(
+// 				'{a}',
+// 				'{title}',
+// 				'{/a}',
+// 				'{comments}',
+// 				'{views}'
+// 			), array(
+// 				$a1,
+// 				$Title,
+// 				$a2,
+// 				$comments,
+// 				$views
+// 			), $Sformat);
+// 		} else {
+// 			$Sformat = $a1.$Title.$a2;
+// 		}
+// 		$out .= "<li class='$x'>$Sformat</li>";
+// 	}
+// 	if ($cache) {
+// 		wp_cache_add($cache_key, $out);
+// 	}
+// 	if ($echo) {
+// 		return print $out;
+// 	} else {
+// 		return $out;
+// 	}
+// }
 
 add_action('after_setup_theme', function () {
 									register_nav_menus(array(
@@ -475,42 +467,42 @@ add_action('wp_ajax_loadmore', 'true_load_posts');
 add_action('wp_ajax_nopriv_loadmore', 'true_load_posts');
 
 //Views
-function get_post_views($postID) {
-	$count_key = 'post_views_count';
-	$count = get_post_meta($postID, $count_key, true);
-	if ($count == '') {
-		delete_post_meta($postID, $count_key);
-		add_post_meta($postID, $count_key, '0');
-		return "0";
-	}
-	return $count;
-}
+// function get_post_views($postID) {
+// 	$count_key = 'post_views_count';
+// 	$count = get_post_meta($postID, $count_key, true);
+// 	if ($count == '') {
+// 		delete_post_meta($postID, $count_key);
+// 		add_post_meta($postID, $count_key, '0');
+// 		return "0";
+// 	}
+// 	return $count;
+// }
 
-function set_post_views($postID) {
-	$count_key = 'post_views_count';
-	$count = get_post_meta($postID, $count_key, true);
-	if ($count == '') {
-		delete_post_meta($postID, $count_key);
-		add_post_meta($postID, $count_key, '0');
-	} else {
-		$count++;
-		update_post_meta($postID, $count_key, $count);
-	}
-}
+// function set_post_views($postID) {
+// 	$count_key = 'post_views_count';
+// 	$count = get_post_meta($postID, $count_key, true);
+// 	if ($count == '') {
+// 		delete_post_meta($postID, $count_key);
+// 		add_post_meta($postID, $count_key, '0');
+// 	} else {
+// 		$count++;
+// 		update_post_meta($postID, $count_key, $count);
+// 	}
+// }
 
-add_filter('manage_posts_columns', 'posts_column_views');
-add_action('manage_posts_custom_column', 'posts_custom_column_views', 5, 2);
-function posts_column_views($defaults)
-{
-	$defaults['post_views'] = __('Просмотры');
-	return $defaults;
-}
+// add_filter('manage_posts_columns', 'posts_column_views');
+// add_action('manage_posts_custom_column', 'posts_custom_column_views', 5, 2);
+// function posts_column_views($defaults)
+// {
+// 	$defaults['post_views'] = __('Просмотры');
+// 	return $defaults;
+// }
 
-function posts_custom_column_views($column_name, $id) {
-	if ($column_name === 'post_views') {
-		echo get_post_views(get_the_ID());
-	}
-}
+// function posts_custom_column_views($column_name, $id) {
+// 	if ($column_name === 'post_views') {
+// 		echo get_post_views(get_the_ID());
+// 	}
+// }
 
 add_filter('post_gallery', 'gallery_list_client', 10, 2);
 function gallery_list_client($output, $attr) {
@@ -891,14 +883,15 @@ add_action('admin_menu', 'add_option_field_to_general_admin_page');
 function wc_up_setting_callback_function($val) {
 	$id = $val['id'];
 	$option_name = $val['option_name'];
+
 	?>
 	<input 
 		type="number" 
-		name="<?php$option_name?>" 
-		id="<?php$id?>" 
-		value="<?php esc_attr(get_option($option_name))?>" 
+		name="<?php echo $option_name; ?>" 
+		id="<?php echo $id; ?>" 
+		value="<?php echo esc_attr(get_option($option_name));?>" 
 	/> 
-	<?php
+	<?php 
 }
 
 add_action('wp_ajax_cart_hook', 'cart_hook');
@@ -1153,18 +1146,18 @@ function submited_ajax_order_data() {
 
 // remove_action( 'template_redirect', 'wc_send_frame_options_header' );
 //woocomerce
-function do_excerpt($string, $word_limit) {
-	$words = explode(' ', $string, ($word_limit + 1));
-	if (count($words) > $word_limit) {
-		array_pop($words);
-	}
-	echo implode(' ', $words).' ...';
-}
+// function do_excerpt($string, $word_limit) {
+// 	$words = explode(' ', $string, ($word_limit + 1));
+// 	if (count($words) > $word_limit) {
+// 		array_pop($words);
+// 	}
+// 	echo implode(' ', $words).' ...';
+// }
 
-add_filter('woocommerce_sale_flash', 'custom_sale_flash', 10, 3);
-function custom_sale_flash($text, $post, $_product) {
-	return '<span class="onsale"><img src="'.get_bloginfo('template_url').'/images/icons/sale.png"></span>';
-}
+// add_filter('woocommerce_sale_flash', 'custom_sale_flash', 10, 3);
+// function custom_sale_flash($text, $post, $_product) {
+// 	return '<span class="onsale"><img src="'.get_bloginfo('template_url').'/images/icons/sale.png"></span>';
+// }
 
 function iap_wc_bootstrap_form_field_args($args, $key, $value)
 {

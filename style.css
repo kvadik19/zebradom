@@ -353,7 +353,207 @@ a.btn-yellow {
     z-index: 2;
 }
 
+.page-set header h1 {
+    font-family: Proxima Nova;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 32px;
+    line-height: 39px;
+    color: #333333;
+}
+
+.portfolio {
+    margin-top: 35px;
+}
+
+.portfolio__item img {
+    width: 216px;
+    height: 150px;
+    -o-object-fit: cover;
+    object-fit: cover;
+    object-position: center;
+}
+
+.portfolio__item:nth-child(5n) {
+    margin-right: 0px;
+}
+
+.portfolio__item {
+    margin-right: 30px;
+    margin-bottom: 30px;
+    cursor: pointer;
+}
+
+.info-text {
+    font-weight: bold;
+    color: #eb0000;
+}
+
+h4.modal-title,
+.modal-title {
+    font-family: Proxima Nova;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 24px;
+    line-height: 29px;
+    color: #333333;
+    text-align: center;
+    width: 100%;
+    padding-top: 60px;
+}
+
+.modal-content {
+    background: #fff;
+    text-align: left;
+    border-radius: 10px;
+    max-width: 666px;
+}
+
+.modal-content .modal-header {
+    padding: 0px;
+    border: 0px;
+}
+
+.small_text-form {
+    font-size: 16px;
+    line-height: 22px;
+    color: #A6A6A6;
+    font-weight: 100;
+    margin: 0px 0px 10px;
+}
+
+.modal-content input.wpcf7-form-control.wpcf7-text.form-control {
+    border: 1px solid #DADADA;
+    box-sizing: border-box;
+    border-radius: 10px;
+    height: 44px;
+    max-width: 350px;
+    margin: auto;
+}
+
+.modal-content .form-group {
+    position: relative;
+}
+
+.modal-content .form-group br {
+    display: none;
+}
+
+.modal-content form {
+    max-width: 350px;
+    margin: 20px auto 40px;
+}
+
+span.wpcf7-list-item-label a {
+    color: #5207FF;
+}
+
+span.wpcf7-list-item-label {
+    font-family: Proxima Nova;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 15px;
+    line-height: 18px;
+    color: #A6A6A6;
+    opacity: 1;
+}
+
+.modal-content .form-group label {
+    font-size: 16px;
+    line-height: 22px;
+    color: #A6A6A6;
+    font-weight: 100;
+    margin: 0px;
+    position: absolute;
+    top: 9px;
+    right: calc(100% + 20px);
+    z-index: 3;
+    width: 88px;
+    text-align: right;
+}
+
+.modal-dialog.modal-dialog-centered {
+    max-width: 666px;
+}
+
+.modal-content span.wpcf7-list-item {
+    margin: 0px;
+    text-align: left;
+    line-height: 1;
+    line-height: 18px;
+    position: relative;
+    color: #A6A6A6;
+    font-size: 15px;
+    line-height: 18px;
+    padding-left: 30px;
+}
+
+.modal-content span.wpcf7-list-item input[type="checkbox"] {
+    position: absolute;
+    top: 1px;
+    left: 0px;
+}
+
+.modal-content button.close {
+    content: '';
+    background: url(/wp-content/plugins/easy-login-woocommerce/assets/images/icon.svg);
+    width: 15px;
+    height: 15px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    position: relative;
+    display: block;
+    padding: 0px;
+    top: 25px;
+    right: 25px;
+    margin: 0px;
+    outline: none !important;
+}
+
+.modal-content input.wpcf7-form-control.wpcf7-submit.btn.send {
+    background: #6D2EFF;
+    border-radius: 10px;
+    padding: 14px;
+    outline: none;
+    border: 0px;
+    font-family: Proxima Nova;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 22px;
+    color: #FFFFFF;
+    width: 100%;
+    max-width: 350px;
+    display: block;
+    margin: auto;
+}
+
+form.wpcf7-form.sent>div:not(.wpcf7-response-output) {
+    display: none;
+}
+
+form.wpcf7-form.sent .wpcf7-response-output {
+    border: 0px;
+    margin: 0px;
+    padding: 0px;
+    text-align: center;
+    font-size: 18px;
+}
+
 @media (max-width: 787px) {
+    .modal-content .form-group label,
+    .small_text-form {
+        position: relative;
+        top: initial;
+        left: initial;
+        right: initial;
+        margin: 0px;
+        text-align: left;
+        font-size: 14px;
+        line-height: 17px;
+        color: #A6A6A6;
+    }
     div#bar-top {
         position: relative;
     }

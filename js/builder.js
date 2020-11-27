@@ -317,20 +317,20 @@ jQuery(function ($) {
 							}
 							if ( data.request.electro ) orderData.check.find(i => i.name==='ctrlen').show = false;
 
-							if ( !data.is_guarantee ) {
-								orderData.alert = 'Мы не гарантируем изготовление по этим размерам.';
-								if (data.sizes_guarantee.height || data.sizes_guarantee.width) {
-									orderData.alert += ' Гарантируемый размер &ndash;';
-									if (data.sizes_guarantee.height) {
-										orderData.alert += ' до ' + data.sizes_guarantee.height + '&nbsp;по высоте';
-									}
-									if (data.sizes_guarantee.width) {
-										if (data.sizes_guarantee.height) orderData.alert += ' и/или ';
-										orderData.alert += ' до ' + data.sizes_guarantee.width + '&nbsp;по ширине';
-									}
-								}
-								message = orderData.alert.bold().fontcolor('#990000');
-							}
+							// if ( !data.is_guarantee ) {
+							// 	orderData.alert = 'Мы не гарантируем изготовление по этим размерам.';
+							// 	if (data.sizes_guarantee.height || data.sizes_guarantee.width) {
+							// 		orderData.alert += ' Гарантируемый размер &ndash;';
+							// 		if (data.sizes_guarantee.height) {
+							// 			orderData.alert += ' до ' + data.sizes_guarantee.height + '&nbsp;по высоте';
+							// 		}
+							// 		if (data.sizes_guarantee.width) {
+							// 			if (data.sizes_guarantee.height) orderData.alert += ' и/или ';
+							// 			orderData.alert += ' до ' + data.sizes_guarantee.width + '&nbsp;по ширине';
+							// 		}
+							// 	}
+							// 	message = orderData.alert.bold().fontcolor('#990000');
+							// }
 
 							let showList = document.querySelector('div#o-data>ul');
 							while ( showList.firstElementChild ) { showList.removeChild(showList.firstElementChild) };
@@ -376,7 +376,7 @@ jQuery(function ($) {
 				};		// doQuery function
 
 			window.clearTimeout( ajaxDelay );
-			ajaxDelay = window.setTimeout( doQuery, 1000);			// Let User a bit of time to play!
+			ajaxDelay = window.setTimeout( doQuery, 100);			// Let User a bit of time to play!
 		};			// getPrice variable
 
 	let screenKey = function(e) {			// Some keyboard operations while order confirmation window open

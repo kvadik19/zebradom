@@ -172,12 +172,12 @@ foreach ($clothes as $item) {
 							<span hidden data-owner="control" data-value="electro">дистанционное</span>
 						</div>
 						<div class="order-input">
-							<div>Как правильно <br>
+							<div class="info-text">Как правильно <br>
 								сделать замеры?
 							</div>
 							<div>
-								<a href="/instrukcii" target="_blank" disabled><img src="<?php echo get_template_directory_uri() ?>/images/icons/icon-doc.svg" /></a>
-								<a href="#" target="_blank" disabled><img src="<?php echo get_template_directory_uri() ?>/images/icons/icon-play.svg" /></a>
+								<a href="/instrukcii-zamera.pdf" target="_blank" ><img src="<?php echo get_template_directory_uri() ?>/images/icons/icon-doc.svg" /></a>
+								<a href="#" target="_blank"><img src="<?php echo get_template_directory_uri() ?>/images/icons/icon-play.svg" /></a>
 							</div>
 						</div>
 					</div>		<!-- Dimensions inputs -->

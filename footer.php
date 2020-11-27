@@ -20,11 +20,11 @@
 				<div class="modal-header">
 					<h4 class="modal-title">Обратный звонок</h4>
 					<button type="button" id="close-callback" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">×</span>
+						 
 					</button>
 				</div>
 				<div class="modal-body d-none-call">
-					<?phpdo_shortcode('[contact-form-7 id="4108" title="Форма обратной связи"]')?>
+					<?php echo do_shortcode('[contact-form-7 id="4108" title="Форма обратной связи"]'); ?>
 
 				</div>
 			</div>
@@ -34,13 +34,12 @@
 		<div class="modal-dialog modal-dialog-centered" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h4 class="modal-title">Заказать мастера</h4>
+					<h4 class="modal-title">Вызвать замерщика</h4>
 					<button type="button" id="close-master" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">×</span>
 					</button>
 				</div>
 				<div class="modal-body d-none-call">
-					<?phpdo_shortcode('[contact-form-7 id="5165" title="Форма заказа мастера"]')?>
+					<?php echo do_shortcode('[contact-form-7 id="5165" title="Форма заказа мастера"]'); ?>
 				</div>
 			</div>
 		</div>

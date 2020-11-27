@@ -1017,3 +1017,9 @@ a.btn-app {
 body.page .page-main-index {
     padding-left:10px;
 }
+.woocommerce-additional-fields p#order_comments_field {
+    width: 100%;
+}
+.woocommerce-additional-fields span.woocommerce-input-wrapper {
+    width: 100%;
+}
